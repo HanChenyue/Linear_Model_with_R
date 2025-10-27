@@ -1,0 +1,423 @@
+---
+title: "Linear_Model_with_R"
+author: Han Chenyue
+editor: source
+format: pdf
+---
+
+# Chapter 1
+
+## 1.2 Initial Data Analysis
+## Exercises
+
+### Q1
+
+#### q1a
+
+```{r}
+library(ggplot2)
+```
+
+```{r}
+data(teengamb, package = "faraway")
+```
+
+```{r}
+head(teengamb)
+```
+
+```{r}
+teengamb$sex = factor(teengamb$sex)
+levels(teengamb$sex) = c("male", "female")
+summary(teengamb$sex)
+```
+
+There are 28 males and 19 females.
+
+#### q1b
+
+```{r}
+# Base graphics
+boxplot(status ~ sex, data = teengamb, main = "Boxplot of Sexes", xlab = "Sex", ylab = "Count")
+```
+
+```{r}
+# ggplot2 package
+ggplot(data = teengamb, aes(x = sex, y = status)) + geom_boxplot()
+```
+
+Both methods differ only in appearance.
+
+#### q1c
+
+```{r}
+ggplot(data = teengamb, aes(x = sex, y = status)) + geom_point()
+```
+
+No. We see fewer points due to overplotting.
+
+#### q1d
+
+```{r}
+hist(x = teengamb$verbal, xlab = "Verbal Score")
+```
+
+The x-axis is difficult to interpret because the ticks marks align with the boundaries of the blocks, rather than being centred on them.
+
+```{r}
+plot(table(teengamb$verbal), xlab = "Verbal Score", ylab = "Frequency")
+```
+
+Cleaner but the thin lines are non-standard way of visualising histogram.
+
+```{r}
+barplot(table(teengamb$verbal), xlab = "Verbal Score", ylab = "Frequency")
+```
+
+The plot does not leave a gap for the verbal score of 3, even though this value is missing from the dataset.
+
+#### q1e
+
+```{r}
+ggplot(data = teengamb, aes(x = income, y = gamble, colour = sex)) + geom_point(size = 5, alpha = 0.3)
+```
+
+```{r}
+ggplot(data = teengamb, aes(x = income, y = gamble, shape = sex, colour = sex)) + geom_point(size = 4, alpha = 0.3) + facet_grid(~ sex)
+```
+
+The faceted plot, because it is easier to distinguish the two sexes.
+
+#### q1f
+
+```{r}
+summary(teengamb)
+```
+
+The `gamble` variable is the most skewed, because its minimum and lower quartile are much closer to the median than its upper quartile and maximum are.
+
+### Q2
+
+#### q1a
+
+```{r}
+data(uswages, package = "faraway")
+head(uswages)
+usw = uswages[, c("wage", "ne", "mw", "we", "so")]
+head(usw)
+```
+
+#### q1b
+
+```{r}
+sum(usw$ne * usw$wage) / sum(usw$ne)
+```
+
+#### q1c
+
+```{r}
+tapply(usw$wage, usw$ne, mean)["1"]
+```
+
+```{r}
+all.equal(
+    sum(usw$ne * usw$wage) / sum(usw$ne),
+    unname(tapply(usw$wage, usw$ne, mean)["1"]))
+```
+
+Yes it does.
+
+#### q1d
+
+```{r}
+head(rowSums(usw[, -1]))
+```
+
+Each row should have exactly one `1` because these columns are  indicators for mutually exclusive geographic regions (one region per individual).
+
+#### q1e
+
+```{r}
+usw$area = c("ne", "mw", "we", "so")[apply(usw[, -1], 1, which.max)]
+head(usw)
+```
+
+#### q1f
+
+```{r}
+boxplot(formula = wage ~ area, data = usw)
+```
+
+The distributions are highly skewed.
+
+#### q1g
+```{r}
+boxplot(log(wage) ~ area, data = usw)
+```
+
+This is better because it is now easier to distinguish differences in the distributions.
+
+### Q3
+
+#### q3a
+
+```{r}
+data(prostate, package = "faraway")
+head(prostate)
+```
+
+```{r}
+pairs(prostate[,1:4])
+```
+
+`lbph` has many identical values.
+
+#### q3b
+
+```{r}
+cor(prostate[,1:4])
+```
+
+There are four assumptions to check before performing a Pearson correlation test.
+-  The two variables (the variables of interest) need to be using a continuous scale.
+-  The two variables of interest should have a linear relationship, which you can check with a scatterplot.
+-  There should be no spurious outliers.
+-  The variables should be normally or near-to-normally distributed.
+
+Given the non-normal distribution of lbph, its Pearson correlation coefficients are influenced by it, which can misrepresent the overall strength of the relationships to other variables.
+
+#### q3c
+
+```{r}
+nrow(prostate[prostate$lbph == min(prostate$lbph),]) / nrow(prostate)
+```
+
+44%.
+
+```{r}
+exp(min(prostate$lbph))
+```
+
+It seems likely that the transform $log(x + 0.25)$ was used to avoid the problem of $log(0)$. There were many cases with $bph = 0$.
+
+#### q3d
+
+```{r}
+age_range <- range(prostate$age)
+one_year_breaks <- seq(
+    from = age_range[1],
+    to = age_range[2] + 1,
+    by = 1
+)
+par(mfrow = c(1, 2))
+
+hist(x = prostate$age, xlab = "Age")
+
+hist(x = prostate$age, xlab = "Age", breaks = one_year_breaks)
+```
+
+-   **Default Plot**: This plot provides a smoother, more general overview of the age distribution. It's easy to see the central tendency and the overall shape. This plot is good for quickly understanding the general pattern.
+-   **One-Year Bin Plot**: This plot is much more jagged, noisy, and granular. The overall shape is still visible but is obscured by the high degree of variation between individual years. It looks less like a smooth distribution and more like a collection of sharp spikes.
+
+A larger binwidth is chosen to emphasise the overall structure of the age distribution. This approach is appropriate as we are not concerned with the fine-grained detail in the data.
+
+#### q3e
+
+```{r}
+xtabs(~ gleason + svi, data = prostate)
+```
+
+The most common combination is a Gleason score of 7 with no seminal vesicle invasion, which occurred in 37 of the 97 patients in the study.
+
+### Q4
+
+#### q4a
+
+```{r}
+data(sat, package = "faraway")
+head(sat)
+```
+
+```{r}
+table(sat$verbal + sat$math == sat$total)
+```
+
+#### q4b
+
+```{r}
+plot(x = sat$verbal, y = sat$math, main = "Math Against Verbal Scores", xlab = "Verbal", ylab = "Math")
+abline(0, 1)  # y = x is equal to intercept = 0 and slope = 1
+```
+
+The distributions differ; students generally score higher on their maths tests than on their verbal tests.
+
+There is a strong, positive, linear relationship between verbal and math scores. As students' verbal scores increase, their math scores also tend to increase.
+
+```{r}
+# hist(x = sat$verbal)
+# plot(density(x = sat$verbal))
+```
+
+#### q4c
+
+```{r}
+plot(scale(sat$math) ~ scale(sat$verbal), xlab = "Verbal", ylab = "Math")
+abline(a = 0, b = 1, lty = 2, lwd = 2, col = "blue")
+text(x = -1.0, y = 1.5, label = paste0("Correlation: ", round(cor(sat$verbal, sat$math), 3)), cex = 1)
+```
+
+#### q4d
+
+```{r}
+q4d_lm_coef <- coef(lm(sat$math ~ sat$verbal))
+plot(math ~ verbal, data = sat)
+abline(lm(sat$math ~ sat$verbal), col = "red", lty = 2, lwd = 2)
+text(x = -0.5, y = 1.25, label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)), cex = 1)
+text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex = 1)
+```
+
+#### q4e
+
+```{r}
+q4e_lm_coef <- coef(lm(sat$verbal ~ sat$math))
+plot(math ~ verbal, data = sat)
+abline(lm(sat$verbal ~ sat$math), col = "green", lty = 2)
+text(x = -0.5, y = 1.25, label = paste0("Intercept: ", round(q4e_lm_coef[1], 18)), cex = 1)
+text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4e_lm_coef[2], 3)), cex = 1)
+```
+
+#### q4f
+
+Remake the plot for clearer visual.
+
+-   The model gives us: $\text{verbal} = \text{intercept} + \text{slope} * \text{math}$
+-   Rearrange it to the equation below so we can plot it on our graph
+-   $\text{verbal} - \text{intercept} = \text{slope} * \text{math}$
+-   $\text{math} = \text{(verbal / slope)} - \text{(intercept / slope)}$
+-   $\text{math} = \text{(-intercept / slope)} + (1 / \text{slope}) * \text{verbal}$
+-   So, the new intercept is $-\frac{\text{intercept}}{\text{slope}}$ and the new slope is $\frac{1}{\text{slope}}$
+
+```{r}
+mean_verbal <- mean(sat$verbal)
+mean_math <- mean(sat$math)
+
+
+plot(math ~ verbal, data = sat,
+    main = "Intersection of Two Regression Lines",
+    xlab = "Verbal Score",
+    ylab = "Math Score",
+    pch = 19, col = "gray")
+
+
+lm_math_on_verbal <- lm(math ~ verbal, data = sat)
+abline(lm_math_on_verbal, col = "red", lwd = 2)
+
+
+lm_verbal_on_math <- lm(verbal ~ math, data = sat)
+
+
+coeffs <- coef(lm_verbal_on_math)
+intercept_for_plot <- -coeffs[1] / coeffs[2]
+slope_for_plot <- 1 / coeffs[2]
+
+# Now we can add this rearranged line to our plot
+abline(a = intercept_for_plot, b = slope_for_plot, col = "blue", lwd = 2)
+
+
+# This point should be exactly where the two lines cross
+points(x = mean_verbal, y = mean_math,
+    col = "purple",
+    pch = 19,
+    cex = 2.5)
+
+text(x = -1.0, y = 1.25, label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)), cex = 1)
+text(x = -1.0, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex = 1)
+
+text(x = 0.8, y = -0.75, label = paste0("Intercept [Exchanged]: ", round(q4e_lm_coef[1], 18)), cex = 1)
+text(x = 0.8, y = -0.5, label = paste0("Slope [Exchanged]: ", round(q4e_lm_coef[2], 3)), cex = 1)
+```
+
+#### q4g(i)
+
+Based on the equation $\text{math} = 0.97 \cdot \text{verbal} + 3.41 \times 10^{-16}$
+
+```{r}
+print(q4d_lm_coef[2] * (mean(sat$verbal) + 20) + q4d_lm_coef[1])
+```
+
+#### q4g(ii)
+
+Based on the equation $\text{verbal} = 0.97 \cdot \text{math} - 3.08 \times 10^{-16}$
+
+```{r}
+print(q4e_lm_coef[2] * (mean(sat$math) + 20) + q4e_lm_coef[1])
+```
+
+#### q4g(iii)
+
+```{r}
+print(q4d_lm_coef[2] * (mean(sat$verbal)) + q4d_lm_coef[1])
+```
+
+#### q4g(iv)
+
+Without any information about the verbal score, we can only use the mean verbal score.
+
+```{r}
+print(q4d_lm_coef[2] * (mean(sat$verbal)) + q4d_lm_coef[1])
+```
+
+### Q5
+
+#### q5a
+
+```{r}
+data(divusa, package = "faraway")
+head(divusa)
+```
+
+```{r}
+plot(x = divusa$year, y  = divusa$divorce)
+plot(x = divusa$year, y = divusa$divorce, type = "l")
+```
+
+Line plot is preferable for time ordered data.
+
+#### q5b
+
+```{r}
+plot(
+    y = divusa$divorce[-1],
+    x = divusa$divorce[-nrow(divusa)],
+    xlab = "Divorce rate in previous year",
+    ylab = "Divorce rate in current year"
+)
+abline(0, 1)
+```
+
+Prediction is possible; divorce rate in successive years is strongly correlated.
+
+#### q5c
+
+```{r}
+q5c_coef <- coef(lm(divorce ~ year, data= divusa))
+q5c_coef
+```
+
+Based on the equation $\text{divorce} = 0.22 \cdot \text{year} - 422.98$.
+
+```{r}
+(100 - q5c_coef[1]) / q5c_coef[2]
+```
+
+After rearraging the equation, the year when divorce rate hits 100% is 2347.277. It is not a realistic prediction, as this extrapolation over time is sure to stop at some point.
+
+#### q5d
+
+```{r}
+ggplot(data = divusa, aes(x = femlab, y = divorce, colour = year)) + geom_point()
+```
+
+- Historically, divorce rates were lower during periods when female participation in the labor force was also lower.
+- Also, both variables start low in the distant past as indicated by the darker coloured points and progress to higher values over time as indicated by the lighther coloured points.
+- But the change is not linear, especially during the Great Depression which caused a shift in the divorce rate.
