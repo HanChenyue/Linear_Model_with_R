@@ -7,7 +7,6 @@ format: pdf
 
 # Chapter 1
 
-## 1.2 Initial Data Analysis
 ## Exercises
 
 ### Q1
