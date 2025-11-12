@@ -97,7 +97,7 @@ The `gamble` variable is the most skewed, because its minimum and lower quartile
 
 ### Q2
 
-#### q1a
+#### q2a
 
 ```{r}
 data(uswages, package = "faraway")
@@ -106,13 +106,13 @@ usw = uswages[, c("wage", "ne", "mw", "we", "so")]
 head(usw)
 ```
 
-#### q1b
+#### q2b
 
 ```{r}
 sum(usw$ne * usw$wage) / sum(usw$ne)
 ```
 
-#### q1c
+#### q2c
 
 ```{r}
 tapply(usw$wage, usw$ne, mean)["1"]
@@ -126,7 +126,7 @@ all.equal(
 
 Yes it does.
 
-#### q1d
+#### q2d
 
 ```{r}
 head(rowSums(usw[, -1]))
@@ -134,14 +134,14 @@ head(rowSums(usw[, -1]))
 
 Each row should have exactly one `1` because these columns are  indicators for mutually exclusive geographic regions (one region per individual).
 
-#### q1e
+#### q2e
 
 ```{r}
 usw$area = c("ne", "mw", "we", "so")[apply(usw[, -1], 1, which.max)]
 head(usw)
 ```
 
-#### q1f
+#### q2f
 
 ```{r}
 boxplot(formula = wage ~ area, data = usw)
@@ -149,7 +149,7 @@ boxplot(formula = wage ~ area, data = usw)
 
 The distributions are highly skewed.
 
-#### q1g
+#### q2g
 ```{r}
 boxplot(log(wage) ~ area, data = usw)
 ```

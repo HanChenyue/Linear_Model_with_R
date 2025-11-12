@@ -1,0 +1,480 @@
+---
+title: "Linear_Model_with_R"
+author: Han Chenyue
+editor: source
+format: pdf
+---
+
+# Chapter 2
+
+## Exercises
+
+### Q1
+
+#### q1a
+
+```{r}
+data(teengamb, package = "faraway")
+lm1 <- lm(gamble ~ sex + status + income + verbal,
+            data = teengamb) 
+summary(lm1)
+```
+
+#### q1b
+
+```{r}
+cat(round(summary(lm1)$r.squared * 100, 2), "%")
+```
+
+`Multiple R-square: 52.67%`
+
+#### q1c
+
+```{r}
+cat("Index: ", which.max(residuals(lm1)),
+    "\nResidual", max(residuals(lm1)))
+```
+
+#### q1d
+
+```{r}
+cat("Mean of residuals: ",
+    signif(mean(residuals(lm1)), 3),
+    "\nMedian of residuals: ",
+    signif(median(residuals(lm1)), 3))
+```
+
+We expect the mean of the residuals from a linear model to be always zero (*assuming we do not drop the intercept term*, $\beta_0$), $\bar{\hat{\epsilon}} = 0$. Unlike the mean of the residuals, which is mathematically guaranteed to be zero in an OLS model, the median is not. Consequently, the median is often close to zero but rarely, if ever, exactly zero.
+
+#### q1e
+
+```{r}
+cat("Correlation of the residuals with the fitted values: ",
+signif(cor(residuals(lm1), predict(lm1)), 3))
+```
+
+The correlation is effectively zero because the residual vector $\hat{\epsilon}$ and fitted value vector $\hat{y}$ are orthogonal to each other.
+
+#### q1f
+
+```{r}
+cat("Correlation of the residuals with income: ",
+signif(cor(residuals(lm1), teengamb$income), 3))
+```
+
+Yes, it will always be zero because geometrically, the OLS model projects the outcome vector $y$ onto the plane spanned by the set of all predictor variables. In our case, the `income` vector is part of that plane. Consequently, the fitted values vector $hat{y}$ lies on this plane while the residuals vector $\hat{\epsilon}$ is orthogonal to the plane.
+
+#### q1g
+
+Female is coded as one and male is coded as zero.
+
+```{r}
+cat("Females gamble",
+signif(summary(lm1)$coefficients[2], 3),
+"pounds per week than males.")
+```
+
+### Q2
+
+#### q2a
+
+```{r}
+data(uswages, package = "faraway")
+lm_q2a <- lm(wage ~ educ + exper, data = uswages)
+summary(lm_q2a)
+```
+
+#### q2b
+
+```{r}
+apply(uswages[, 1:3], 2, min)
+```
+
+#### q2c
+
+```{r}
+# When predictors are zero, the intercept is the prediction.
+cat("Predicted wage for a worker with no education and no experience:",
+format(round(summary(lm_q2a)$coef[1], 2), nsmall = 2))
+```
+
+It doesn't make sense to report a negative wage value.
+
+```{r}
+subset(uswages, educ == 0 | exper == 0)
+```
+
+```{r}
+subset(uswages, educ == 0 & exper == 0)
+```
+
+According to the above output, the data confirms that while some workers have either zero education or zero experience, no worker has both simultaneously.
+
+Therefore, the model's prediction for this scenario is a pure extrapolation, as it's forecasting for a data point that does not exist in the dataset.
+
+#### q2d
+
+```{r}
+all.equal(cor(predict(lm_q2a), uswages$wage)^2, summary(lm_q2a)$r.squared)
+```
+
+#### q2e
+
+```{r}
+lm_q2e <- lm(wage ~ educ + exper - 1, data = uswages)
+summary(lm_q2e)
+```
+
+$R^2$ has increased.
+
+```{r}
+cor(predict(lm_q2e), uswages$wage)^2
+```
+
+But direct calculation provides a similar value to the initial model.
+
+#### q2f
+
+```{r}
+cat("RSS of Initial Model:",
+sum(residuals(lm_q2a)^2),
+"\nRSS of Intercept Removed Model:",
+sum(residuals(lm_q2e)^2))
+```
+
+RSS of Initial Model (More parameter, more flexibility) \< RSS of Intercept Removed Model (One less parameter)
+
+#### q2g
+
+```{r}
+round(coef(lm_q2a)['educ'], 2)
+```
+
+#### q2h
+
+```{r}
+lm_q2h <- lm(log(wage) ~ educ + exper, data = uswages)
+summary(lm_q2h)
+```
+
+-   The `Residual standard error` is only 427.9 in the first model but in the logged response model, it is 0.6615 due to scaling.
+-   $R^{2}_{\text{first model}} = 0.1351 < R^{2}_{\text{logged model}} = 0.1749$
+    -   Since $R^2$ is unit free, the logged model is preferable.
+
+#### q2i
+
+First we need to know the value of `experience` on the unlogged wage scale by exponentiating both side.
+
+$$
+\text{wage} = e^{\beta_0 + \beta_1 \cdot \text{education} + \beta_2 \cdot \text{experience}}
+$$
+
+$$
+\text{wage} = e^{\beta_0} \times e^{\beta_1 \cdot \text{education}} \times e^{\beta_2 \cdot \text{experience}}
+$$
+
+```{r}
+# Need to unlogged the scaled wage values
+round(exp(coef(lm_q2h)['educ']), 2)
+```
+
+An increase of one in education corresponds to multiplying the predicted response by $1.09$. This indicates that if education were to be increased by one, holding experience constant, we expect a 9% increase in wage.
+
+#### q2j
+
+```{r}
+lm_q2j <- lm(wage ~ educ + exper + ne + mw + we + so, data = uswages)
+summary(lm_q2j)
+```
+
+Lack of identifiability.
+
+#### q2k
+
+```{r}
+rowsum <- uswages$ne + uswages$mw + uswages$we + uswages$so
+head(rowsum)
+sd(rowsum)
+```
+
+- All four regional indicators sum to one because all mean are in one and only one region, thus by including all four indicators in the same model will run into the identifiability problem.
+- To resolve this, either drop one of the variable or drop the intercept term from the model.
+
+### Q3
+
+#### q3a
+
+```{r}
+data(prostate, package = "faraway")
+head(prostate)
+```
+
+```{r}
+lm_q3a <- lm(lpsa ~ lcavol, data = prostate)
+lm_q3a_summary <- summary(lm_q3a)
+sapply(lm_q3a_summary[c('sigma', 'r.squared')], round, 2)
+```
+
+$\sigma = 0.79$
+$R^2 = 0.54$
+
+#### q3b
+
+```{r}
+sigmas <- lm_q3a_summary$sigma
+rsquares <- lm_q3a_summary$r.squared
+
+lm_q3b <- lm(lpsa ~ lcavol + lweight, data = prostate)
+lm_q3b_summary <- summary(lm_q3b)
+sigmas <- c(sigmas, lm_q3b_summary$sigma)
+rsquares <- c(rsquares, lm_q3b_summary$r.squared)
+
+lm_q3b <- lm(lpsa ~ lcavol + lweight + svi, data = prostate)
+lm_q3b_summary <- summary(lm_q3b)
+sigmas <- c(sigmas, lm_q3b_summary$sigma)
+rsquares <- c(rsquares, lm_q3b_summary$r.squared)
+
+lm_q3b <- lm(lpsa ~ lcavol + lweight + svi + lbph, data = prostate)
+lm_q3b_summary <- summary(lm_q3b)
+sigmas <- c(sigmas, lm_q3b_summary$sigma)
+rsquares <- c(rsquares, lm_q3b_summary$r.squared)
+
+lm_q3b <- lm(lpsa ~ lcavol + lweight + svi + lbph + age, data = prostate)
+lm_q3b_summary <- summary(lm_q3b)
+sigmas <- c(sigmas, lm_q3b_summary$sigma)
+rsquares <- c(rsquares, lm_q3b_summary$r.squared)
+
+lm_q3b <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp, data = prostate)
+lm_q3b_summary <- summary(lm_q3b)
+sigmas <- c(sigmas, lm_q3b_summary$sigma)
+rsquares <- c(rsquares, lm_q3b_summary$r.squared)
+
+lm_q3b <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45, data = prostate)
+lm_q3b_summary <- summary(lm_q3b)
+sigmas <- c(sigmas, lm_q3b_summary$sigma)
+rsquares <- c(rsquares, lm_q3b_summary$r.squared)
+
+lm_q3b <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45 + gleason, data = prostate)
+lm_q3b_summary <- summary(lm_q3b)
+sigmas <- c(sigmas, lm_q3b_summary$sigma)
+rsquares <- c(rsquares, lm_q3b_summary$r.squared)
+
+sapply(data.frame(npreds = 1:8, sigmas, rsquares), round, 4)
+```
+
+#### q3c
+
+```{r}
+plot(
+    1:8,
+    sigmas,
+    xlab = "Number of Predictors",
+    ylab = "Residual Standard Error",
+    type = "l")
+```
+
+The RSE shows a sharp initial decrease with the number of predictors. The reduction continues, though not monotonically, reaching its minimum value when 7 predictors are included."
+
+```{r}
+plot(
+    1:8,
+    rsquares,
+    xlab = "Number of Predictors",
+    ylab = "R-Squared",
+    type = "l")
+```
+
+Because the Residual Sum of Squares (RSS) can only decrease or stay the same when predictors are added, R-squared is monotonically non-decreasing with the number of predictors
+
+### Q4
+
+#### q4a
+
+```{r}
+data(sat, package = "faraway")
+head(sat)
+```
+
+```{r}
+table(sat$verbal + sat$math == sat$total)
+```
+
+#### q4b
+
+```{r}
+plot(x = sat$verbal, y = sat$math, main = "Math Against Verbal Scores", xlab = "Verbal", ylab = "Math")
+abline(0, 1)  # y = x is equal to intercept = 0 and slope = 1
+```
+
+The distributions differ; students generally score higher on their maths tests than on their verbal tests.
+
+There is a strong, positive, linear relationship between verbal and math scores. As students' verbal scores increase, their math scores also tend to increase.
+
+```{r}
+# hist(x = sat$verbal)
+# plot(density(x = sat$verbal))
+```
+
+#### q4c
+
+```{r}
+plot(scale(sat$math) ~ scale(sat$verbal), xlab = "Verbal", ylab = "Math")
+abline(a = 0, b = 1, lty = 2, lwd = 2, col = "blue")
+text(x = -1.0, y = 1.5, label = paste0("Correlation: ", round(cor(sat$verbal, sat$math), 3)), cex = 1)
+```
+
+#### q4d
+
+```{r}
+q4d_lm_coef <- coef(lm(sat$math ~ sat$verbal))
+plot(math ~ verbal, data = sat)
+abline(lm(sat$math ~ sat$verbal), col = "red", lty = 2, lwd = 2)
+text(x = -0.5, y = 1.25, label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)), cex = 1)
+text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex = 1)
+```
+
+#### q4e
+
+```{r}
+q4e_lm_coef <- coef(lm(sat$verbal ~ sat$math))
+plot(math ~ verbal, data = sat)
+abline(lm(sat$verbal ~ sat$math), col = "green", lty = 2)
+text(x = -0.5, y = 1.25, label = paste0("Intercept: ", round(q4e_lm_coef[1], 18)), cex = 1)
+text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4e_lm_coef[2], 3)), cex = 1)
+```
+
+#### q4f
+
+Remake the plot for clearer visual.
+
+-   The model gives us: $\text{verbal} = \text{intercept} + \text{slope} * \text{math}$
+-   Rearrange it to the equation below so we can plot it on our graph
+-   $\text{verbal} - \text{intercept} = \text{slope} * \text{math}$
+-   $\text{math} = \text{(verbal / slope)} - \text{(intercept / slope)}$
+-   $\text{math} = \text{(-intercept / slope)} + (1 / \text{slope}) * \text{verbal}$
+-   So, the new intercept is $-\frac{\text{intercept}}{\text{slope}}$ and the new slope is $\frac{1}{\text{slope}}$
+
+```{r}
+mean_verbal <- mean(sat$verbal)
+mean_math <- mean(sat$math)
+
+
+plot(math ~ verbal, data = sat,
+    main = "Intersection of Two Regression Lines",
+    xlab = "Verbal Score",
+    ylab = "Math Score",
+    pch = 19, col = "gray")
+
+
+lm_math_on_verbal <- lm(math ~ verbal, data = sat)
+abline(lm_math_on_verbal, col = "red", lwd = 2)
+
+
+lm_verbal_on_math <- lm(verbal ~ math, data = sat)
+
+
+coeffs <- coef(lm_verbal_on_math)
+intercept_for_plot <- -coeffs[1] / coeffs[2]
+slope_for_plot <- 1 / coeffs[2]
+
+# Now we can add this rearranged line to our plot
+abline(a = intercept_for_plot, b = slope_for_plot, col = "blue", lwd = 2)
+
+
+# This point should be exactly where the two lines cross
+points(x = mean_verbal, y = mean_math,
+    col = "purple",
+    pch = 19,
+    cex = 2.5)
+
+text(x = -1.0, y = 1.25, label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)), cex = 1)
+text(x = -1.0, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex = 1)
+
+text(x = 0.8, y = -0.75, label = paste0("Intercept [Exchanged]: ", round(q4e_lm_coef[1], 18)), cex = 1)
+text(x = 0.8, y = -0.5, label = paste0("Slope [Exchanged]: ", round(q4e_lm_coef[2], 3)), cex = 1)
+```
+
+#### q4g(i)
+
+Based on the equation $\text{math} = 0.97 \cdot \text{verbal} + 3.41 \times 10^{-16}$
+
+```{r}
+print(q4d_lm_coef[2] * (mean(sat$verbal) + 20) + q4d_lm_coef[1])
+```
+
+#### q4g(ii)
+
+Based on the equation $\text{verbal} = 0.97 \cdot \text{math} - 3.08 \times 10^{-16}$
+
+```{r}
+print(q4e_lm_coef[2] * (mean(sat$math) + 20) + q4e_lm_coef[1])
+```
+
+#### q4g(iii)
+
+```{r}
+print(q4d_lm_coef[2] * (mean(sat$verbal)) + q4d_lm_coef[1])
+```
+
+#### q4g(iv)
+
+Without any information about the verbal score, we can only use the mean verbal score.
+
+```{r}
+print(q4d_lm_coef[2] * (mean(sat$verbal)) + q4d_lm_coef[1])
+```
+
+### Q5
+
+#### q5a
+
+```{r}
+data(divusa, package = "faraway")
+head(divusa)
+```
+
+```{r}
+plot(x = divusa$year, y  = divusa$divorce)
+plot(x = divusa$year, y = divusa$divorce, type = "l")
+```
+
+Line plot is preferable for time ordered data.
+
+#### q5b
+
+```{r}
+plot(
+    y = divusa$divorce[-1],
+    x = divusa$divorce[-nrow(divusa)],
+    xlab = "Divorce rate in previous year",
+    ylab = "Divorce rate in current year"
+)
+abline(0, 1)
+```
+
+Prediction is possible; divorce rate in successive years is strongly correlated.
+
+#### q5c
+
+```{r}
+q5c_coef <- coef(lm(divorce ~ year, data= divusa))
+q5c_coef
+```
+
+Based on the equation $\text{divorce} = 0.22 \cdot \text{year} - 422.98$.
+
+```{r}
+(100 - q5c_coef[1]) / q5c_coef[2]
+```
+
+After rearraging the equation, the year when divorce rate hits 100% is 2347.277. It is not a realistic prediction, as this extrapolation over time is sure to stop at some point.
+
+#### q5d
+
+```{r}
+ggplot(data = divusa, aes(x = femlab, y = divorce, colour = year)) + geom_point()
+```
+
+-   Historically, divorce rates were lower during periods when female participation in the labor force was also lower.
+-   Also, both variables start low in the distant past as indicated by the darker coloured points and progress to higher values over time as indicated by the lighther coloured points.
+-   But the change is not linear, especially during the Great Depression which caused a shift in the divorce rate.
