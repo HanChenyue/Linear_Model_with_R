@@ -197,8 +197,8 @@ head(rowsum)
 sd(rowsum)
 ```
 
-- All four regional indicators sum to one because all mean are in one and only one region, thus by including all four indicators in the same model will run into the identifiability problem.
-- To resolve this, either drop one of the variable or drop the intercept term from the model.
+-   All four regional indicators sum to one because all mean are in one and only one region, thus by including all four indicators in the same model will run into the identifiability problem.
+-   To resolve this, either drop one of the variable or drop the intercept term from the model.
 
 ### Q3
 
@@ -215,8 +215,7 @@ lm_q3a_summary <- summary(lm_q3a)
 sapply(lm_q3a_summary[c('sigma', 'r.squared')], round, 2)
 ```
 
-$\sigma = 0.79$
-$R^2 = 0.54$
+$\sigma = 0.79$ $R^2 = 0.54$
 
 #### q3b
 
@@ -288,140 +287,62 @@ Because the Residual Sum of Squares (RSS) can only decrease or stay the same whe
 
 ### Q4
 
-#### q4a
+#### q4
 
 ```{r}
-data(sat, package = "faraway")
-head(sat)
+lm_q4a <- lm(lpsa ~ lcavol, data = prostate)
+
+plot(lpsa ~ lcavol, data = prostate)
+abline(lm_q4a)
 ```
 
+Since it is a `lpsa` against `lcavol` plot, we cannot simply call `abline(lm_q4a_ii)` for the 2nd regression line since `lm(lcavol ~ lpsa, data = prostate)` predicts $x$ from $y$, that is, $x = a + by$. Thus, to plot it against the existing $y$ vs $x$ plot, the equation needs to be re-arranged to:
+
+$$x = a + by$$
+
+$$by = x - a$$
+
+$$y = \frac{-a + x}{b}$$
+
+$$y = \frac{-a}{b} + \frac{1}{b} \cdot x$$
+
+Since $a$ is the intercept and $b$ is the slope.
+
 ```{r}
-table(sat$verbal + sat$math == sat$total)
+abline(a = -coef(lm_q4a_ii)[1] / coef(lm_q4a_ii)[2], b = 1 / coef(lm_q4a_ii)[2], col = "red")
 ```
 
-#### q4b
+The point of intersection for these two regression lines is the point of the means $\bar{x}, \bar{y}$ because this point is a fundamental property of any simple linear regression model calculated using the Ordinary Least Squares (OLS) method.
 
 ```{r}
-plot(x = sat$verbal, y = sat$math, main = "Math Against Verbal Scores", xlab = "Verbal", ylab = "Math")
-abline(0, 1)  # y = x is equal to intercept = 0 and slope = 1
-```
+mean_lcavol = mean(prostate$lcavol)
+mean_lpsa = mean(prostate$lpsa)
 
-The distributions differ; students generally score higher on their maths tests than on their verbal tests.
-
-There is a strong, positive, linear relationship between verbal and math scores. As students' verbal scores increase, their math scores also tend to increase.
-
-```{r}
-# hist(x = sat$verbal)
-# plot(density(x = sat$verbal))
-```
-
-#### q4c
-
-```{r}
-plot(scale(sat$math) ~ scale(sat$verbal), xlab = "Verbal", ylab = "Math")
-abline(a = 0, b = 1, lty = 2, lwd = 2, col = "blue")
-text(x = -1.0, y = 1.5, label = paste0("Correlation: ", round(cor(sat$verbal, sat$math), 3)), cex = 1)
-```
-
-#### q4d
-
-```{r}
-q4d_lm_coef <- coef(lm(sat$math ~ sat$verbal))
-plot(math ~ verbal, data = sat)
-abline(lm(sat$math ~ sat$verbal), col = "red", lty = 2, lwd = 2)
-text(x = -0.5, y = 1.25, label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)), cex = 1)
-text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex = 1)
-```
-
-#### q4e
-
-```{r}
-q4e_lm_coef <- coef(lm(sat$verbal ~ sat$math))
-plot(math ~ verbal, data = sat)
-abline(lm(sat$verbal ~ sat$math), col = "green", lty = 2)
-text(x = -0.5, y = 1.25, label = paste0("Intercept: ", round(q4e_lm_coef[1], 18)), cex = 1)
-text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4e_lm_coef[2], 3)), cex = 1)
-```
-
-#### q4f
-
-Remake the plot for clearer visual.
-
--   The model gives us: $\text{verbal} = \text{intercept} + \text{slope} * \text{math}$
--   Rearrange it to the equation below so we can plot it on our graph
--   $\text{verbal} - \text{intercept} = \text{slope} * \text{math}$
--   $\text{math} = \text{(verbal / slope)} - \text{(intercept / slope)}$
--   $\text{math} = \text{(-intercept / slope)} + (1 / \text{slope}) * \text{verbal}$
--   So, the new intercept is $-\frac{\text{intercept}}{\text{slope}}$ and the new slope is $\frac{1}{\text{slope}}$
-
-```{r}
-mean_verbal <- mean(sat$verbal)
-mean_math <- mean(sat$math)
-
-
-plot(math ~ verbal, data = sat,
-    main = "Intersection of Two Regression Lines",
-    xlab = "Verbal Score",
-    ylab = "Math Score",
-    pch = 19, col = "gray")
-
-
-lm_math_on_verbal <- lm(math ~ verbal, data = sat)
-abline(lm_math_on_verbal, col = "red", lwd = 2)
-
-
-lm_verbal_on_math <- lm(verbal ~ math, data = sat)
-
-
-coeffs <- coef(lm_verbal_on_math)
-intercept_for_plot <- -coeffs[1] / coeffs[2]
-slope_for_plot <- 1 / coeffs[2]
-
-# Now we can add this rearranged line to our plot
-abline(a = intercept_for_plot, b = slope_for_plot, col = "blue", lwd = 2)
-
-
-# This point should be exactly where the two lines cross
-points(x = mean_verbal, y = mean_math,
-    col = "purple",
+points(
+    x = mean_lcavol,
+    y = mean_lpsa,
     pch = 19,
-    cex = 2.5)
+    col = "darkgreen",
+    cex = 2.5
+)
 
-text(x = -1.0, y = 1.25, label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)), cex = 1)
-text(x = -1.0, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex = 1)
+label_text = paste(
+    "Mean (x̄, ȳ): (", 
+    round(mean_lcavol, 2),
+    ", ", 
+    round(mean_lpsa, 2), 
+    ")",
+    sep = ""
+)
 
-text(x = 0.8, y = -0.75, label = paste0("Intercept [Exchanged]: ", round(q4e_lm_coef[1], 18)), cex = 1)
-text(x = 0.8, y = -0.5, label = paste0("Slope [Exchanged]: ", round(q4e_lm_coef[2], 3)), cex = 1)
-```
-
-#### q4g(i)
-
-Based on the equation $\text{math} = 0.97 \cdot \text{verbal} + 3.41 \times 10^{-16}$
-
-```{r}
-print(q4d_lm_coef[2] * (mean(sat$verbal) + 20) + q4d_lm_coef[1])
-```
-
-#### q4g(ii)
-
-Based on the equation $\text{verbal} = 0.97 \cdot \text{math} - 3.08 \times 10^{-16}$
-
-```{r}
-print(q4e_lm_coef[2] * (mean(sat$math) + 20) + q4e_lm_coef[1])
-```
-
-#### q4g(iii)
-
-```{r}
-print(q4d_lm_coef[2] * (mean(sat$verbal)) + q4d_lm_coef[1])
-```
-
-#### q4g(iv)
-
-Without any information about the verbal score, we can only use the mean verbal score.
-
-```{r}
-print(q4d_lm_coef[2] * (mean(sat$verbal)) + q4d_lm_coef[1])
+text(
+    x = -0.1,              # X-coordinate: Place it near the left side of the plot
+    y = 3,              # Y-coordinate: Place it near the top of the plot
+    labels = label_text,
+    col = "darkgreen",  # Set a distinct color
+    adj = 0,            # Left-align the text (0 = left, 0.5 = center, 1 = right)
+    cex = 1.5           # Character expansion (text size)
+)
 ```
 
 ### Q5
@@ -429,52 +350,48 @@ print(q4d_lm_coef[2] * (mean(sat$verbal)) + q4d_lm_coef[1])
 #### q5a
 
 ```{r}
-data(divusa, package = "faraway")
-head(divusa)
+data(cheddar, package = "faraway")
+head(cheddar)
 ```
 
 ```{r}
-plot(x = divusa$year, y  = divusa$divorce)
-plot(x = divusa$year, y = divusa$divorce, type = "l")
+lm_q5a <- lm(taste ~ Acetic + H2S + Lactic, data = cheddar)
+summary(lm_q5a)
 ```
-
-Line plot is preferable for time ordered data.
 
 #### q5b
 
 ```{r}
-plot(
-    y = divusa$divorce[-1],
-    x = divusa$divorce[-nrow(divusa)],
-    xlab = "Divorce rate in previous year",
-    ylab = "Divorce rate in current year"
-)
-abline(0, 1)
+cor(fitted(lm_q5a), cheddar$taste)^2
 ```
 
-Prediction is possible; divorce rate in successive years is strongly correlated.
+This value appears in as the $R^2$ of `lm_q5a`'s output.
+
+```{r}
+library(dplyr)
+near(summary(lm_q5a)$r.squared, cor(fitted(lm_q5a), cheddar$taste)^2)
+```
 
 #### q5c
 
 ```{r}
-q5c_coef <- coef(lm(divorce ~ year, data= divusa))
-q5c_coef
+lm_q5c <- lm(taste ~ Acetic + H2S + Lactic - 1, data = cheddar)
+round(summary(lm_q5c)$r.squared, 3)
 ```
 
-Based on the equation $\text{divorce} = 0.22 \cdot \text{year} - 422.98$.
+Without the intercept term, $R^2 = 0.888$.
+
+When compared to the correlation between the fitted values and the response squared, the latter is a much more plausible value.
+
+####q5d
 
 ```{r}
-(100 - q5c_coef[1]) / q5c_coef[2]
+X <- model.matrix(
+    ~ Acetic + H2S + Lactic,
+    data = cheddar
+)
+y <- cheddar$taste
+qrx <- qr(X)
+f = t(qr.Q(qrx)) %*% y
+backsolve(qr.R(qrx), f)
 ```
-
-After rearraging the equation, the year when divorce rate hits 100% is 2347.277. It is not a realistic prediction, as this extrapolation over time is sure to stop at some point.
-
-#### q5d
-
-```{r}
-ggplot(data = divusa, aes(x = femlab, y = divorce, colour = year)) + geom_point()
-```
-
--   Historically, divorce rates were lower during periods when female participation in the labor force was also lower.
--   Also, both variables start low in the distant past as indicated by the darker coloured points and progress to higher values over time as indicated by the lighther coloured points.
--   But the change is not linear, especially during the Great Depression which caused a shift in the divorce rate.
