@@ -395,3 +395,420 @@ qrx <- qr(X)
 f = t(qr.Q(qrx)) %*% y
 backsolve(qr.R(qrx), f)
 ```
+
+### Q6
+
+#### q6a
+
+```{r}
+data(wafer, package = "faraway")
+head(wafer)
+```
+
+```{r}
+lm_q6a <- lm(formula ~ resist ~ x1 + x2 + x3 + x4, data = wafer)
+summary(lm_q6a, cor = T)
+```
+
+```{r}
+X <- model.matrix(lm_q6a)
+head(X)
+```
+
+The function automatically coded `-` and `+` as $0$ and $1$ respectively.
+
+#### q6b
+
+```{r}
+cor(X)
+```
+
+The missing values are due to the intercept being constant across all observations. A constant variable has a standard deviation of zero. Because the correlation coefficient formula requires dividing by the product of the two variables' standard deviations, the zero value in the denominator makes the correlation mathematically undefined.
+
+In other words:
+
+$$\bar{x} = \frac{1 + 1 + 1 + \ldots}{n} = 1$$
+
+$$\sigma = \sqrt{\frac{\sum{(x_i - \bar{x})^2}}{n - 1}}$$
+
+$$\sigma = \sqrt{\frac{\sum{(1 - 1)^2}}{n - 1}} = \sqrt{\frac{\sum{(0)^2}}{n - 1}} = 0$$
+
+Given the formula:
+
+$$\text{Correlation} = \frac{cov(x, y)}{\sigma_x \sigma_y}$$
+
+we can see that when the denominator is $0$, it will leads to a division by zero error.
+
+#### q6c
+
+```{r}
+round(summary(lm_q6a)$coefficients[2], 2)
+```
+
+An increase in 25.76.
+
+#### q6d
+
+```{r}
+lm_q6d <- lm(resist ~ x1 + x2 + x3, data = wafer)
+summary(lm_q6d)
+```
+
+-   Estimates for `x1`, `x2`, and `x3` remain the same, but the intercept term's estimate has slightly decreased.
+-   Standard errors have increased slightly for all estimands.
+
+#### q6e
+
+```{r}
+summary(lm_q6a, cor = T)
+```
+
+The design matrix $X$ is orthogonal, as evidenced by the zero off-diagonal entries in its correlation matrix. Orthogonality ensures that the estimated effect of each predictor is decoupled from the others. Therefore, the coefficient estimate for any given predictor is invariant to the inclusion or exclusion of other predictors in the model.
+
+### Q7
+
+#### q7a
+
+```{r}
+data(truck, package = "faraway")
+head(truck)
+```
+
+```{r}
+truck$B <- sapply(truck$B, function(x) ifelse(x == "-", -1, 1))
+truck$C <- sapply(truck$C, function(x) ifelse(x == "-", -1, 1))
+truck$D <- sapply(truck$D, function(x) ifelse(x == "-", -1, 1))
+truck$E <- sapply(truck$E, function(x) ifelse(x == "-", -1, 1))
+truck$O <- sapply(truck$O, function(x) ifelse(x == "-", -1, 1))
+```
+
+```{r}
+lm_q7a <- lm(height ~ B + C + D + E + O, data = truck)
+summary(lm_q7a, cor = T)
+coef(lm_q7a)
+```
+
+#### q7b
+
+```{r}
+lm_q7b <- lm(height ~ B + C + D + E , data = truck)
+summary(lm_q7b, cor = T)
+coef(lm_q7b)
+```
+
+The coefficients remains unchanged.
+
+Examining the $X$ matrix:
+
+```{r}
+cor(model.matrix(lm_q7a))
+```
+
+The design matrix $X$ is orthogonal, as evidenced by the zero off-diagonal entries in its correlation matrix
+
+#### q7c
+
+```{r}
+truck_transformed <- transform(truck, A = B + C + D + E)
+head(truck_transformed)
+lm_q7c <- lm(height ~ A + B + C + D + E + O, data = truck_transformed)
+coef(lm_q7c)
+```
+
+E is not estimable; A = B + C + D + E makes the predictors collinear, so R excluded E due to identifiability issues (*from pg31: Predictors occuring later in the model formula are preferred for removal ...*)
+
+#### q7d
+
+```{r}
+X <- model.matrix(lm_q7c)
+X
+y <- truck$height
+y
+```
+
+```{r}
+try(solve(t(X) %*% X) %*% t(X) %*% y)
+```
+
+The model cannot be estimated due to linear dependence among the predictors, which makes the design matrix rank-deficient.
+
+#### q7e
+
+```{r}
+qrx <- qr(X)
+dim(qr.Q(qrx))
+f <- t(qr.Q(qrx)) %*% y
+backsolve(qr.R(qrx), f)
+```
+
+#### q7f
+
+We will obtain the same results as `coef(lm_q7c)` running
+
+```{r}
+qr.coef(qrx, truck$height)
+```
+
+### Q8
+
+#### q8a
+
+$$
+\begin{pmatrix}
+1 & 0\\
+1 & 0\\
+1 & 0\\
+1 & 1\\
+1 & 1\\
+1 & 1
+\end{pmatrix}
+$$
+
+#### q8b
+
+Given the matrix $X$ and vector $y$:
+
+$$
+X = \begin{pmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 1 \\
+1 & 1 \\
+1 & 1
+\end{pmatrix}, \quad
+y = \begin{pmatrix}
+y_1 \\ y_2 \\ y_3 \\ y_4 \\ y_5 \\ y_6
+\end{pmatrix}
+$$
+
+We want to find the Least Squares estimator: $\hat{\beta} = (X^T X)^{-1} X^T y$.
+
+$$
+X^T = \begin{pmatrix}
+1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 0 & 0 & 1 & 1 & 1
+\end{pmatrix}
+$$
+
+$$
+X^T X = \begin{pmatrix}
+1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 0 & 0 & 1 & 1 & 1
+\end{pmatrix}
+\begin{pmatrix}
+1 & 0 \\
+1 & 0 \\
+1 & 0 \\
+1 & 1 \\
+1 & 1 \\
+1 & 1
+\end{pmatrix}
+= \begin{pmatrix}
+6 & 3 \\
+3 & 3
+\end{pmatrix}
+$$
+
+$$
+(X^T X)^{-1} = \frac{1}{9} \begin{pmatrix}
+3 & -3 \\
+-3 & 6
+\end{pmatrix} = \begin{pmatrix}
+3/9 & -3/9 \\
+-3/9 & 6/9
+\end{pmatrix} = \begin{pmatrix}
+1/3 & -1/3 \\
+-1/3 & 2/3
+\end{pmatrix}
+$$
+
+$$
+X^T y = \begin{pmatrix}
+1 & 1 & 1 & 1 & 1 & 1 \\
+0 & 0 & 0 & 1 & 1 & 1
+\end{pmatrix}
+\begin{pmatrix}
+y_1 \\ y_2 \\ y_3 \\ y_4 \\ y_5 \\ y_6
+\end{pmatrix}
+= \begin{pmatrix}
+y_1 + y_2 + y_3 + y_4 + y_5 + y_6 \\
+y_4 + y_5 + y_6
+\end{pmatrix}
+= \begin{pmatrix}
+\sum_{i=1}^6 y_i \\
+\sum_{i=4}^6 y_i
+\end{pmatrix}
+$$
+
+$$
+(X^T X)^{-1} (X^T y) =
+\hat{\beta}
+= \begin{pmatrix}
+\hat{\beta}_0\\
+\hat{\beta}_1
+\end{pmatrix}
+= \begin{pmatrix}
+1/3 & -1/3 \\
+-1/3 & 2/3
+\end{pmatrix}
+\begin{pmatrix}
+y_1 + y_2 + y_3 + y_4 + y_5 + y_6\\
+y_4 + y_5 + y_6
+\end{pmatrix}
+$$
+
+$$
+\begin{pmatrix}
+\hat{\beta}_0\\
+\hat{\beta}_1
+\end{pmatrix}
+= \begin{pmatrix}
+\frac{y_1 + y_2 + y_3}{3}\\
+\frac{y_4 + y_5 + y_6}{3} - \frac{y_1 + y_2 + y_3}{3}
+\end{pmatrix}
+= \begin{pmatrix} 
+\frac{1}{3} \sum_{i = 1}^3 y_i\\
+\frac{1}{3} ( \sum_{i = 4}^6 y_i - \sum_{i = 1}^3 y_i )
+\end{pmatrix}
+$$
+
+$$
+\hat{\beta}_0 = \frac{y_1 + y_2 + y_3}{3} = \frac{1}{3} \sum_{i = 1}^3 y_i
+$$
+
+Notice that $\hat{\beta}_0$ is the mean of all the observations from the first group. (Think of it as the reference group in linear regression)
+
+$$
+\hat{\beta}_1 = \frac{1}{3} ( \sum_{i = 4}^6 y_i - \sum_{i = 1}^3 y_i )
+$$
+
+Notice that $\hat{\beta}_1$ is the difference between the means of both groups.
+
+#### q8c
+
+$$
+\begin{pmatrix}
+1 & -1\\
+1 & -1\\
+1 & -1\\
+1 & 1\\
+1 & 1\\
+1 & 1
+\end{pmatrix}
+$$
+
+#### q8d
+
+Given the matrix $X$ and vector $y$ (where Group 1 is -1 and Group 2 is +1):
+
+$$
+X = \begin{pmatrix}
+1 & -1 \\
+1 & -1 \\
+1 & -1 \\
+1 & 1 \\
+1 & 1 \\
+1 & 1
+\end{pmatrix}, \quad
+y = \begin{pmatrix}
+y_1 \\ y_2 \\ y_3 \\ y_4 \\ y_5 \\ y_6
+\end{pmatrix}
+$$
+
+We want to find the Least Squares estimator: $\hat{\beta} = (X^T X)^{-1} X^T y$.
+
+$$
+X^T = \begin{pmatrix}
+1 & 1 & 1 & 1 & 1 & 1 \\
+-1 & -1 & -1 & 1 & 1 & 1
+\end{pmatrix}
+$$
+
+$$
+X^T X = \begin{pmatrix}
+1 & 1 & 1 & 1 & 1 & 1 \\
+-1 & -1 & -1 & 1 & 1 & 1
+\end{pmatrix}
+\begin{pmatrix}
+1 & -1 \\
+1 & -1 \\
+1 & -1 \\
+1 & 1 \\
+1 & 1 \\
+1 & 1
+\end{pmatrix}
+= \begin{pmatrix}
+6 & 0 \\
+0 & 6
+\end{pmatrix}
+$$
+
+$$
+(X^T X)^{-1} = \begin{pmatrix}
+1/6 & 0 \\
+0 & 1/6
+\end{pmatrix}
+$$
+
+$$
+X^T y = \begin{pmatrix}
+1 & 1 & 1 & 1 & 1 & 1 \\
+-1 & -1 & -1 & 1 & 1 & 1
+\end{pmatrix}
+\begin{pmatrix}
+y_1 \\ y_2 \\ y_3 \\ y_4 \\ y_5 \\ y_6
+\end{pmatrix}
+= \begin{pmatrix}
+y_1 + y_2 + y_3 + y_4 + y_5 + y_6 \\
+-y_1 - y_2 - y_3 + y_4 + y_5 + y_6
+\end{pmatrix}
+= \begin{pmatrix}
+\sum_{i=1}^6 y_i \\
+\sum_{i=4}^6 y_i - \sum_{i=1}^3 y_i
+\end{pmatrix}
+$$
+
+$$
+(X^T X)^{-1} (X^T y) =
+\hat{\beta}
+= \begin{pmatrix}
+\hat{\beta}_0\\
+\hat{\beta}_1
+\end{pmatrix}
+= \begin{pmatrix}
+1/6 & 0 \\
+0 & 1/6
+\end{pmatrix}
+\begin{pmatrix}
+\sum_{i=1}^6 y_i \\
+\sum_{i=4}^6 y_i - \sum_{i=1}^3 y_i
+\end{pmatrix}
+$$
+
+$$
+\begin{pmatrix}
+\hat{\beta}_0\\
+\hat{\beta}_1
+\end{pmatrix}
+= \begin{pmatrix}
+\frac{1}{6} \sum_{i = 1}^6 y_i \\
+\frac{1}{6} ( \sum_{i = 4}^6 y_i - \sum_{i = 1}^3 y_i )
+\end{pmatrix}
+$$
+
+$$
+\hat{\beta}_0 = \frac{1}{6} \sum_{i = 1}^6 y_i
+$$
+
+Notice that $\hat{\beta}_0$ is now the grand mean (the average of all observations combined). All because -1 and 1 are centred around 0, and the intercept represents the centre of the data.
+
+$$
+\hat{\beta}_1 = \frac{1}{6} ( \sum_{i = 4}^6 y_i - \sum_{i = 1}^3 y_i )
+$$
+
+Notice that $\hat{\beta}_1$ is **half the difference** between the means of the two groups. (Since the difference in the x-axis "run" is now 2 units (from -1 to 1), the slope is halved compared to the 0/1 coding).
+
+-   The first coding computes the mean of one group ($\hat{\beta}_0$) and then the difference in their means ($\hat{\beta}_1$).
+-   The second computes an overall mean ($\hat{\beta}_0$) while the second parameter represents the difference from that overall mean ($\hat{\beta}_1$).
+    -   The second coding is more symmetrical (but both result in the same fitted values and residuals).
