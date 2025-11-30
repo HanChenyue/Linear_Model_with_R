@@ -62,7 +62,7 @@ cat("Correlation of the residuals with income: ",
 signif(cor(residuals(lm1), teengamb$income), 3))
 ```
 
-Yes, it will always be zero because geometrically, the OLS model projects the outcome vector $y$ onto the plane spanned by the set of all predictor variables. In our case, the `income` vector is part of that plane. Consequently, the fitted values vector $hat{y}$ lies on this plane while the residuals vector $\hat{\epsilon}$ is orthogonal to the plane.
+Yes, it will always be zero because geometrically, the OLS model projects the outcome vector $y$ onto the plane spanned by the set of all predictor variables. In our case, the `income` vector is part of that plane. Consequently, the fitted values vector $\hat{y}$ lies on this plane while the residuals vector $\hat{\epsilon}$ is orthogonal to the plane.
 
 #### q1g
 
@@ -515,7 +515,7 @@ lm_q7c <- lm(height ~ A + B + C + D + E + O, data = truck_transformed)
 coef(lm_q7c)
 ```
 
-E is not estimable; A = B + C + D + E makes the predictors collinear, so R excluded E due to identifiability issues (*from pg31: Predictors occuring later in the model formula are preferred for removal ...*)
+E is not estimable; A = B + C + D + E makes the predictors collinear, so R excluded E due to identifiability issues (*from pg31: Predictors occurring later in the model formula are preferred for removal ...*)
 
 #### q7d
 

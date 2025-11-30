@@ -132,7 +132,7 @@ Yes it does.
 head(rowSums(usw[, -1]))
 ```
 
-Each row should have exactly one `1` because these columns are  indicators for mutually exclusive geographic regions (one region per individual).
+Each row should have exactly one `1` because these columns are indicators for mutually exclusive geographic regions (one region per individual).
 
 #### q2e
 
@@ -150,6 +150,7 @@ boxplot(formula = wage ~ area, data = usw)
 The distributions are highly skewed.
 
 #### q2g
+
 ```{r}
 boxplot(log(wage) ~ area, data = usw)
 ```
@@ -177,11 +178,7 @@ pairs(prostate[,1:4])
 cor(prostate[,1:4])
 ```
 
-There are four assumptions to check before performing a Pearson correlation test.
--  The two variables (the variables of interest) need to be using a continuous scale.
--  The two variables of interest should have a linear relationship, which you can check with a scatterplot.
--  There should be no spurious outliers.
--  The variables should be normally or near-to-normally distributed.
+There are four assumptions to check before performing a Pearson correlation test. - The two variables (the variables of interest) need to be using a continuous scale. - The two variables of interest should have a linear relationship, which you can check with a scatterplot. - There should be no spurious outliers. - The variables should be normally or near-to-normally distributed.
 
 Given the non-normal distribution of lbph, its Pearson correlation coefficients are influenced by it, which can misrepresent the overall strength of the relationships to other variables.
 
@@ -197,7 +194,7 @@ nrow(prostate[prostate$lbph == min(prostate$lbph),]) / nrow(prostate)
 exp(min(prostate$lbph))
 ```
 
-It seems likely that the transform $log(x + 0.25)$ was used to avoid the problem of $log(0)$. There were many cases with $bph = 0$.
+The transformation $log(x + 0.25)$ was employed to manage zero values in the `bph` variable. A constant of 0.25 was added to the raw data to prevent the mathematical singularity of $log(0)$ as the data contained numerous instances where `bph` equal zero.
 
 #### q3d
 
@@ -409,7 +406,7 @@ Based on the equation $\text{divorce} = 0.22 \cdot \text{year} - 422.98$.
 (100 - q5c_coef[1]) / q5c_coef[2]
 ```
 
-After rearraging the equation, the year when divorce rate hits 100% is 2347.277. It is not a realistic prediction, as this extrapolation over time is sure to stop at some point.
+After rearranging the equation, the year when divorce rate hits $100\%$ is $2347.277$. It is not a realistic prediction, as this extrapolation over time is sure to stop at some point.
 
 #### q5d
 
@@ -417,6 +414,6 @@ After rearraging the equation, the year when divorce rate hits 100% is 2347.277.
 ggplot(data = divusa, aes(x = femlab, y = divorce, colour = year)) + geom_point()
 ```
 
-- Historically, divorce rates were lower during periods when female participation in the labor force was also lower.
-- Also, both variables start low in the distant past as indicated by the darker coloured points and progress to higher values over time as indicated by the lighther coloured points.
-- But the change is not linear, especially during the Great Depression which caused a shift in the divorce rate.
+-   Historically, divorce rates were lower during periods when female participation in the labor force was also lower.
+-   Also, both variables start low in the distant past as indicated by the darker coloured points and progress to higher values over time as indicated by the lighther coloured points.
+-   But the change is not linear, especially during the Great Depression which caused a shift in the divorce rate.
