@@ -1,5 +1,7 @@
 project:
   title: "Linear_Model_with_R"
-
-
-
+toc: true
+format: 
+  html:
+    code-fold: true
+  pdf: default
