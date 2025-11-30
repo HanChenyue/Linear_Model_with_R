@@ -94,3 +94,144 @@ Since `p-value` is much larger than $\alpha = 0.05$, we fail to reject the null 
 
 We conclude that the five predictors removed from the full model **do not collectively contribute statistically significant explanatory power** to the model.
 
+### Q2
+
+#### q2a
+
+```{r}
+data(cheddar, package = "faraway")
+```
+
+```{r}
+lm_q2a <- lm(taste ~ ., data = cheddar)
+summary(lm_q2a)
+```
+
+`H2S` and `Lactic` predictors are statistically significant at the $5\%$ level.
+
+#### q2b
+
+```{r}
+lm_q2b <- lm(taste ~ exp(Acetic) + exp(H2S) + Lactic, data = cheddar)
+summary(lm_q2b)
+```
+
+`Lactic` predictor is statistically significant at the $5\%$ level.
+
+#### q2c
+
+```{r}
+anova(lm_q2b, lm_q2a)
+```
+
+-   No, because an F-test is only valid for comparing nested models, where one model is a restricted version of the other (i.e. the predictors of the smaller model are a smaller subset of the larger model).
+-   In this case, the models rely on different functional forms of the predictor \[$log(x)$ vs $x$\], thus the column space of one model is not a linear subspace the other.
+-   Since $R^2_{lm\_q2a} = 0.6518 > R^2_{lm\_q2b} = 0.5754$ and $RSS_{lm\_q2a} = 2668.4 < RSS_{lm\_q2b} = 3253.6$, the first model provides a better fit to the data.
+
+#### q2d
+
+```{r}
+cat("Taste would increase by", round(0.01*coef(lm_q2a)['H2S'], 3))
+```
+
+#### q2e
+
+```{r}
+cat("The H2S on the original scale will increase by ", (exp(0.01) - 1) * 100, "% when adding 0.01 on the (natural) log scale as adding 0.01 to the log scale is equivalent to multiplying by exp(0.01) on the original scale.", sep="")
+```
+
+### Q3
+
+#### q3a
+
+```{r}
+data(teengamb, package = "faraway")
+lm_q3a <- lm(gamble ~ ., data = teengamb)
+summary(lm_q3a)
+```
+
+`Sex` and `Income` predictors are statistically significant at the $5\%$ level.
+
+#### q3b
+
+```{r}
+cat("For females, the difference in average weekly gambling between females and males, holding other factors constant, is", signif(summary(lm_q3a)$coefficients[2], 3), "pounds.")
+```
+
+#### q3c
+
+```{r}
+lm_q3c <- lm(gamble ~ income, data = teengamb)
+summary(lm_q3c)
+```
+
+```{r}
+anova(lm_q3c, lm_q3a)
+```
+
+Since `p-value` is much smaller than $\alpha = 0.05$, we reject the null hypothesis, $H_0: \beta_{sex} = \beta_{status} = \beta_{verbal} = 0$.
+
+We conclude that the full model is preferred.
+
+### Q4
+
+#### q4a
+
+```{r}
+data(sat, package = "faraway")
+```
+
+```{r}
+lm_q4a_i <- lm(total ~ expend + ratio + salary, data = sat)
+summary(lm_q4a_i)
+```
+
+Optional:
+
+```{r}
+# Dropping salary
+lm_q4a_ii <- lm(total ~ expend + ratio, data = sat)
+anova(lm_q4a_ii, lm_q4a_i)
+```
+
+```{r}
+# Dropping all predictors
+lm_q4a_iii <- lm(total ~ 1, data = sat)
+anova(lm_q4a_iii, lm_q4a_i)
+```
+
+-   `salary` is not statistically significant ($\text{p-value}_\text{salary} = 0.0667 < 0.05$).
+-   All the individual t-tests are not statistically significant yet the overall F-test is.
+-   The p-value for the F-statistics is less than $\text{p-value}_\text{F-statistics} = 0.01209 < 0.05$, we reject the null hypothesis $H_0: \beta_\text{salary} = \beta_\text{ratio} = \beta_\text{expend} = 0$.
+-   This indicates that at least one of the predictor has a statistically significant effect on the response.
+-   This usually happens when the predictors are highly correlated with each other and we have a situation where the whole is greater than the sum of its parts.
+
+#### q4b
+
+```{r}
+lm_q4b <- lm(total ~ expend + ratio + salary + takers, data = sat)
+summary(lm_q4b)
+```
+
+```{r}
+anova(lm_q4a_i, lm_q4b)
+```
+
+They output the same p-value.
+
+Since $t_i = \frac{\hat{\beta}_i}{se(\hat{\beta}_i)}$
+
+```{r}
+library(dplyr)
+near(summary(lm_q4b)$coefficients[5, 1] / summary(lm_q4b)$coefficients[5, 2], summary(lm_q4b)$coefficients[5, 3])
+```
+
+Since the sum-of-squares decomposition and F-statistics reduces to the usual equal-variance (pooled) two sample t-test in the case of $\alpha = 2$ treatments - with the realisation that an F-statistics with one numerator and $k$ denominator degrees of freedom is equivalent to a t-statistics with $k$ degrees of freedom, viz: $F_{1,k} = t^2_{k}$
+
+[Link to Proof](https://canovasjm.netlify.app/2018/10/29/when-does-the-f-test-reduce-to-t-test/)
+
+```{r}
+near(summary(lm_q4b)$coefficients[5, 3]^2, anova(lm_q4a_i, lm_q4b)$F[2])
+```
+
+# Q5

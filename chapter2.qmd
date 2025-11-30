@@ -15,15 +15,15 @@ format: pdf
 
 ```{r}
 data(teengamb, package = "faraway")
-lm1 <- lm(gamble ~ sex + status + income + verbal,
+lm_q1a <- lm(gamble ~ sex + status + income + verbal,
             data = teengamb) 
-summary(lm1)
+summary(lm_q1a)
 ```
 
 #### q1b
 
 ```{r}
-cat(round(summary(lm1)$r.squared * 100, 2), "%")
+cat(round(summary(lm_q1a)$r.squared * 100, 2), "%")
 ```
 
 `Multiple R-square: 52.67%`
@@ -31,17 +31,17 @@ cat(round(summary(lm1)$r.squared * 100, 2), "%")
 #### q1c
 
 ```{r}
-cat("Index: ", which.max(residuals(lm1)),
-    "\nResidual", max(residuals(lm1)))
+cat("Index: ", which.max(residuals(lm_q1a)),
+    "\nResidual", max(residuals(lm_q1a)))
 ```
 
 #### q1d
 
 ```{r}
 cat("Mean of residuals: ",
-    signif(mean(residuals(lm1)), 3),
+    signif(mean(residuals(lm_q1a)), 3),
     "\nMedian of residuals: ",
-    signif(median(residuals(lm1)), 3))
+    signif(median(residuals(lm_q1a)), 3))
 ```
 
 We expect the mean of the residuals from a linear model to be always zero (*assuming we do not drop the intercept term*, $\beta_0$), $\bar{\hat{\epsilon}} = 0$. Unlike the mean of the residuals, which is mathematically guaranteed to be zero in an OLS model, the median is not. Consequently, the median is often close to zero but rarely, if ever, exactly zero.
@@ -50,7 +50,7 @@ We expect the mean of the residuals from a linear model to be always zero (*assu
 
 ```{r}
 cat("Correlation of the residuals with the fitted values: ",
-signif(cor(residuals(lm1), predict(lm1)), 3))
+signif(cor(residuals(lm_q1a), predict(lm_q1a)), 3))
 ```
 
 The correlation is effectively zero because the residual vector $\hat{\epsilon}$ and fitted value vector $\hat{y}$ are orthogonal to each other.
@@ -59,7 +59,7 @@ The correlation is effectively zero because the residual vector $\hat{\epsilon}$
 
 ```{r}
 cat("Correlation of the residuals with income: ",
-signif(cor(residuals(lm1), teengamb$income), 3))
+signif(cor(residuals(lm_q1a), teengamb$income), 3))
 ```
 
 Yes, it will always be zero because geometrically, the OLS model projects the outcome vector $y$ onto the plane spanned by the set of all predictor variables. In our case, the `income` vector is part of that plane. Consequently, the fitted values vector $\hat{y}$ lies on this plane while the residuals vector $\hat{\epsilon}$ is orthogonal to the plane.
@@ -69,9 +69,7 @@ Yes, it will always be zero because geometrically, the OLS model projects the ou
 Female is coded as one and male is coded as zero.
 
 ```{r}
-cat("Females gamble",
-signif(summary(lm1)$coefficients[2], 3),
-"pounds per week than males.")
+cat("For females, the difference in average weekly gambling between females and males, holding other factors constant, is", signif(summary(lm_q1a)$coefficients[2], 3), "pounds.")
 ```
 
 ### Q2
