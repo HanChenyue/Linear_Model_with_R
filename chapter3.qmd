@@ -235,3 +235,64 @@ near(summary(lm_q4b)$coefficients[5, 3]^2, anova(lm_q4a_i, lm_q4b)$F[2])
 ```
 
 # Q5
+
+$$
+F = \frac{\frac{TSS - RSS}{p - 1}}{\frac{RSS}{n - p}}
+$$
+
+$$
+R^2 = 1 - \frac{RSS}{TSS}
+$$
+
+Rearranging $F$
+
+$$
+F \cdot \frac{RSS}{n - p} = \frac{TSS - RSS}{p - 1}
+$$
+
+$$ F \cdot \frac{p - 1}{n - p} = \frac{TSS - RSS}{RSS} $$
+
+$$
+F \cdot \frac{p - 1}{n - p} = \frac{TSS}{RSS} - 1
+$$
+
+$$
+\frac{TSS}{RSS} = F \cdot \frac{p - 1}{n - p} + 1
+$$
+
+$$
+\frac{RSS}{TSS} = \frac{n - p}{F(p - 1) + n - p}
+$$
+
+Substituting $\frac{RSS}{TSS}$
+
+$$
+R^2 = 1 - \frac{n - p}{F(p - 1) + n - p}
+$$
+
+$$ R^2 = 1 - \frac{n - p}{F(p - 1) + n - p} $$
+
+$$  F(p - 1) + n - p = \frac{n - p}{1 - R^2} $$
+
+$$
+F(p - 1) = \frac{n - p}{1 - R^2} + p - n
+$$
+
+$$
+F(p - 1) = \frac{n - p}{1 - R^2} + \frac{(p - n)(1 - R^2)}{1 - R^2}
+$$
+
+$$
+F(p - 1) = \frac{n - p + p  - pR^2 - n + nR^2}{1 - R^2}
+$$
+
+$$
+F(p - 1) = \frac{nR^2 - pR^2}{1 - R^2}
+$$
+
+$$
+F = \frac{R^2 (n - p)}{(1 - R^2)(p - 1)}
+$$
+
+# Q6
+
