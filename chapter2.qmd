@@ -34,7 +34,8 @@ cat(
   "Index: ",
   which.max(residuals(lm_q1a)),
   "\nResidual",
-  max(residuals(lm_q1a)))
+  max(residuals(lm_q1a))
+)
 ```
 
 #### q1d
@@ -44,7 +45,8 @@ cat(
   "Mean of residuals: ",
   signif(mean(residuals(lm_q1a)), 3),
   "\nMedian of residuals: ",
-  signif(median(residuals(lm_q1a)), 3))
+  signif(median(residuals(lm_q1a)), 3)
+)
 ```
 
 We expect the mean of the residuals from a linear model to be always zero (*assuming we do not drop the intercept term*, $\beta_0$), $\bar{\hat{\epsilon}} = 0$. Unlike the mean of the residuals, which is mathematically guaranteed to be zero in an OLS model, the median is not. Consequently, the median is often close to zero but rarely, if ever, exactly zero.
@@ -54,7 +56,8 @@ We expect the mean of the residuals from a linear model to be always zero (*assu
 ```{r}
 cat(
   "Correlation of the residuals with the fitted values: ",
-  signif(cor(residuals(lm_q1a), predict(lm_q1a)), 3))
+  signif(cor(residuals(lm_q1a), predict(lm_q1a)), 3)
+)
 ```
 
 The correlation is effectively zero because the residual vector $\hat{\epsilon}$ and fitted value vector $\hat{y}$ are orthogonal to each other.
@@ -64,7 +67,8 @@ The correlation is effectively zero because the residual vector $\hat{\epsilon}$
 ```{r}
 cat(
   "Correlation of the residuals with income: ",
-  signif(cor(residuals(lm_q1a), teengamb$income), 3))
+  signif(cor(residuals(lm_q1a), teengamb$income), 3)
+)
 ```
 
 Yes, it will always be zero because geometrically, the OLS model projects the outcome vector $y$ onto the plane spanned by the set of all predictor variables. In our case, the `income` vector is part of that plane. Consequently, the fitted values vector $\hat{y}$ lies on this plane while the residuals vector $\hat{\epsilon}$ is orthogonal to the plane.
@@ -75,7 +79,8 @@ Female is coded as one and male is coded as zero.
 
 ```{r}
 cat(
-  "For females, the difference in average weekly gambling between females and males, holding other factors constant, is",
+  "For females, the difference in average weekly gambling between females",
+  "and males, holding other factors constant, is",
   signif(summary(lm_q1a)$coefficients[2], 3),
   "pounds."
 )
@@ -103,7 +108,8 @@ apply(uswages[, 1:3], 2, min)
 # When predictors are zero, the intercept is the prediction.
 cat(
   "Predicted wage for a worker with no education and no experience:",
-  format(round(summary(lm_q2a)$coef[1], 2), nsmall = 2))
+  format(round(summary(lm_q2a)$coef[1], 2), nsmall = 2)
+)
 ```
 
 It doesn't make sense to report a negative wage value.
@@ -148,7 +154,8 @@ cat(
   "RSS of Initial Model:",
   sum(residuals(lm_q2a)^2),
   "\nRSS of Intercept Removed Model:",
-  sum(residuals(lm_q2e)^2))
+  sum(residuals(lm_q2e)^2)
+)
 ```
 
 RSS of Initial Model (More parameter, more flexibility) \< RSS of Intercept Removed Model (One less parameter)
@@ -284,7 +291,8 @@ plot(
   sigmas,
   xlab = "Number of Predictors",
   ylab = "Residual Standard Error",
-  type = "l")
+  type = "l"
+)
 ```
 
 The RSE shows a sharp initial decrease with the number of predictors. The reduction continues, though not monotonically, reaching its minimum value when 7 predictors are included."
@@ -295,7 +303,8 @@ plot(
   rsquares,
   xlab = "Number of Predictors",
   ylab = "R-Squared",
-  type = "l")
+  type = "l"
+)
 ```
 
 Because the Residual Sum of Squares (RSS) can only decrease or stay the same when predictors are added, R-squared is monotonically non-decreasing with the number of predictors
@@ -306,36 +315,16 @@ Because the Residual Sum of Squares (RSS) can only decrease or stay the same whe
 
 ```{r}
 lm_q4a_i <- lm(lpsa ~ lcavol, data = prostate)
+lm_q4a_ii <- lm(lcavol ~ lpsa, data = prostate)
 
 plot(lpsa ~ lcavol, data = prostate)
 abline(lm_q4a_i)
-```
-
-Since it is a `lpsa` against `lcavol` plot, we cannot simply call `abline(lm(lcavol ~ lpsa, data = prostate))` for the second regression line since `lm(lcavol ~ lpsa, data = prostate)` predicts $x$ from $y$, that is, $x = a + by$. Thus, to plot it against the existing $y$ vs $x$ plot, the equation needs to be re-arranged to:
-
-$$x = a + by$$
-
-$$by = x - a$$
-
-$$y = \frac{-a + x}{b}$$
-
-$$y = \frac{-a}{b} + \frac{1}{b} \cdot x$$
-
-Since $a$ is the intercept and $b$ is the slope.
-
-```{r}
-lm_q4a_ii <- lm(lcavol ~ lpsa, data = prostate)
-
 abline(
   a = -coef(lm_q4a_ii)[1] / coef(lm_q4a_ii)[2],
   b = 1 / coef(lm_q4a_ii)[2],
   col = "red"
 )
-```
 
-The point of intersection for these two regression lines is the point of the means $\bar{x}, \bar{y}$ because this point is a fundamental property of any simple linear regression model calculated using the Ordinary Least Squares (OLS) method.
-
-```{r}
 mean_lcavol = mean(prostate$lcavol)
 mean_lpsa = mean(prostate$lpsa)
 
@@ -365,6 +354,20 @@ text(
   cex = 1.5 # Character expansion (text size)
 )
 ```
+
+Since it is a `lpsa` against `lcavol` plot, we cannot simply call `abline(lm(lcavol ~ lpsa, data = prostate))` for the second regression line since `lm(lcavol ~ lpsa, data = prostate)` predicts $x$ from $y$, that is, $x = a + by$. Thus, to plot it against the existing $y$ vs $x$ plot, the equation needs to be re-arranged to:
+
+$$x = a + by$$
+
+$$by = x - a$$
+
+$$y = \frac{-a + x}{b}$$
+
+$$y = \frac{-a}{b} + \frac{1}{b} \cdot x$$
+
+Since $a$ is the intercept and $b$ is the slope.
+
+The point of intersection for these two regression lines is the point of the means $\bar{x}, \bar{y}$ because this point is a fundamental property of any simple linear regression model calculated using the Ordinary Least Squares (OLS) method.
 
 ### Q5
 
@@ -408,8 +411,8 @@ When compared to the correlation between the fitted values and the response squa
 
 ```{r}
 X <- model.matrix(
-    ~ Acetic + H2S + Lactic,
-    data = cheddar
+  ~ Acetic + H2S + Lactic,
+  data = cheddar
 )
 y <- cheddar$taste
 qrx <- qr(X)
@@ -512,7 +515,7 @@ coef(lm_q7a)
 #### q7b
 
 ```{r}
-lm_q7b <- lm(height ~ B + C + D + E , data = truck)
+lm_q7b <- lm(height ~ B + C + D + E, data = truck)
 summary(lm_q7b, cor = T)
 coef(lm_q7b)
 ```
