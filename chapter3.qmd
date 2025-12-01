@@ -2,7 +2,7 @@
 title: "Linear_Model_with_R"
 author: Han Chenyue
 editor: source
-format: pdf
+format: html
 ---
 
 # Chapter 3
@@ -15,7 +15,7 @@ format: pdf
 
 ```{r}
 data(prostate, package = "faraway")
-lm_q1a <- lm(lpsa ~ ., data = prostate) 
+lm_q1a <- lm(lpsa ~ ., data = prostate)
 summary(lm_q1a)
 ```
 
@@ -36,6 +36,7 @@ cat(
       c(-1, 1) * qt(0.975, 97 - 9) * summary(lm_q1a)$coef[4, 2],
     4
   )
+)
 ```
 
 Visualising it:
@@ -154,7 +155,7 @@ anova(lm_q2b, lm_q2a)
 #### q2d
 
 ```{r}
-cat("Taste would increase by", round(0.01*coef(lm_q2a)['H2S'], 3))
+cat("Taste would increase by", round(0.01 * coef(lm_q2a)['H2S'], 3))
 ```
 
 #### q2e
@@ -258,6 +259,7 @@ library(dplyr)
 near(
   summary(lm_q4b)$coefficients[5, 1] / summary(lm_q4b)$coefficients[5, 2],
   summary(lm_q4b)$coefficients[5, 3]
+)
 ```
 
 Since the sum-of-squares decomposition and F-statistics reduces to the usual equal-variance (pooled) two sample t-test in the case of $\alpha = 2$ treatments - with the realisation that an F-statistics with one numerator and $k$ denominator degrees of freedom is equivalent to a t-statistics with $k$ degrees of freedom, viz: $F_{1,k} = t^2_{k}$
@@ -350,5 +352,59 @@ $\text{p-value}_{F-test} = 0.01902 < 0.05$, hence we reject the null hypothesis 
 #### q6c
 
 ```{r}
-
+lm_q6c <- lm(Distance ~ I(RStr + LStr) + RFlex + LFlex, data = punting)
+summary(lm_q6c)
+anova(lm_q6c, lm_q6a)
 ```
+
+$\text{p-value}_{F-test} = 0.468 > 0.05$, hence we do not reject the null hypothesis $H_0: \beta_{RStr} = \beta_{LStr}$. We conclude that there is no significant difference between left leg strength and right leg strength.
+
+#### q6d
+
+```{r}
+plot(ellipse(lm_q6a, c(2, 3)), type = "l")
+points(lm_q6a$coef["RStr"], lm_q6a$coef["LStr"])
+abline(v = confint(lm_q6a)[2, c(1, 2)], lty = 4)
+abline(h = confint(lm_q6a)[3, c(1, 2)], lty = 4)
+abline(v = 0, lty = 2, col = "blue")
+abline(h = 0, lty = 2, col = "blue")
+points(0, 0, pch = 21)
+```
+
+-   Origin ($\beta_RStr = 0$, $\beta_LStr = 0$) falls within both the $95\%$ joint confidence ellipse and the rectangular region defined by the individual $95\%$ univariate confidence intervals.
+-   Neither predictor is statistically significant when considered in isolation within the full model.
+-   Crucially, because the origin lies inside the joint confidence ellipse, we do not reject the null hypothesis that both coefficients are simultaneously zero. This is consistent with our previous analysis.
+
+#### q6e
+
+We will obtain the same results as in q6c: Failing to reject the null hypothesis $H_0: \beta_{RStr} = \beta_{LStr}$ and return to the same conclusion that there is no significant difference between left leg strength and right leg strength, in other words, the total leg strength is sufficient (_Total leg strength is defined by adding the right and left leg strengths together_).
+
+#### q6f
+
+```{r}
+lm_q6f <- lm(Distance ~ RStr + LStr + I(RFlex + LFlex), data = punting)
+summary(lm_q6f)
+anova(lm_q6f, lm_q6a)
+```
+
+$\text{p-value}_{F-test} = 0.2017 > 0.05$, hence we do not reject the null hypothesis $H_0: \beta_{RFlex} = \beta_{LFlex}$. We conclude that there is no significant difference between left leg flexibility and right leg flexibility.
+
+#### q6e
+
+```{r}
+lm_q6e <- lm(Distance ~ I(RStr + LStr) + I(RFlex + LFlex), data = punting)
+summary(lm_q6e)
+anova(lm_q6e, lm_q6a)
+```
+
+$\text{p-value}_{F-test} = 0.337 > 0.05$, hence we do not reject the null hypothesis $H_0: \beta_{RStr} = \beta_{LStr} AND \beta_{RFlex} = \beta_{LFlex}$. We conclude that there is no significant difference between left-right symmetry for both strength and flexibility.
+Hence, symmetry is a reasonable claim.
+
+#### q6f
+
+```{r}
+lm_q6f <- lm(Hang ~ RStr + LStr + RFlex + LFlex, data = punting)
+summary(lm_q6f)
+```
+
+No, because they have different responses.

@@ -2,7 +2,7 @@
 title: "Linear_Model_with_R"
 author: Han Chenyue
 editor: source
-format: pdf
+format: html
 ---
 
 # Chapter 2
