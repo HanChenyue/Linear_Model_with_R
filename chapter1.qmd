@@ -37,7 +37,13 @@ There are 28 males and 19 females.
 
 ```{r}
 # Base graphics
-boxplot(status ~ sex, data = teengamb, main = "Boxplot of Sexes", xlab = "Sex", ylab = "Count")
+boxplot(
+  status ~ sex,
+  data = teengamb,
+  main = "Boxplot of Sexes",
+  xlab = "Sex",
+  ylab = "Count"
+)
 ```
 
 ```{r}
@@ -77,11 +83,17 @@ The plot does not leave a gap for the verbal score of 3, even though this value 
 #### q1e
 
 ```{r}
-ggplot(data = teengamb, aes(x = income, y = gamble, colour = sex)) + geom_point(size = 5, alpha = 0.3)
+ggplot(data = teengamb, aes(x = income, y = gamble, colour = sex)) +
+  geom_point(size = 5, alpha = 0.3)
 ```
 
 ```{r}
-ggplot(data = teengamb, aes(x = income, y = gamble, shape = sex, colour = sex)) + geom_point(size = 4, alpha = 0.3) + facet_grid(~ sex)
+ggplot(
+  data = teengamb,
+  aes(x = income, y = gamble, shape = sex, colour = sex)
+) +
+  geom_point(size = 4, alpha = 0.3) +
+  facet_grid(~sex)
 ```
 
 The faceted plot, because it is easier to distinguish the two sexes.
@@ -119,8 +131,9 @@ tapply(usw$wage, usw$ne, mean)["1"]
 
 ```{r}
 all.equal(
-    sum(usw$ne * usw$wage) / sum(usw$ne),
-    unname(tapply(usw$wage, usw$ne, mean)["1"]))
+  sum(usw$ne * usw$wage) / sum(usw$ne),
+  unname(tapply(usw$wage, usw$ne, mean)["1"])
+)
 ```
 
 Yes it does.
@@ -166,7 +179,7 @@ head(prostate)
 ```
 
 ```{r}
-pairs(prostate[,1:4])
+pairs(prostate[, 1:4])
 ```
 
 `lbph` has many identical values.
@@ -174,7 +187,7 @@ pairs(prostate[,1:4])
 #### q3b
 
 ```{r}
-cor(prostate[,1:4])
+cor(prostate[, 1:4])
 ```
 
 There are four assumptions to check before performing a Pearson correlation test. - The two variables (the variables of interest) need to be using a continuous scale. - The two variables of interest should have a linear relationship, which you can check with a scatterplot. - There should be no spurious outliers. - The variables should be normally or near-to-normally distributed.
@@ -184,7 +197,7 @@ Given the non-normal distribution of lbph, its Pearson correlation coefficients 
 #### q3c
 
 ```{r}
-nrow(prostate[prostate$lbph == min(prostate$lbph),]) / nrow(prostate)
+nrow(prostate[prostate$lbph == min(prostate$lbph), ]) / nrow(prostate)
 ```
 
 44%.
@@ -200,9 +213,9 @@ The transformation $log(x + 0.25)$ was employed to manage zero values in the `bp
 ```{r}
 age_range <- range(prostate$age)
 one_year_breaks <- seq(
-    from = age_range[1],
-    to = age_range[2] + 1,
-    by = 1
+  from = age_range[1],
+  to = age_range[2] + 1,
+  by = 1
 )
 par(mfrow = c(1, 2))
 
@@ -240,8 +253,14 @@ table(sat$verbal + sat$math == sat$total)
 #### q4b
 
 ```{r}
-plot(x = sat$verbal, y = sat$math, main = "Math Against Verbal Scores", xlab = "Verbal", ylab = "Math")
-abline(0, 1)  # y = x is equal to intercept = 0 and slope = 1
+plot(
+  x = sat$verbal,
+  y = sat$math,
+  main = "Math Against Verbal Scores",
+  xlab = "Verbal",
+  ylab = "Math"
+)
+abline(0, 1) # y = x is equal to intercept = 0 and slope = 1
 ```
 
 The distributions differ; students generally score higher on their maths tests than on their verbal tests.
@@ -258,7 +277,12 @@ There is a strong, positive, linear relationship between verbal and math scores.
 ```{r}
 plot(scale(sat$math) ~ scale(sat$verbal), xlab = "Verbal", ylab = "Math")
 abline(a = 0, b = 1, lty = 2, lwd = 2, col = "blue")
-text(x = -1.0, y = 1.5, label = paste0("Correlation: ", round(cor(sat$verbal, sat$math), 3)), cex = 1)
+text(
+  x = -1.0,
+  y = 1.5,
+  label = paste0("Correlation: ", round(cor(sat$verbal, sat$math), 3)),
+  cex = 1
+)
 ```
 
 #### q4d
@@ -267,8 +291,18 @@ text(x = -1.0, y = 1.5, label = paste0("Correlation: ", round(cor(sat$verbal, sa
 q4d_lm_coef <- coef(lm(sat$math ~ sat$verbal))
 plot(math ~ verbal, data = sat)
 abline(lm(sat$math ~ sat$verbal), col = "red", lty = 2, lwd = 2)
-text(x = -0.5, y = 1.25, label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)), cex = 1)
-text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex = 1)
+text(
+  x = -0.5,
+  y = 1.25,
+  label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)),
+  cex = 1
+)
+text(
+  x = -0.5,
+  y = 1.0,
+  label = paste0("Slope: ", round(q4d_lm_coef[2], 3)),
+  cex = 1
+)
 ```
 
 #### q4e
@@ -277,8 +311,18 @@ text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex
 q4e_lm_coef <- coef(lm(sat$verbal ~ sat$math))
 plot(math ~ verbal, data = sat)
 abline(lm(sat$verbal ~ sat$math), col = "green", lty = 2)
-text(x = -0.5, y = 1.25, label = paste0("Intercept: ", round(q4e_lm_coef[1], 18)), cex = 1)
-text(x = -0.5, y = 1.0, label = paste0("Slope: ", round(q4e_lm_coef[2], 3)), cex = 1)
+text(
+  x = -0.5,
+  y = 1.25,
+  label = paste0("Intercept: ", round(q4e_lm_coef[1], 18)),
+  cex = 1
+)
+text(
+  x = -0.5,
+  y = 1.0,
+  label = paste0("Slope: ", round(q4e_lm_coef[2], 3)),
+  cex = 1
+)
 ```
 
 #### q4f
@@ -297,11 +341,15 @@ mean_verbal <- mean(sat$verbal)
 mean_math <- mean(sat$math)
 
 
-plot(math ~ verbal, data = sat,
-    main = "Intersection of Two Regression Lines",
-    xlab = "Verbal Score",
-    ylab = "Math Score",
-    pch = 19, col = "gray")
+plot(
+  math ~ verbal,
+  data = sat,
+  main = "Intersection of Two Regression Lines",
+  xlab = "Verbal Score",
+  ylab = "Math Score",
+  pch = 19,
+  col = "gray"
+)
 
 
 lm_math_on_verbal <- lm(math ~ verbal, data = sat)
@@ -320,16 +368,33 @@ abline(a = intercept_for_plot, b = slope_for_plot, col = "blue", lwd = 2)
 
 
 # This point should be exactly where the two lines cross
-points(x = mean_verbal, y = mean_math,
-    col = "purple",
-    pch = 19,
-    cex = 2.5)
+points(x = mean_verbal, y = mean_math, col = "purple", pch = 19, cex = 2.5)
 
-text(x = -1.0, y = 1.25, label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)), cex = 1)
-text(x = -1.0, y = 1.0, label = paste0("Slope: ", round(q4d_lm_coef[2], 3)), cex = 1)
+text(
+  x = -1.0,
+  y = 1.25,
+  label = paste0("Intercept: ", round(q4d_lm_coef[1], 18)),
+  cex = 1
+)
+text(
+  x = -1.0,
+  y = 1.0,
+  label = paste0("Slope: ", round(q4d_lm_coef[2], 3)),
+  cex = 1
+)
 
-text(x = 0.8, y = -0.75, label = paste0("Intercept [Exchanged]: ", round(q4e_lm_coef[1], 18)), cex = 1)
-text(x = 0.8, y = -0.5, label = paste0("Slope [Exchanged]: ", round(q4e_lm_coef[2], 3)), cex = 1)
+text(
+  x = 0.8,
+  y = -0.75,
+  label = paste0("Intercept [Exchanged]: ", round(q4e_lm_coef[1], 18)),
+  cex = 1
+)
+text(
+  x = 0.8,
+  y = -0.5,
+  label = paste0("Slope [Exchanged]: ", round(q4e_lm_coef[2], 3)),
+  cex = 1
+)
 ```
 
 #### q4g(i)
@@ -372,7 +437,7 @@ head(divusa)
 ```
 
 ```{r}
-plot(x = divusa$year, y  = divusa$divorce)
+plot(x = divusa$year, y = divusa$divorce)
 plot(x = divusa$year, y = divusa$divorce, type = "l")
 ```
 
@@ -382,10 +447,10 @@ Line plot is preferable for time ordered data.
 
 ```{r}
 plot(
-    y = divusa$divorce[-1],
-    x = divusa$divorce[-nrow(divusa)],
-    xlab = "Divorce rate in previous year",
-    ylab = "Divorce rate in current year"
+  y = divusa$divorce[-1],
+  x = divusa$divorce[-nrow(divusa)],
+  xlab = "Divorce rate in previous year",
+  ylab = "Divorce rate in current year"
 )
 abline(0, 1)
 ```
@@ -395,7 +460,7 @@ Prediction is possible; divorce rate in successive years is strongly correlated.
 #### q5c
 
 ```{r}
-q5c_coef <- coef(lm(divorce ~ year, data= divusa))
+q5c_coef <- coef(lm(divorce ~ year, data = divusa))
 q5c_coef
 ```
 
@@ -410,7 +475,8 @@ After rearranging the equation, the year when divorce rate hits $100\%$ is $2347
 #### q5d
 
 ```{r}
-ggplot(data = divusa, aes(x = femlab, y = divorce, colour = year)) + geom_point()
+ggplot(data = divusa, aes(x = femlab, y = divorce, colour = year)) +
+  geom_point()
 ```
 
 -   Historically, divorce rates were lower during periods when female participation in the labor force was also lower.
