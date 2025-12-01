@@ -115,7 +115,7 @@ anova(lm_q1c, lm_q1a)
 
 Since `p-value` is much larger than $\alpha = 0.05$, we fail to reject the null hypothesis, $H_0: \beta_{age} = \beta_{lbph} = \beta_{lcp} = \beta_{gleason} = \beta_{pgg45} = 0$.
 
-We conclude that the five predictors removed from the full model **do not collectively contribute statistically significant explanatory power** to the model.
+We conclude that the five predictors removed from the full model **do not collectively contribute statistically significant explanatory power** to the model, hence the smaller model is preferable.
 
 ### Q2
 
@@ -330,3 +330,25 @@ $$
 
 ### Q6
 
+#### q6a
+
+```{r}
+data(punting, package = "faraway")
+```
+
+```{r}
+lm_q6a <- lm(Distance ~ RStr + LStr + RFlex + LFlex, data = punting)
+summary(lm_q6a)
+```
+
+None.
+
+#### q6b
+
+$\text{p-value}_{F-test} = 0.01902 < 0.05$, hence we reject the null hypothesis $H_0: \beta_{RStr} = \beta_{LStr} = \beta_{RFlex} = \beta_{LFlex} = 0$.
+
+#### q6c
+
+```{r}
+
+```
