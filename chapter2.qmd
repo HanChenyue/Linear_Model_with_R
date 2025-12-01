@@ -15,8 +15,7 @@ format: pdf
 
 ```{r}
 data(teengamb, package = "faraway")
-lm_q1a <- lm(gamble ~ sex + status + income + verbal,
-            data = teengamb) 
+lm_q1a <- lm(gamble ~ sex + status + income + verbal, data = teengamb)
 summary(lm_q1a)
 ```
 
@@ -31,17 +30,21 @@ cat(round(summary(lm_q1a)$r.squared * 100, 2), "%")
 #### q1c
 
 ```{r}
-cat("Index: ", which.max(residuals(lm_q1a)),
-    "\nResidual", max(residuals(lm_q1a)))
+cat(
+  "Index: ",
+  which.max(residuals(lm_q1a)),
+  "\nResidual",
+  max(residuals(lm_q1a)))
 ```
 
 #### q1d
 
 ```{r}
-cat("Mean of residuals: ",
-    signif(mean(residuals(lm_q1a)), 3),
-    "\nMedian of residuals: ",
-    signif(median(residuals(lm_q1a)), 3))
+cat(
+  "Mean of residuals: ",
+  signif(mean(residuals(lm_q1a)), 3),
+  "\nMedian of residuals: ",
+  signif(median(residuals(lm_q1a)), 3))
 ```
 
 We expect the mean of the residuals from a linear model to be always zero (*assuming we do not drop the intercept term*, $\beta_0$), $\bar{\hat{\epsilon}} = 0$. Unlike the mean of the residuals, which is mathematically guaranteed to be zero in an OLS model, the median is not. Consequently, the median is often close to zero but rarely, if ever, exactly zero.
@@ -49,8 +52,9 @@ We expect the mean of the residuals from a linear model to be always zero (*assu
 #### q1e
 
 ```{r}
-cat("Correlation of the residuals with the fitted values: ",
-signif(cor(residuals(lm_q1a), predict(lm_q1a)), 3))
+cat(
+  "Correlation of the residuals with the fitted values: ",
+  signif(cor(residuals(lm_q1a), predict(lm_q1a)), 3))
 ```
 
 The correlation is effectively zero because the residual vector $\hat{\epsilon}$ and fitted value vector $\hat{y}$ are orthogonal to each other.
@@ -58,8 +62,9 @@ The correlation is effectively zero because the residual vector $\hat{\epsilon}$
 #### q1f
 
 ```{r}
-cat("Correlation of the residuals with income: ",
-signif(cor(residuals(lm_q1a), teengamb$income), 3))
+cat(
+  "Correlation of the residuals with income: ",
+  signif(cor(residuals(lm_q1a), teengamb$income), 3))
 ```
 
 Yes, it will always be zero because geometrically, the OLS model projects the outcome vector $y$ onto the plane spanned by the set of all predictor variables. In our case, the `income` vector is part of that plane. Consequently, the fitted values vector $\hat{y}$ lies on this plane while the residuals vector $\hat{\epsilon}$ is orthogonal to the plane.
@@ -69,7 +74,11 @@ Yes, it will always be zero because geometrically, the OLS model projects the ou
 Female is coded as one and male is coded as zero.
 
 ```{r}
-cat("For females, the difference in average weekly gambling between females and males, holding other factors constant, is", signif(summary(lm_q1a)$coefficients[2], 3), "pounds.")
+cat(
+  "For females, the difference in average weekly gambling between females and males, holding other factors constant, is",
+  signif(summary(lm_q1a)$coefficients[2], 3),
+  "pounds."
+)
 ```
 
 ### Q2
@@ -92,8 +101,9 @@ apply(uswages[, 1:3], 2, min)
 
 ```{r}
 # When predictors are zero, the intercept is the prediction.
-cat("Predicted wage for a worker with no education and no experience:",
-format(round(summary(lm_q2a)$coef[1], 2), nsmall = 2))
+cat(
+  "Predicted wage for a worker with no education and no experience:",
+  format(round(summary(lm_q2a)$coef[1], 2), nsmall = 2))
 ```
 
 It doesn't make sense to report a negative wage value.
@@ -134,10 +144,11 @@ But direct calculation provides a similar value to the initial model.
 #### q2f
 
 ```{r}
-cat("RSS of Initial Model:",
-sum(residuals(lm_q2a)^2),
-"\nRSS of Intercept Removed Model:",
-sum(residuals(lm_q2e)^2))
+cat(
+  "RSS of Initial Model:",
+  sum(residuals(lm_q2a)^2),
+  "\nRSS of Intercept Removed Model:",
+  sum(residuals(lm_q2e)^2))
 ```
 
 RSS of Initial Model (More parameter, more flexibility) \< RSS of Intercept Removed Model (One less parameter)
@@ -246,12 +257,18 @@ lm_q3b_summary <- summary(lm_q3b)
 sigmas <- c(sigmas, lm_q3b_summary$sigma)
 rsquares <- c(rsquares, lm_q3b_summary$r.squared)
 
-lm_q3b <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45, data = prostate)
+lm_q3b <- lm(
+  lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45,
+  data = prostate
+)
 lm_q3b_summary <- summary(lm_q3b)
 sigmas <- c(sigmas, lm_q3b_summary$sigma)
 rsquares <- c(rsquares, lm_q3b_summary$r.squared)
 
-lm_q3b <- lm(lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45 + gleason, data = prostate)
+lm_q3b <- lm(
+  lpsa ~ lcavol + lweight + svi + lbph + age + lcp + pgg45 + gleason,
+  data = prostate
+)
 lm_q3b_summary <- summary(lm_q3b)
 sigmas <- c(sigmas, lm_q3b_summary$sigma)
 rsquares <- c(rsquares, lm_q3b_summary$r.squared)
@@ -263,22 +280,22 @@ sapply(data.frame(npreds = 1:8, sigmas, rsquares), round, 4)
 
 ```{r}
 plot(
-    1:8,
-    sigmas,
-    xlab = "Number of Predictors",
-    ylab = "Residual Standard Error",
-    type = "l")
+  1:8,
+  sigmas,
+  xlab = "Number of Predictors",
+  ylab = "Residual Standard Error",
+  type = "l")
 ```
 
 The RSE shows a sharp initial decrease with the number of predictors. The reduction continues, though not monotonically, reaching its minimum value when 7 predictors are included."
 
 ```{r}
 plot(
-    1:8,
-    rsquares,
-    xlab = "Number of Predictors",
-    ylab = "R-Squared",
-    type = "l")
+  1:8,
+  rsquares,
+  xlab = "Number of Predictors",
+  ylab = "R-Squared",
+  type = "l")
 ```
 
 Because the Residual Sum of Squares (RSS) can only decrease or stay the same when predictors are added, R-squared is monotonically non-decreasing with the number of predictors
@@ -309,7 +326,11 @@ Since $a$ is the intercept and $b$ is the slope.
 ```{r}
 lm_q4a_ii <- lm(lcavol ~ lpsa, data = prostate)
 
-abline(a = -coef(lm_q4a_ii)[1] / coef(lm_q4a_ii)[2], b = 1 / coef(lm_q4a_ii)[2], col = "red")
+abline(
+  a = -coef(lm_q4a_ii)[1] / coef(lm_q4a_ii)[2],
+  b = 1 / coef(lm_q4a_ii)[2],
+  col = "red"
+)
 ```
 
 The point of intersection for these two regression lines is the point of the means $\bar{x}, \bar{y}$ because this point is a fundamental property of any simple linear regression model calculated using the Ordinary Least Squares (OLS) method.
@@ -319,29 +340,29 @@ mean_lcavol = mean(prostate$lcavol)
 mean_lpsa = mean(prostate$lpsa)
 
 points(
-    x = mean_lcavol,
-    y = mean_lpsa,
-    pch = 19,
-    col = "darkgreen",
-    cex = 2.5
+  x = mean_lcavol,
+  y = mean_lpsa,
+  pch = 19,
+  col = "darkgreen",
+  cex = 2.5
 )
 
 label_text = paste(
-    "Mean (x̄, ȳ): (", 
-    round(mean_lcavol, 2),
-    ", ", 
-    round(mean_lpsa, 2), 
-    ")",
-    sep = ""
+  "Mean (x̄, ȳ): (",
+  round(mean_lcavol, 2),
+  ", ",
+  round(mean_lpsa, 2),
+  ")",
+  sep = ""
 )
 
 text(
-    x = -0.1,              # X-coordinate: Place it near the left side of the plot
-    y = 3,              # Y-coordinate: Place it near the top of the plot
-    labels = label_text,
-    col = "darkgreen",  # Set a distinct color
-    adj = 0,            # Left-align the text (0 = left, 0.5 = center, 1 = right)
-    cex = 1.5           # Character expansion (text size)
+  x = -0.1, # X-coordinate: Place it near the left side of the plot
+  y = 3, # Y-coordinate: Place it near the top of the plot
+  labels = label_text,
+  col = "darkgreen", # Set a distinct color
+  adj = 0, # Left-align the text (0 = left, 0.5 = center, 1 = right)
+  cex = 1.5 # Character expansion (text size)
 )
 ```
 

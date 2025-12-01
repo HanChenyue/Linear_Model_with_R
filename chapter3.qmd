@@ -15,15 +15,27 @@ format: pdf
 
 ```{r}
 data(prostate, package = "faraway")
-lm_q1a <- lm(lpsa ~ .,
-            data = prostate) 
+lm_q1a <- lm(lpsa ~ ., data = prostate) 
 summary(lm_q1a)
 ```
 
 ```{r}
-cat("90% CI for age: ", round(summary(lm1)$coef[4, 1] + c(-1, 1) * qt(0.95, 97 - 9) * summary(lm1)$coef[4, 2], 4))
+cat(
+  "90% CI for age: ",
+  round(
+    summary(lm_q1a)$coef[4, 1] +
+      c(-1, 1) * qt(0.95, 97 - 9) * summary(lm_q1a)$coef[4, 2],
+    4
+  )
+)
 cat("\n")
-cat("95% CI for age: ", round(summary(lm1)$coef[4, 1] + c(-1, 1) * qt(0.975, 97 - 9) * summary(lm1)$coef[4, 2], 4))
+cat(
+  "95% CI for age: ",
+  round(
+    summary(lm_q1a)$coef[4, 1] +
+      c(-1, 1) * qt(0.975, 97 - 9) * summary(lm_q1a)$coef[4, 2],
+    4
+  )
 ```
 
 Visualising it:
@@ -33,27 +45,35 @@ library(ggplot2)
 library(broom)
 library(dplyr)
 
-ci_90 <- tidy(lm1, conf.int = TRUE, conf.level = 0.90) |> 
-    filter(term == "age") |> 
-    mutate(level = "90% CI (p-value <= 0.10, alpha = 0.10)")
+ci_90 <- tidy(lm_q1a, conf.int = TRUE, conf.level = 0.90) |>
+  filter(term == "age") |>
+  mutate(level = "90% CI (p-value <= 0.10, alpha = 0.10)")
 
-ci_95 <- tidy(lm1, conf.int = TRUE, conf.level = 0.95) |> 
-    filter(term == "age") |> 
-    mutate(level = "95% CI (p-value <= 0.05, alpha = 0.05)")
+ci_95 <- tidy(lm_q1a, conf.int = TRUE, conf.level = 0.95) |>
+  filter(term == "age") |>
+  mutate(level = "95% CI (p-value <= 0.05, alpha = 0.05)")
 
 ci_combined <- bind_rows(ci_90, ci_95)
 
 ggplot(ci_combined, aes(x = estimate, y = level, colour = level)) +
-    geom_errorbarh(aes(xmin = conf.low, xmax = conf.high),
-                    height = 0.1, linewidth = 1.5) +
-    geom_point(size = 5, shape = 19) +
-    geom_vline(xintercept = 0, linetype = "dashed", colour = "black", linewidth = 1) +
-    labs(
-        title = "Bracketing the p-value for the 'age' Coefficient",
-        x = "Coefficient Value",
-    ) +
-    scale_color_manual(values = c("red", "blue")) +
-    theme(legend.position = "none")
+  geom_errorbarh(
+    aes(xmin = conf.low, xmax = conf.high),
+    height = 0.1,
+    linewidth = 1.5
+  ) +
+  geom_point(size = 5, shape = 19) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    colour = "black",
+    linewidth = 1
+  ) +
+  labs(
+    title = "Bracketing the p-value for the 'age' Coefficient",
+    x = "Coefficient Value",
+  ) +
+  scale_color_manual(values = c("red", "blue")) +
+  theme(legend.position = "none")
 ```
 
 90% CI for age does not include 0 but 95% CI for age does, therefore the p-value lies within 0.05 and 0.10.
@@ -76,7 +96,10 @@ points(0, 0, pch = 21)
 -   Crucially, because the origin lies inside the joint confidence ellipse, we do not reject the null hypothesis that both coefficients are simultaneously zero. This is consistent with the result of the formal F-test for nested models:
 
 ```{r}
-lm_q1b <- lm(lpsa ~ lcavol + lweight + svi + lcp + gleason + pgg45, data = prostate)
+lm_q1b <- lm(
+  lpsa ~ lcavol + lweight + svi + lcp + gleason + pgg45,
+  data = prostate
+)
 anova(lm_q1b, lm_q1a)
 ```
 
@@ -137,7 +160,12 @@ cat("Taste would increase by", round(0.01*coef(lm_q2a)['H2S'], 3))
 #### q2e
 
 ```{r}
-cat("The H2S on the original scale will increase by ", (exp(0.01) - 1) * 100, "% when adding 0.01 on the (natural) log scale as adding 0.01 to the log scale is equivalent to multiplying by exp(0.01) on the original scale.", sep="")
+cat(
+  "The H2S on the original scale will increase by ",
+  (exp(0.01) - 1) * 100,
+  "% when adding 0.01 on the (natural) log scale as adding 0.01 to the log scale is equivalent to multiplying by exp(0.01) on the original scale.",
+  sep = ""
+)
 ```
 
 ### Q3
@@ -155,7 +183,11 @@ summary(lm_q3a)
 #### q3b
 
 ```{r}
-cat("For females, the difference in average weekly gambling between females and males, holding other factors constant, is", signif(summary(lm_q3a)$coefficients[2], 3), "pounds.")
+cat(
+  "For females, the difference in average weekly gambling between females and males, holding other factors constant, is",
+  signif(summary(lm_q3a)$coefficients[2], 3),
+  "pounds."
+)
 ```
 
 #### q3c
@@ -223,7 +255,9 @@ Since $t_i = \frac{\hat{\beta}_i}{se(\hat{\beta}_i)}$
 
 ```{r}
 library(dplyr)
-near(summary(lm_q4b)$coefficients[5, 1] / summary(lm_q4b)$coefficients[5, 2], summary(lm_q4b)$coefficients[5, 3])
+near(
+  summary(lm_q4b)$coefficients[5, 1] / summary(lm_q4b)$coefficients[5, 2],
+  summary(lm_q4b)$coefficients[5, 3]
 ```
 
 Since the sum-of-squares decomposition and F-statistics reduces to the usual equal-variance (pooled) two sample t-test in the case of $\alpha = 2$ treatments - with the realisation that an F-statistics with one numerator and $k$ denominator degrees of freedom is equivalent to a t-statistics with $k$ degrees of freedom, viz: $F_{1,k} = t^2_{k}$
@@ -234,7 +268,7 @@ Since the sum-of-squares decomposition and F-statistics reduces to the usual equ
 near(summary(lm_q4b)$coefficients[5, 3]^2, anova(lm_q4a_i, lm_q4b)$F[2])
 ```
 
-# Q5
+### Q5
 
 $$
 F = \frac{\frac{TSS - RSS}{p - 1}}{\frac{RSS}{n - p}}
@@ -294,5 +328,5 @@ $$
 F = \frac{R^2 (n - p)}{(1 - R^2)(p - 1)}
 $$
 
-# Q6
+### Q6
 

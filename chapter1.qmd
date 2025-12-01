@@ -41,7 +41,6 @@ boxplot(status ~ sex, data = teengamb, main = "Boxplot of Sexes", xlab = "Sex", 
 ```
 
 ```{r}
-# ggplot2 package
 ggplot(data = teengamb, aes(x = sex, y = status)) + geom_boxplot()
 ```
 
