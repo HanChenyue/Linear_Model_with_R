@@ -285,16 +285,16 @@ Because the Residual Sum of Squares (RSS) can only decrease or stay the same whe
 
 ### Q4
 
-#### q4
+#### q4a
 
 ```{r}
-lm_q4a <- lm(lpsa ~ lcavol, data = prostate)
+lm_q4a_i <- lm(lpsa ~ lcavol, data = prostate)
 
 plot(lpsa ~ lcavol, data = prostate)
-abline(lm_q4a)
+abline(lm_q4a_i)
 ```
 
-Since it is a `lpsa` against `lcavol` plot, we cannot simply call `abline(lm_q4a_ii)` for the 2nd regression line since `lm(lcavol ~ lpsa, data = prostate)` predicts $x$ from $y$, that is, $x = a + by$. Thus, to plot it against the existing $y$ vs $x$ plot, the equation needs to be re-arranged to:
+Since it is a `lpsa` against `lcavol` plot, we cannot simply call `abline(lm(lcavol ~ lpsa, data = prostate))` for the second regression line since `lm(lcavol ~ lpsa, data = prostate)` predicts $x$ from $y$, that is, $x = a + by$. Thus, to plot it against the existing $y$ vs $x$ plot, the equation needs to be re-arranged to:
 
 $$x = a + by$$
 
@@ -307,6 +307,8 @@ $$y = \frac{-a}{b} + \frac{1}{b} \cdot x$$
 Since $a$ is the intercept and $b$ is the slope.
 
 ```{r}
+lm_q4a_ii <- lm(lcavol ~ lpsa, data = prostate)
+
 abline(a = -coef(lm_q4a_ii)[1] / coef(lm_q4a_ii)[2], b = 1 / coef(lm_q4a_ii)[2], col = "red")
 ```
 
@@ -404,7 +406,7 @@ head(wafer)
 ```
 
 ```{r}
-lm_q6a <- lm(formula ~ resist ~ x1 + x2 + x3 + x4, data = wafer)
+lm_q6a <- lm(resist ~ x1 + x2 + x3 + x4, data = wafer)
 summary(lm_q6a, cor = T)
 ```
 
