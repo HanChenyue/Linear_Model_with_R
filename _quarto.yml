@@ -1,7 +1,9 @@
 project:
   title: "Linear_Model_with_R"
   type: website
+
 toc: true
+
 format: 
-  html: default
+  html:
     code-fold: true
