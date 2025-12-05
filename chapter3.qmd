@@ -266,6 +266,113 @@ Since the sum-of-squares decomposition and F-statistics reduces to the usual equ
 
 [Link to Proof](https://canovasjm.netlify.app/2018/10/29/when-does-the-f-test-reduce-to-t-test/)
 
+## Proof: Equivalence of F-test and t-test (for $a=2$)
+
+**Goal:** We aim to prove that for a one-way ANOVA with $a=2$ groups, the F-statistic is exactly equal to the square of the t-statistic: $$F_{1, N-2} = t_{N-2}^2$$
+
+### 1. Notation and Identities
+
+-   **Sample sizes:** $n_1$ and $n_2$.
+-   **Total observations:** $N = n_1 + n_2$.
+-   **Group Means:** $\bar{y}_1$ and $\bar{y}_2$.
+-   **Global Mean:** $\bar{y}_{..} = \frac{n_1\bar{y}_1 + n_2\bar{y}_2}{N}$.
+
+------------------------------------------------------------------------
+
+### 2. The Denominator: Mean Square Error (MSE)
+
+Recall that the Sum of Squares Error (SSE) is the sum of the squared deviations within each group. This can be written in terms of the individual group sample variances ($S_1^2$ and $S_2^2$):
+
+$$SSE = (n_1 - 1)S_1^2 + (n_2 - 1)S_2^2$$
+
+The Mean Square Error ($MSE$) is calculated by dividing $SSE$ by its degrees of freedom ($N - a = N - 2$):
+
+$$MSE = \frac{SSE}{N-2} = \frac{(n_1 - 1)S_1^2 + (n_2 - 1)S_2^2}{n_1 + n_2 - 2}$$
+
+**Key Observation:** This expression is the exact definition of the **Pooled Variance** ($S_p^2$) used in the two-sample t-test.
+
+$$\boxed{MSE = S_p^2}$$
+
+------------------------------------------------------------------------
+
+### 3. The Numerator: Mean Square Treatment (MST)
+
+The Sum of Squares Treatment (SST) measures the weighted deviation of group means from the global mean. Since $a=2$, the degrees of freedom is $2-1=1$, so $MST = SST/1 = SST$.
+
+$$MST = SST = n_1(\bar{y}_1 - \bar{y}_{..})^2 + n_2(\bar{y}_2 - \bar{y}_{..})^2$$
+
+To simplify this efficiently, let's analyze the deviation term $(\bar{y}_1 - \bar{y}_{..})$ separately before squaring.
+
+#### 3.1 Analyzing the deviation from the global mean
+
+Substitute the definition of the global mean:
+
+$$ 
+\begin{aligned}
+\bar{y}_1 - \bar{y}_{..} &= \bar{y}_1 - \frac{n_1\bar{y}_1 + n_2\bar{y}_2}{N} \\
+&= \frac{N\bar{y}_1 - (n_1\bar{y}_1 + n_2\bar{y}_2)}{N} \\
+\text{Since } N = n_1 + n_2: \\
+&= \frac{(n_1 + n_2)\bar{y}_1 - n_1\bar{y}_1 - n_2\bar{y}_2}{N} \\
+&= \frac{n_1\bar{y}_1 + n_2\bar{y}_1 - n_1\bar{y}_1 - n_2\bar{y}_2}{N} \\
+&= \frac{n_2(\bar{y}_1 - \bar{y}_2)}{N}
+\end{aligned}
+$$
+
+By symmetry, the deviation for the second group is: $$\bar{y}_2 - \bar{y}_{..} = -\frac{n_1}{N}(\bar{y}_1 - \bar{y}_2)$$
+
+#### 3.2 Solving for SST
+
+Now, substitute these simplified deviations back into the SST equation:
+
+$$
+\begin{aligned}
+SST &= n_1 \left[ \frac{n_2}{N}(\bar{y}_1 - \bar{y}_2) \right]^2 + n_2 \left[ -\frac{n_1}{N}(\bar{y}_1 - \bar{y}_2) \right]^2 \\
+&= n_1 \frac{n_2^2}{N^2}(\bar{y}_1 - \bar{y}_2)^2 + n_2 \frac{n_1^2}{N^2}(\bar{y}_1 - \bar{y}_2)^2
+\end{aligned}
+$$
+
+Factor out the common term $\frac{(\bar{y}_1 - \bar{y}_2)^2}{N^2}$ and $n_1 n_2$:
+
+$$
+\begin{aligned}
+SST &= \frac{(\bar{y}_1 - \bar{y}_2)^2}{N^2} \left( n_1 n_2^2 + n_2 n_1^2 \right) \\
+&= \frac{(\bar{y}_1 - \bar{y}_2)^2}{N^2} \cdot n_1 n_2 (n_2 + n_1)
+\end{aligned}
+$$
+
+Since $(n_2 + n_1) = N$, one $N$ cancels out:
+
+$$SST = \frac{n_1 n_2}{N} (\bar{y}_1 - \bar{y}_2)^2$$
+
+To match the t-test format, we rewrite the coefficient $\frac{n_1 n_2}{N}$ using the reciprocal identity: $$\frac{n_1 n_2}{n_1 + n_2} = \frac{1}{\frac{n_1 + n_2}{n_1 n_2}} = \frac{1}{\frac{1}{n_1} + \frac{1}{n_2}}$$
+
+Thus, we have our final expression for the Numerator:
+
+$$\boxed{MST = \frac{(\bar{y}_1 - \bar{y}_2)^2}{\frac{1}{n_1} + \frac{1}{n_2}}}$$
+
+------------------------------------------------------------------------
+
+### 4. Putting it all together
+
+The F-statistic is the ratio of the Numerator (Section 3) and the Denominator (Section 2):
+
+$$
+\begin{aligned}
+F &= \frac{MST}{MSE} \\
+F &= \frac{ \left( \frac{(\bar{y}_1 - \bar{y}_2)^2}{\frac{1}{n_1} + \frac{1}{n_2}} \right) }{ S_p^2 }
+\end{aligned}
+$$
+
+We can rearrange this fraction to isolate the squared terms:
+
+$$F = \frac{(\bar{y}_1 - \bar{y}_2)^2}{ S_p^2 \left( \frac{1}{n_1} + \frac{1}{n_2} \right) }$$
+
+This is mathematically equivalent to the square of the t-statistic definition:
+
+$$F = \left( \frac{\bar{y}_1 - \bar{y}_2}{ S_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} } \right)^2 = t^2$$
+
+**Conclusion:** We have proven that for $a=2$, the ANOVA F-test yields the same result as the squared two-sample t-test.
+
 ```{r}
 near(summary(lm_q4b)$coefficients[5, 3]^2, anova(lm_q4a_i, lm_q4b)$F[2])
 ```
@@ -377,7 +484,7 @@ points(0, 0, pch = 21)
 
 #### q6e
 
-We will obtain the same results as in q6c: Failing to reject the null hypothesis $H_0: \beta_{RStr} = \beta_{LStr}$ and return to the same conclusion that there is no significant difference between left leg strength and right leg strength, in other words, the total leg strength is sufficient (_Total leg strength is defined by adding the right and left leg strengths together_).
+We will obtain the same results as in q6c: Failing to reject the null hypothesis $H_0: \beta_{RStr} = \beta_{LStr}$ and return to the same conclusion that there is no significant difference between left leg strength and right leg strength, in other words, the total leg strength is sufficient (*Total leg strength is defined by adding the right and left leg strengths together*).
 
 #### q6f
 
@@ -397,8 +504,7 @@ summary(lm_q6e)
 anova(lm_q6e, lm_q6a)
 ```
 
-$\text{p-value}_{F-test} = 0.337 > 0.05$, hence we do not reject the null hypothesis $H_0: \beta_{RStr} = \beta_{LStr} AND \beta_{RFlex} = \beta_{LFlex}$. We conclude that there is no significant difference between left-right symmetry for both strength and flexibility.
-Hence, symmetry is a reasonable claim.
+$\text{p-value}_{F-test} = 0.337 > 0.05$, hence we do not reject the null hypothesis $H_0: \beta_{RStr} = \beta_{LStr} AND \beta_{RFlex} = \beta_{LFlex}$. We conclude that there is no significant difference between left-right symmetry for both strength and flexibility. Hence, symmetry is a reasonable claim.
 
 #### q6f
 
