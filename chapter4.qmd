@@ -1,0 +1,182 @@
+---
+title: "Linear_Model_with_R"
+author: Han Chenyue
+editor: source
+format: html
+---
+
+# Chapter 4
+
+## Exercises
+
+### Q1
+
+```{r}
+set.seed(101)
+n <- 30
+nsim <-  4000
+sig <- 1
+x <- seq(from = 0, to = 1, length.out = n)
+y <- x + rcauchy(n = n, location = 0, scale = sig)
+lm_q1a <- lm(y ~ x)
+summary(lm_q1a)
+summary(lm_q1a)$coef[2, ]
+```
+
+```{r}
+plot(x, y)
+abline(lm_q1a)
+```
+
+```{r}
+slope <- matrix(data = NA, nrow = nsim, ncol = 2)
+
+for(i in 1:nsim){
+  y <- x + rcauchy(n = n, location = 0, scale = sig)
+  lm_q1b <- lm(y ~ x)
+  slope[i, 1] <- summary(lm_q1b)$coef[2, 1]  # First column contains estimates
+  slope[i, 2] <- summary(lm_q1b)$coef[2, 2]  # Second column contains std errors
+}
+```
+
+```{r}
+summary(slope[, 1])
+```
+
+```{r}
+summary(slope[, 2])
+```
+
+-   Although the median of $0.8765$ and the mean of $1.4804$ align reasonably well with the expected value of one, the minimum value of $-4203.4762$ and the maximum value of $7815.6476$ indicate the presence of extreme outlier estimates.
+-   The estimated standard errors display a large mean of $21.2135$ and presence of extremely large values with a maximum ceiling of $4509.8138$.
+-   The theoretical properties of the least squares estimator require the error distribution to have finite mean and variance, but the Cauchy distribution violates these conditions, leading to unstable and sometimes extreme estimation results.
+    -   In statistics, the Gauss–Markov theorem states that the ordinary least squares (OLS) estimator has the lowest sampling variance within the class of linear unbiased estimators, if the errors in the linear regression model are uncorrelated, have equal variances and expectation value of zero. The errors do not need to be normal, nor do they need to be independent and identically distributed (only uncorrelated with mean zero and homoscedastic with finite variance).
+-   Long-tailed error distributions are problematic because most simulated observations appear ordinary, creating an impression of stability. However, rare but severe outliers inevitably occur, and the estimator is not robust enough to handle these extreme values.
+
+### Q2
+
+#### q2a
+
+The problem uses a Student's *t*-distribution with three degrees of freedom. The formula for the variance of a *t*-distribution with $\nu$ degree(s) of freedom is
+
+$$
+\operatorname{Var}(X) = \frac{\nu}{\nu - 2}, \qquad \nu > 2
+$$
+
+**Reference**: *Statistical Inference* (Casella and Berger, 2nd ed., p. 507).
+
+Plugging in $\nu = 3$:
+
+$$
+\operatorname{Var}(t_3) = \frac{3}{3 - 2} = 3
+$$
+
+To make our error term $\epsilon$ to have a standard variance of one, we will need to perform the following:
+
+$$
+\operatorname{Var}(\frac{X}{c}) = \frac{1}{c^2} \cdot \operatorname{Var}(X)
+$$
+
+$$
+\operatorname{Var}(\frac{t_3}{\sqrt{3}}) = \frac{1}{(\sqrt{3})^2} \cdot \operatorname{Var}(t_3)
+$$
+
+$$
+\operatorname{Var}(\frac{t_3}{\sqrt{3}}) = \frac{1}{\sqrt{3}} \cdot 3 = 1
+$$
+
+By dividing the generated numbers by $\sqrt{3}$, we retains the shape of the *t*-distribution (heavier tails, and the amount of probability mass in the tails is controlled by the parameter $\nu$). For $\nu = 1$, the Student's *t*-distribution $t_v$ becomes the standard Cauchy distributions, which has very **fat** tails; whereas for $\nu \rightarrow \infty$, it becomes the standard normal distribution $N (0, 1)$
+
+```{r}
+set.seed(37)
+n <- 30
+nsim <- 4000
+x <- seq(from = 0, to = 1, length.out = n)
+sig <- 1
+slope <- matrix(data = NA, nrow = nsim, ncol = 4)
+
+for(i in 1:nsim){
+  y <- rt(n = n, df = 3) / sqrt(3)
+  lm_q2a <- lm(y ~ x)
+  slope[i, ] <- summary(lm_q2a)$coef[2, ]
+  # slope[i, 1] <- summary(lm_q2a)$coef[2, 1]  # First column contains estimates
+  # slope[i, 2] <- summary(lm_q2a)$coef[2, 2]  # Second column contains std errors
+  # slope[i, 3] <- summary(lm_q2a)$coef[2, 3]  # Third column contains t values
+  # slope[i, 4] <- summary(lm_q2a)$coef[2, 4]  # Fourth column contains p-values
+}
+
+summary(lm_q2a)$coef[2, ]
+```
+
+```{r}
+plot(x, y)
+abline(lm_q2a)
+```
+
+#### q2b
+
+```{r}
+mean(slope[, 1])
+```
+
+The mean of our simulated estimates, $\bar{\hat{\beta_1}} = 0.0145$ is close to the true theoretical value of $\beta_1 = 0$ and the theoretical expectation $E(\hat{\beta_1}) = 0$.
+
+$$
+\bar{\hat{\beta_1}} \approx \beta_1
+$$
+
+$$
+\bar{\hat{\beta_1}} \approx E(\hat{\beta_1})
+$$
+
+#### q2c
+
+```{r}
+sd(slope[, 1])
+```
+
+The standard deviation of $\hat{\beta_1} = 0.6064$, which is close to the square root of the theoretical variance that was computed with Equation 2.21, $\operatorname{Var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2$, on page 57.
+
+```{r}
+mean(slope[, 2])
+```
+
+The mean of simulated $SE(\hat{\beta_1}) = 0.5622$ does not agree with computed standard deviation of $\beta_1 = 0.6064$, in fact, it reported less than our previously computed result.
+
+Remember, $0.6064$ is the actual standard deviation generated from our estimates and $0.5622$ is the standard errors reported by the `lm()` function in each run. Take note that `lm()` assumes that the errors are normally distributed and does not have outliers (*However, it is more precise to say that Normal distribution has "thin tails" which suggests outliers are possible but rare*).
+
+Now a skeptic might ask: "*Maybe* $0.5622$ is just different from $0.6064$ because of random chance (simulation noise)."
+
+To address this, we compute a $95\%$ confidence interval:
+
+```{r}
+t.test(slope[, 2])$conf
+```
+
+In this specific case, the null hypothesis for the above test was: "The `lm()` model's reported error is accurate (*equal to 0.6064*)"
+
+The confidence interval rests between $0.5558914$ and $0.5685930$ of which $0.6064$ is effectively far outside it. The difference between the "**Reported Error** and the "**Actual Error**"is **statistically significant** and when errors have heavy tails ($t_3$), the standard linear model underestimates the uncertainty.
+
+If we use standard least squares regression on data that has heavy-tailed errors ($t_3$):
+
+-   Our slope estimates are still approximately unbiased (*close to zero*).
+-   But our standard errors are too small (*biased downwards*).
+-   This meant that our confidence intervals will be too narrow and we will claim statistical significance too often as our p-values will be artificially low due to presence of outlier(s).
+
+#### q2d
+
+```{r}
+mean(slope[, 4] < 0.05)
+```
+
+#### q2e
+
+- Initially, we generated the data with the assumption that there is no relationship to be found.
+  - Null hypothesis: $\beta = 0$.
+- If the model finds a "_statistically significant_" relationship, it is making a **Type I error**, or **false positive error** (_the incorrect rejection of the true null hypothesis in statistical hypothesis testing_).
+- If we set our confidence level to $95\%, \quad (\alpha = 0.05)$, we implicitly agreed to accept a $5\%$ error rate. That is, we expect to be wrong $5\%$ of the time (_nominal size of the error rate_).
+- In $4.2\%$ of our $4000$ simulations, the model claimed that the `slope` was statistically significant (_actual size of the error rate_).
+- Since the figures are close to each another, the hypothesis test is behaving
+- In part (c), we proved that the standard errors were too biased downwards.
+  - Usually, if standard errors are too small $\longrightarrow$ t-values are too big $\longrightarrow$ p-values are too small $\longrightarrow$ rejection rate should be high.
+  - However, the result here indicates that despite the errors being non-normal ($t_3$) and the standard errors being biased, the t-test is remarkly robust as it managed to preserve the correct Type I error rate.
