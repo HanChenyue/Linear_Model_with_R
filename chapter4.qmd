@@ -15,9 +15,8 @@ format: html
 set.seed(101)
 n <- 30
 nsim <-  4000
-sig <- 1
 x <- seq(from = 0, to = 1, length.out = n)
-y <- x + rcauchy(n = n, location = 0, scale = sig)
+y <- x + rcauchy(n = n, location = 0, scale = 1)
 lm_q1a <- lm(y ~ x)
 summary(lm_q1a)
 summary(lm_q1a)$coef[2, ]
@@ -27,7 +26,7 @@ abline(lm_q1a)
 slope <- matrix(data = NA, nrow = nsim, ncol = 2)
 
 for(i in 1:nsim){
-    y <- x + rcauchy(n = n, location = 0, scale = sig)
+    y <- x + rcauchy(n = n, location = 0, scale = 1)
     lm_q1b <- lm(y ~ x)
     slope[i, 1] <- summary(lm_q1b)$coef[2, 1]  # First column contains estimates
     slope[i, 2] <- summary(lm_q1b)$coef[2, 2]  # Second column contains std errors
@@ -35,11 +34,11 @@ for(i in 1:nsim){
 ```
 
 ```{r}
-summary(slope[, 1])
+round(summary(slope[, 1]), 4)
 ```
 
 ```{r}
-summary(slope[, 2])
+round(summary(slope[, 2]), 4)
 ```
 
 -   Although the median of $0.8765$ and the mean of $1.4804$ align reasonably well with the expected value of one, the minimum value of $-4203.4762$ and the maximum value of $7815.6476$ indicate the presence of extreme outlier estimates.
@@ -87,7 +86,6 @@ set.seed(37)
 n <- 30
 nsim <- 4000
 x <- seq(from = 0, to = 1, length.out = n)
-sig <- 1
 slope <- matrix(data = NA, nrow = nsim, ncol = 4)
 
 for(i in 1:nsim){
@@ -100,7 +98,7 @@ for(i in 1:nsim){
     # slope[i, 4] <- summary(lm_q2a)$coef[2, 4]  # Fourth column contains p-values
 }
 
-summary(lm_q2a)$coef[2, ]
+round(summary(lm_q2a)$coef[2, ], 4)
 ```
 
 ```{r}
@@ -111,10 +109,10 @@ abline(lm_q2a)
 #### q2b
 
 ```{r}
-mean(slope[, 1])
+round(mean(slope[, 1]), 4)
 ```
 
-The mean of our simulated estimates, $\bar{\hat{\beta_1}} = 0.0145$ is close to the true theoretical value of $\beta_1 = 0$ and the theoretical expectation $E(\hat{\beta_1}) = 0$.
+The mean of our simulated estimates, $\bar{\hat{\beta_1}} = 0.0145$, is close to the true theoretical value of $\beta_1 = 0$ and the theoretical expectation $E(\hat{\beta_1}) = 0$.
 
 $$
 \bar{\hat{\beta_1}} \approx \beta_1
@@ -127,13 +125,13 @@ $$
 #### q2c
 
 ```{r}
-sd(slope[, 1])
+round(sd(slope[, 1]), 4)
 ```
 
 The standard deviation of $\hat{\beta_1} = 0.6064$, which is close to the square root of the theoretical variance that was computed with Equation 2.21, $\operatorname{Var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2$, on page 57.
 
 ```{r}
-mean(slope[, 2])
+round(mean(slope[, 2]), 4)
 ```
 
 The mean of simulated $SE(\hat{\beta_1}) = 0.5622$ does not agree with computed standard deviation of $\hat{\beta_1} = 0.6064$.
@@ -147,12 +145,12 @@ Now, a skeptic might ask: "*Maybe* $0.5622$ is just different from $0.6064$ beca
 To address this, we compute a $95\%$ confidence interval:
 
 ```{r}
-t.test(slope[, 2])$conf
+round(t.test(slope[, 2])$conf, 4)
 ```
 
 In this specific case, the null hypothesis for the above test was: "The `lm()` model's reported error is accurate (*equal to 0.6064*)"
 
-The confidence interval rests between $0.5558914$ and $0.5685930$ of which $0.6064$ is effectively far below the actual standard deviation. The difference between the "**Reported Error** and the "**Actual Error**" is **statistically significant,** proving that when errors have heavy tails ($t_3$), the standard linear model underestimates the uncertainty.
+The confidence interval rests between $0.5559$ and $0.5686$ of which $0.6064$ is effectively far below the actual standard deviation. The difference between the "**Reported Error** and the "**Actual Error**" is **statistically significant,** proving that when errors have heavy tails ($t_3$), the standard linear model underestimates the uncertainty.
 
 If we use standard least squares regression on data that has heavy-tailed errors ($t_3$):
 
@@ -163,7 +161,7 @@ If we use standard least squares regression on data that has heavy-tailed errors
 #### q2d
 
 ```{r}
-mean(slope[, 4] < 0.05)
+round(mean(slope[, 4] < 0.05), 4)
 ```
 
 #### q2e
@@ -187,7 +185,6 @@ mean(slope[, 4] < 0.05)
 set.seed(37)
 n <- 30
 nsim <- 4000
-sig <- 1
 x <- seq(from = 0, to = 1, length.out = n)
 slope <- matrix(data = NA, nrow = nsim, ncol = 4)
 
@@ -208,7 +205,7 @@ for(i in 1:nsim){
     # slope[i, 4] <- summary(lm_q2a)$coef[2, 4]  # Fourth column contains p-values
 }
 
-summary(lm_q3a)$coef[2, ]
+round(summary(lm_q3a)$coef[2, ], 4)
 ```
 
 ```{r}
@@ -221,38 +218,34 @@ Yes, the correlated errors are apparent.
 #### q3b
 
 ```{r}
-mean(slope[, 1])
+round(mean(slope[, 1]), 4)
 ```
 
-We expect zero but our simulated value is close.
-
-$$
-E(\beta_1) = 0
-$$
-
-$$
-\bar{\hat{\beta_1}} = -0.0167 \approx E(\beta_1)
-$$
+The mean of our simulated estimates, $\bar{\hat{\beta_1}} = -0.0167$, is close to the true theoretical value of $\beta_1 = 0$ and the theoretical expectation $E(\hat{\beta_1}) = 0$.
 
 #### q3c
 
 ```{r}
-sd(slope[, 1])
+round(sd(slope[, 1]), 4)
 ```
 
+SD of the simulated $\hat{\beta_1}$ is $3.4614$.
+
 ```{r}
-mean(slope[, 2])
+round(mean(slope[, 2]), 4)
 ```
+
+Mean of simulated $\SE(hat{\beta_1})$ is $0.8354$.
 
 The estimated standard error generated by `lm()` substantially underestimate the true standard error.
 
 #### q3d
 
 ```{r}
-mean(slope[, 4] < 0.05)
+round(mean(slope[, 4] < 0.05), 4)
 ```
 
--   In $62.6\%$ of our $4000$ simulations, the model claimed that the `slope` was statistically significant even though the null hypothesis is true.
+-  In $62.6\%$ of our $4000$ simulations, the model claimed that the `slope` was statistically significant even though the null hypothesis is true.
     -   This is a consequence of the underestimated SE for $\beta_1$.
     -   The `lm()` function does not know about the correlation and calculates a standard error that is far too small as it sees the thirty datapoints and assumes each and every one of them provides a fresh, independent piece of information.
     -   Standard errors are too small $\longrightarrow$ t-values are too big $\longrightarrow$ p-values are too small $\longrightarrow$ rejection rate should be high.
@@ -269,3 +262,65 @@ mean(slope[, 4] < 0.05)
 ### Q4
 
 #### q4a
+
+-   To enforce the requirement "*SD proportional to $x$*", we multiply the standard deviation with $x$ such that as $x$ gets larger, the spread also get larger
+
+```{r}
+set.seed(37)
+n <- 30
+nsim <- 4000
+x <- seq(from = 0, to = 1, length.out = n)
+slope <- matrix(data = NA, nrow = nsim, ncol = 4)
+
+for (i in 1:nsim){
+    y <- rnorm(n = n, mean = 0, sd = x * 1)
+    lm_q4a <- lm(y ~ x)
+    slope[i, ] <- summary(lm_q4a)$coef[2, ]
+}
+
+round(summary(lm_q4a)$coef[2, ], 4)
+```
+
+```{r}
+plot(x, y)
+abline(lm_q4a)
+```
+
+Yes, as $x$ increases, the dispersion becomes much more apparent. In other words, the data exhibits clear heteroscedasticity.
+
+#### q4b
+
+```{r}
+round(mean(slope[, 1]), 4)
+```
+
+The mean of our simulated estimates, $\bar{\hat{\beta_1}} = -0.0027$, is close to the true theoretical value of $\beta_1 = 0$ and the theoretical expectation $E(\hat{\beta_1}) = 0$.
+
+#### q4c
+
+```{r}
+round(sd(slope[, 1]), 4)
+```
+
+The standard deviation of the simulated $\hat{\beta_1}$ is $0.3961$.
+
+```{r}
+round(mean(slope[, 2]), 4)
+```
+
+The mean of the simulated $SE(hat{\beta_1})$ is $0.3502$, which is slightly smaller than standard deviation of the simulated $\hat{\beta_1}$. Thus, it underestimates the true standard error.
+
+#### q4d
+
+```{r}
+round(mean(slope[, 4] < 0.05), 4)
+```
+
+-  In $8.25\%$ of our $4000$ simulations, the model claimed that the `slope` was statistically significant even though the null hypothesis is true.
+    -   This is a consequence of the underestimated SE for $\beta_1$.
+    -   The `lm()` function assumes homoscedasticity.  It treats the high-variance data points (large $x$) as having the same precision as the low-variance data points. Because it fails to account for the extra noise introduced as $x$ increases, the standard error formula yields a value that is too small.
+    -   Standard errors are too small $\longrightarrow$ t-values are too big $\longrightarrow$ p-values are too small $\longrightarrow$ rejection rate should be high.
+
+### Q5
+
+#### q5a
