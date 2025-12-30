@@ -1,9 +1,20 @@
 ---
-title: "Linear_Model_with_R"
+title: "Linear Model with R: Chapter 4"
 author: Han Chenyue
 editor: source
-format: html
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
 ---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  # echo = FALSE,
+  digits = 4,
+  scipen = 2
+)
+```
 
 # Chapter 4
 
@@ -14,7 +25,7 @@ format: html
 ```{r}
 set.seed(101)
 n <- 30
-nsim <-  4000
+n_simulations <- 4000
 x <- seq(from = 0, to = 1, length.out = n)
 y <- x + rcauchy(n = n, location = 0, scale = 1)
 lm_q1a <- lm(y ~ x)
@@ -23,22 +34,22 @@ summary(lm_q1a)$coef[2, ]
 plot(x, y)
 abline(lm_q1a)
 
-slope <- matrix(data = NA, nrow = nsim, ncol = 2)
+slope <- matrix(data = NA, nrow = n_simulations, ncol = 2)
 
-for(i in 1:nsim){
-    y <- x + rcauchy(n = n, location = 0, scale = 1)
-    lm_q1b <- lm(y ~ x)
-    slope[i, 1] <- summary(lm_q1b)$coef[2, 1]  # First column contains estimates
-    slope[i, 2] <- summary(lm_q1b)$coef[2, 2]  # Second column contains std errors
+for (i in 1:n_simulations) {
+  y <- x + rcauchy(n = n, location = 0, scale = 1)
+  lm_q1b <- lm(y ~ x)
+  slope[i, 1] <- summary(lm_q1b)$coef[2, 1] # First column contains estimates
+  slope[i, 2] <- summary(lm_q1b)$coef[2, 2] # Second column contains std errors
 }
 ```
 
 ```{r}
-round(summary(slope[, 1]), 4)
+summary(slope[, 1])
 ```
 
 ```{r}
-round(summary(slope[, 2]), 4)
+summary(slope[, 2])
 ```
 
 -   Although the median of $0.8765$ and the mean of $1.4804$ align reasonably well with the expected value of one, the minimum value of $-4203.4762$ and the maximum value of $7815.6476$ indicate the presence of extreme outlier estimates.
@@ -84,21 +95,21 @@ By dividing the generated numbers by $\sqrt{3}$, we retain the shape of the *t*-
 ```{r}
 set.seed(37)
 n <- 30
-nsim <- 4000
+n_simulations <- 4000
 x <- seq(from = 0, to = 1, length.out = n)
-slope <- matrix(data = NA, nrow = nsim, ncol = 4)
+slope <- matrix(data = NA, nrow = n_simulations, ncol = 4)
 
-for(i in 1:nsim){
-    y <- rt(n = n, df = 3) / sqrt(3)
-    lm_q2a <- lm(y ~ x)
-    slope[i, ] <- summary(lm_q2a)$coef[2, ]
-    # slope[i, 1] <- summary(lm_q2a)$coef[2, 1]  # First column contains estimates
-    # slope[i, 2] <- summary(lm_q2a)$coef[2, 2]  # Second column contains std errors
-    # slope[i, 3] <- summary(lm_q2a)$coef[2, 3]  # Third column contains t values
-    # slope[i, 4] <- summary(lm_q2a)$coef[2, 4]  # Fourth column contains p-values
+for (i in 1:n_simulations) {
+  y <- rt(n = n, df = 3) / sqrt(3)
+  lm_q2a <- lm(y ~ x)
+  slope[i, ] <- summary(lm_q2a)$coef[2, ]
+  # slope[i, 1] <- summary(lm_q2a)$coef[2, 1]  # First column contains estimates
+  # slope[i, 2] <- summary(lm_q2a)$coef[2, 2]  # Second column contains std errors
+  # slope[i, 3] <- summary(lm_q2a)$coef[2, 3]  # Third column contains t values
+  # slope[i, 4] <- summary(lm_q2a)$coef[2, 4]  # Fourth column contains p-values
 }
 
-round(summary(lm_q2a)$coef[2, ], 4)
+summary(lm_q2a)$coef[2, ]
 ```
 
 ```{r}
@@ -109,7 +120,7 @@ abline(lm_q2a)
 #### q2b
 
 ```{r}
-round(mean(slope[, 1]), 4)
+mean(slope[, 1])
 ```
 
 The mean of our simulated estimates, $\bar{\hat{\beta_1}} = 0.0145$, is close to the true theoretical value of $\beta_1 = 0$ and the theoretical expectation $E(\hat{\beta_1}) = 0$.
@@ -125,13 +136,13 @@ $$
 #### q2c
 
 ```{r}
-round(sd(slope[, 1]), 4)
+sd(slope[, 1])
 ```
 
 The standard deviation of $\hat{\beta_1} = 0.6064$, which is close to the square root of the theoretical variance that was computed with Equation 2.21, $\operatorname{Var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2$, on page 57.
 
 ```{r}
-round(mean(slope[, 2]), 4)
+mean(slope[, 2])
 ```
 
 The mean of simulated $SE(\hat{\beta_1}) = 0.5622$ does not agree with computed standard deviation of $\hat{\beta_1} = 0.6064$.
@@ -145,7 +156,7 @@ Now, a skeptic might ask: "*Maybe* $0.5622$ is just different from $0.6064$ beca
 To address this, we compute a $95\%$ confidence interval:
 
 ```{r}
-round(t.test(slope[, 2])$conf, 4)
+t.test(slope[, 2])$conf
 ```
 
 In this specific case, the null hypothesis for the above test was: "The `lm()` model's reported error is accurate (*equal to 0.6064*)"
@@ -161,7 +172,7 @@ If we use standard least squares regression on data that has heavy-tailed errors
 #### q2d
 
 ```{r}
-round(mean(slope[, 4] < 0.05), 4)
+mean(slope[, 4] < 0.05)
 ```
 
 #### q2e
@@ -184,28 +195,28 @@ round(mean(slope[, 4] < 0.05), 4)
 ```{r}
 set.seed(37)
 n <- 30
-nsim <- 4000
+n_simulations <- 4000
 x <- seq(from = 0, to = 1, length.out = n)
-slope <- matrix(data = NA, nrow = nsim, ncol = 4)
+slope <- matrix(data = NA, nrow = n_simulations, ncol = 4)
 
-for(i in 1:nsim){
-    y <- arima.sim(
-        model = list(
-            order = c(1, 0, 0),
-            ar = 0.9
-        ),
-        n = 30,
-    )
+for (i in 1:n_simulations) {
+  y <- arima.sim(
+    model = list(
+      order = c(1, 0, 0),
+      ar = 0.9
+    ),
+    n = 30,
+  )
 
-    lm_q3a <- lm(y ~ x)
-    slope[i, ] <- summary(lm_q3a)$coef[2, ]
-    # slope[i, 1] <- summary(lm_q2a)$coef[2, 1]  # First column contains estimates
-    # slope[i, 2] <- summary(lm_q2a)$coef[2, 2]  # Second column contains std errors
-    # slope[i, 3] <- summary(lm_q2a)$coef[2, 3]  # Third column contains t values
-    # slope[i, 4] <- summary(lm_q2a)$coef[2, 4]  # Fourth column contains p-values
+  lm_q3a <- lm(y ~ x)
+  slope[i, ] <- summary(lm_q3a)$coef[2, ]
+  # slope[i, 1] <- summary(lm_q2a)$coef[2, 1]  # First column contains estimates
+  # slope[i, 2] <- summary(lm_q2a)$coef[2, 2]  # Second column contains std errors
+  # slope[i, 3] <- summary(lm_q2a)$coef[2, 3]  # Third column contains t values
+  # slope[i, 4] <- summary(lm_q2a)$coef[2, 4]  # Fourth column contains p-values
 }
 
-round(summary(lm_q3a)$coef[2, ], 4)
+summary(lm_q3a)$coef[2, ]
 ```
 
 ```{r}
@@ -218,7 +229,7 @@ Yes, the correlated errors are apparent.
 #### q3b
 
 ```{r}
-round(mean(slope[, 1]), 4)
+mean(slope[, 1])
 ```
 
 The mean of our simulated estimates, $\bar{\hat{\beta_1}} = -0.0167$, is close to the true theoretical value of $\beta_1 = 0$ and the theoretical expectation $E(\hat{\beta_1}) = 0$.
@@ -226,13 +237,13 @@ The mean of our simulated estimates, $\bar{\hat{\beta_1}} = -0.0167$, is close t
 #### q3c
 
 ```{r}
-round(sd(slope[, 1]), 4)
+sd(slope[, 1])
 ```
 
 SD of the simulated $\hat{\beta_1}$ is $3.4614$.
 
 ```{r}
-round(mean(slope[, 2]), 4)
+mean(slope[, 2])
 ```
 
 Mean of simulated $\SE(hat{\beta_1})$ is $0.8354$.
@@ -242,10 +253,10 @@ The estimated standard error generated by `lm()` substantially underestimate the
 #### q3d
 
 ```{r}
-round(mean(slope[, 4] < 0.05), 4)
+round(mean(slope[, 4] < 0.05) * 100, 1)
 ```
 
--  In $62.6\%$ of our $4000$ simulations, the model claimed that the `slope` was statistically significant even though the null hypothesis is true.
+-   In $62.6\%$ of our $4000$ simulations, the model claimed that the `slope` was statistically significant even though the null hypothesis is true.
     -   This is a consequence of the underestimated SE for $\beta_1$.
     -   The `lm()` function does not know about the correlation and calculates a standard error that is far too small as it sees the thirty datapoints and assumes each and every one of them provides a fresh, independent piece of information.
     -   Standard errors are too small $\longrightarrow$ t-values are too big $\longrightarrow$ p-values are too small $\longrightarrow$ rejection rate should be high.
@@ -263,22 +274,22 @@ round(mean(slope[, 4] < 0.05), 4)
 
 #### q4a
 
--   To enforce the requirement "*SD proportional to $x$*", we multiply the standard deviation with $x$ such that as $x$ gets larger, the spread also get larger
+-   To enforce the requirement "*SD proportional to* $x$", we multiply the standard deviation with $x$ such that as $x$ gets larger, the spread also get larger
 
 ```{r}
 set.seed(37)
 n <- 30
-nsim <- 4000
+n_simulations <- 4000
 x <- seq(from = 0, to = 1, length.out = n)
-slope <- matrix(data = NA, nrow = nsim, ncol = 4)
+slope <- matrix(data = NA, nrow = n_simulations, ncol = 4)
 
-for (i in 1:nsim){
-    y <- rnorm(n = n, mean = 0, sd = x * 1)
-    lm_q4a <- lm(y ~ x)
-    slope[i, ] <- summary(lm_q4a)$coef[2, ]
+for (i in 1:n_simulations) {
+  y <- rnorm(n = n, mean = 0, sd = x * 1)
+  lm_q4a <- lm(y ~ x)
+  slope[i, ] <- summary(lm_q4a)$coef[2, ]
 }
 
-round(summary(lm_q4a)$coef[2, ], 4)
+summary(lm_q4a)$coef[2, ]
 ```
 
 ```{r}
@@ -299,28 +310,147 @@ The mean of our simulated estimates, $\bar{\hat{\beta_1}} = -0.0027$, is close t
 #### q4c
 
 ```{r}
-round(sd(slope[, 1]), 4)
+sd(slope[, 1])
 ```
 
 The standard deviation of the simulated $\hat{\beta_1}$ is $0.3961$.
 
 ```{r}
-round(mean(slope[, 2]), 4)
+mean(slope[, 2])
 ```
 
-The mean of the simulated $SE(hat{\beta_1})$ is $0.3502$, which is slightly smaller than standard deviation of the simulated $\hat{\beta_1}$. Thus, it underestimates the true standard error.
+The mean of the simulated $SE(hat{\beta_1})$ is `r mean(slope[, 2])`, which is slightly smaller than standard deviation of the simulated $\hat{\beta_1}$. Thus, it underestimates the true standard error.
 
 #### q4d
 
 ```{r}
-round(mean(slope[, 4] < 0.05), 4)
+round(mean(slope[, 4] < 0.05) * 100, 1)
 ```
 
--  In $8.25\%$ of our $4000$ simulations, the model claimed that the `slope` was statistically significant even though the null hypothesis is true.
-    -   This is a consequence of the underestimated SE for $\beta_1$.
-    -   The `lm()` function assumes homoscedasticity.  It treats the high-variance data points (large $x$) as having the same precision as the low-variance data points. Because it fails to account for the extra noise introduced as $x$ increases, the standard error formula yields a value that is too small.
+-   In `r round(mean(slope[, 4] < 0.05) * 100, 1)`% of our `r n_simulations` simulations, the model claimed that the `slope` was statistically significant even though the null hypothesis is true.
+    -   This is a consequence of the underestimated standard error for $\beta_1$.
+    -   The `lm()` function assumes homoscedasticity. It treats the high-variance data points (large $x$) as having the same precision as the low-variance data points. Because it fails to account for the extra noise introduced as $x$ increases, the standard error formula yields a value that is too small.
     -   Standard errors are too small $\longrightarrow$ t-values are too big $\longrightarrow$ p-values are too small $\longrightarrow$ rejection rate should be high.
 
 ### Q5
 
 #### q5a
+
+```{r}
+edf <- data.frame(
+  y <- c(1.21, 1.13, 1.42, 1.01, 1.11, 0.94, 1.23, 1.04),
+  g <- c(0, 0, 0, 0, 1, 1, 1, 1)
+)
+```
+
+```{r}
+lm_q5a <- lm(y ~ g, data = edf)
+lm_q5a_summary <- summary(lm_q5a)
+lm_q5a_summary
+```
+
+```{r}
+lm_q5a_summary$fstatistic[1]
+```
+
+$\text{F-statistics} = `r lm_q5a_summary$fstatistic[1]`$
+
+```{r}
+1 -
+  pf(
+    q = lm_q5a_summary$fstatistic[1],
+    df1 = lm_q5a_summary$fstatistic[2],
+    df2 = lm_q5a_summary$fstatistic[3]
+  )
+```
+
+$\text{p-value} = `r 1 - pf(q = lm_q5a_summary$fstatistic[1], df1 = lm_q5a_summary$fstatistic[2], df2 = lm_q5a_summary$fstatistic[3])`$
+
+#### q5b
+
+```{r}
+allcomb <- combn(x = 8, m = 4)
+ncol(allcomb)
+```
+
+`r ncol(allcomb)` combinations exist.
+
+#### q5c
+
+We use combinations instead of permutations because **order within the group does not matter**, the results are identical regardless of whether group 1 is defined as $\{1, 3, 5, 9\}$ or $\{9, 5, 1, 3\}$. Using combinations reduces the computational load significantly without losing information.
+
+#### q5d
+
+```{r}
+fstats <- numeric(ncol(allcomb))
+for (i in 1:ncol(allcomb)) {
+  col_i <- allcomb[, i]
+  selected_y_based_on_col_i <- c(edf$y[col_i], edf$y[-col_i]) # The first 4 items belong to g = 0, the rest belong to g = 1
+  fstats[i] <- summary(lm(selected_y_based_on_col_i ~ edf$g))$fstatistic[1]
+}
+```
+
+#### q5e
+
+```{r}
+mean(fstats > lm_q5a_summary$fstatistic[1])
+```
+
+As discussed in section 4.3, since the p-values computed based on the assumption of normal errors and those based on permutations (*in this case, by means of combinations*) are so close, many would prefer the normal assumption-based tests because they are quicker and easier to compute while the latter approach requires more work to compute despite making fewer assumptions.
+
+### Q6
+
+#### q6a
+
+```{r}
+data(happy, package = "faraway")
+lm_q6a <- lm(happy ~ ., data = happy)
+summary(lm_q6a)
+```
+
+Only the predictor `love` was statistically significant at the $1\%$ level. The predictor work was significant at the $5\%$ level, but not at the $1\%$ level."
+
+#### q6b
+
+```{r}
+table(happy$happy)
+```
+
+The summary shows the response variable is discrete, consisting only of integers. Since linear regression assumes a continuous response to generate normally distributed errors, this assumption is questionable here.
+
+#### q6c
+
+```{r}
+set.seed(37)
+n_repetitions <- 4000
+tstats <- numeric(n_repetitions)
+for (i in 1:n_repetitions) {
+  lm_q6c <- lm(happy ~ sample(money) + sex + love + work, data = happy)
+  tstats[i] <- summary(lm_q6c)$coef[2, 3]
+}
+
+mean(abs(tstats) > abs(summary(lm_q6a)$coef[2, 3]))
+```
+
+The outcome returns `r mean(abs(tstats) > abs(summary(lm_q6a)$coef[2, 3]))`, which is very close to the observed normal-based *p*-value of `r round(summary(lm_q6a)$coef[2, 4], 4)`.
+
+#### q6d
+
+```{r}
+hist(tstats, freq = FALSE, main = "Distribution of Permuted t-Statistics")
+```
+
+#### q6e
+
+```{r}
+hist(tstats, freq = FALSE, main = "Distribution of Permuted t-Statistics")
+grid <- seq(-3, 3, length = 300)
+lines(grid, dt(grid, 34))
+```
+
+#### q6f
+
+```{r}
+set.seed(37)
+
+```
