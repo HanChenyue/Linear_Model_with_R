@@ -452,5 +452,45 @@ lines(grid, dt(grid, 34))
 
 ```{r}
 set.seed(37)
+coefficient_matrix <- matrix(data = NA, nrow = 4000, ncol = 5)
+residual <- residuals(lm_q6a)
+prediction <- fitted(lm_q6a)
 
+for (i in 1:4000) {
+  bootstrapped_responses <- prediction + sample(residual, rep = TRUE)
+  bootstrapped_model <- update(lm_q6a, bootstrapped_responses ~ .)
+  coefficient_matrix[i, ] = coef(bootstrapped_model)
+}
+
+colnames(coefficient_matrix) = c("Intercept", colnames(happy)[-1]) # Removed the first column name of the "happy" dataset is "happy" (the responses)
+coefficient_matrix_data_frame <- data.frame(coefficient_matrix)
+head(coefficient_matrix_data_frame)
 ```
+
+```{r}
+round(
+  apply(
+    X = coefficient_matrix_data_frame["money"],
+    MARGIN = 2,
+    FUN = function(x) quantile(x = x, probs = c(0.05, 0.95))
+  ),
+  5
+)
+```
+
+Zero does not fall within the 90% intervals. We reject the null hypothesis.
+
+```{r}
+round(
+  apply(
+    X = coefficient_matrix_data_frame["money"],
+    MARGIN = 2,
+    FUN = function(x) quantile(x = x, probs = c(0.025, 0.975))
+  ),
+  5
+)
+```
+
+Zero does fall within the 95% intervals. We do not reject the null hypothesis.
+
+In the original model output, the p-value for the test of $\beta_{money}$ is `r round(summary(lm_q6a)$coefficients[2, 4], 3)` which lies between the 5% and 10% significance levels. Hence, we do not expect the 90% confidence interval to contain zero but we do for the 95% confidence interval.

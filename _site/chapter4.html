@@ -902,6 +902,73 @@ F-statistic: 20.83 on 4 and 34 DF,  p-value: 9.364e-09</code></pre>
 </section>
 <section id="q6f" class="level4">
 <h4 class="anchored" data-anchor-id="q6f">q6f</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">37</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>coefficient_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">data =</span> <span class="cn">NA</span>, <span class="at">nrow =</span> <span class="dv">4000</span>, <span class="at">ncol =</span> <span class="dv">5</span>)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>residual <span class="ot">&lt;-</span> <span class="fu">residuals</span>(lm_q6a)</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>prediction <span class="ot">&lt;-</span> <span class="fu">fitted</span>(lm_q6a)</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4000</span>) {</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>  bootstrapped_responses <span class="ot">&lt;-</span> prediction <span class="sc">+</span> <span class="fu">sample</span>(residual, <span class="at">rep =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>  bootstrapped_model <span class="ot">&lt;-</span> <span class="fu">update</span>(lm_q6a, bootstrapped_responses <span class="sc">~</span> .)</span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>  coefficient_matrix[i, ] <span class="ot">=</span> <span class="fu">coef</span>(bootstrapped_model)</span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(coefficient_matrix) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Intercept"</span>, <span class="fu">colnames</span>(happy)[<span class="sc">-</span><span class="dv">1</span>]) <span class="co"># Removed the first column name of the "happy" dataset is "happy" (the responses)</span></span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a>coefficient_matrix_data_frame <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(coefficient_matrix)</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coefficient_matrix_data_frame)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Intercept       money          sex     love      work
+1 -0.9460525 0.021431936  0.007624504 1.824998 0.4706679
+2  0.2749631 0.008775576  0.161893153 1.787676 0.4196908
+3 -0.9548770 0.002059617  0.519652156 1.720614 0.9079839
+4  0.3127566 0.005465804  0.141000056 1.651313 0.5997722
+5 -1.0090578 0.011541822  0.240535019 1.882462 0.6655649
+6  0.1055908 0.014312377 -0.606071727 2.202516 0.2535674</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(</span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> coefficient_matrix_data_frame[<span class="st">"money"</span>],</span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">MARGIN =</span> <span class="dv">2</span>,</span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">quantile</span>(<span class="at">x =</span> x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.95</span>))</span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>  <span class="dv">5</span></span>
+<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      money
+5%  0.00168
+95% 0.01748</code></pre>
+</div>
+</div>
+<p>Zero does not fall within the 90% intervals. We reject the null hypothesis.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">apply</span>(</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">X =</span> coefficient_matrix_data_frame[<span class="st">"money"</span>],</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">MARGIN =</span> <span class="dv">2</span>,</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">quantile</span>(<span class="at">x =</span> x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="dv">5</span></span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>         money
+2.5%  -0.00003
+97.5%  0.01902</code></pre>
+</div>
+</div>
+<p>Zero does fall within the 95% intervals. We do not reject the null hypothesis.</p>
+<p>In the original model output, the p-value for the test of <span class="math inline">\(\beta_{money}\)</span> is 0.075 which lies between the 5% and 10% significance levels. Hence, we do not expect the 90% confidence interval to contain zero but we do for the 95% confidence interval.</p>
 
 
 </section>
