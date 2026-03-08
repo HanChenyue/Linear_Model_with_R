@@ -79,7 +79,78 @@ manual_prediction <- as.numeric(
 manual_prediction
 near(
   manual_prediction,
-  predict(lm_q1a, newdata = new_patient, interval = "prediction")[, "fit"]
+  predict(lm_q1a, newdata = new_patient, interval = "prediction")[1, "fit"]
+)
+```
+
+To compute the CI manually, we will need:
+
+$$
+\hat{y}_0 \pm t^{(\alpha / 2)}_{n-p} \hat{\sigma} \sqrt{1 + x_0^T (X^T X)^{-1} x_0}
+$$
+
+$$
+\hat{\sigma} = \sqrt{\frac{RSS}{n - p}} = \sqrt{\frac{\hat{e}^T \hat{e}}{n - p}} = \sqrt{\frac{\sum_{i=1}^n \hat{e}_i^2}{n - p}}
+$$
+
+```{r}
+y <- prostate$lpsa
+y
+
+X <- model.matrix(lm_q1a)
+X
+
+
+new_patient_manual_calculations <- data.frame(
+  intercept = 1,
+  lcavol = 1.44692,
+  lweight = 3.62301,
+  age = 65,
+  lbph = 0.3001,
+  svi = 0,
+  lcp = -0.79851,
+  gleason = 7,
+  pgg45 = 15
+)
+
+new_patient_manual_calculations
+
+beta_hat <- solve(t(X) %*% X) %*% t(X) %*% y
+x0 <- t(as.matrix(new_patient_manual_calculations))
+epsilon <- y - X %*% beta_hat
+rss <- t(epsilon) %*% epsilon
+n <- nrow(X)
+p <- ncol(X)
+sigma_hat <- sqrt(rss / (n - p))
+```
+
+```{r}
+y0 <- t(x0) %*% beta_hat
+near(y0, manual_prediction)
+near(
+  y0,
+  predict(lm_q1a, newdata = new_patient, interval = "prediction")[1, "fit"]
+)
+```
+
+```{r}
+t_critical <- qt(0.975, df = n - p)
+t_critical
+
+lwr <- y0 -
+  t_critical * sigma_hat * sqrt(1 + t(x0) %*% solve(t(X) %*% X) %*% x0)
+lwr
+near(
+  lwr,
+  predict(lm_q1a, newdata = new_patient, interval = "prediction")[1, "lwr"]
+)
+
+upr <- y0 +
+  t_critical * sigma_hat * sqrt(1 + t(x0) %*% solve(t(X) %*% X) %*% x0)
+upr
+near(
+  upr,
+  predict(lm_q1a, newdata = new_patient, interval = "prediction")[1, "upr"]
 )
 ```
 
