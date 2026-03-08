@@ -1,0 +1,82 @@
+---
+title: "Linear Model with R: Chapter 5"
+author: Han Chenyue
+editor: source
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  # echo = FALSE,
+  digits = 4,
+  scipen = 2
+)
+```
+
+# Chapter 5
+
+## Exercises
+
+### Q1
+
+```{r}
+data(prostate, package = "faraway")
+lm_q1a <- lm(lpsa ~ ., data = prostate)
+summary(lm_q1a)
+```
+
+```{r}
+new_patient = data.frame(
+  lcavol = 1.44692,
+  lweight = 3.62301,
+  age = 65.00000,
+  lbph = 0.30010,
+  svi = 0.00000,
+  lcp = -0.79851,
+  gleason = 7.00000,
+  pgg45 = 15.00000
+)
+predict(lm_q1a, newdata = new_patient, interval = "prediction")
+```
+
+```{r}
+# Sanity check: Manual calculations
+# Extract coefficients
+coefficient_vector_of_lm_q1a <- coef(lm_q1a)
+coefficient_vector_of_lm_q1a
+
+new_patient_manual_calculations <- data.frame(
+  lcavol = 1.44692,
+  lweight = 3.62301,
+  age = 65,
+  lbph = 0.3001,
+  svi = 0,
+  lcp = -0.79851,
+  gleason = 7,
+  pgg45 = 15
+)
+new_patient_manual_calculations
+
+# Add intercept column to new data
+new_patient_manual_calculations$`(Intercept)` <- 1
+new_patient_manual_calculations
+
+# Reorder columns to match coefficients' order
+new_patient_manual_calculations <- new_patient_manual_calculations[names(
+  coefficient_vector_of_lm_q1a
+)]
+new_patient_manual_calculations
+
+# Multiply and summation
+manual_prediction <- as.numeric(
+  as.matrix(new_patient_manual_calculations) %*% coefficient_vector_of_lm_q1a
+)
+manual_prediction
+near(
+  manual_prediction,
+  predict(lm_q1a, newdata = new_patient, interval = "prediction")[, "fit"]
+)
+```
