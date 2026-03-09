@@ -31,7 +31,7 @@ summary(lm_q1a)
 ```
 
 ```{r}
-new_patient = data.frame(
+new_patient_a = data.frame(
   lcavol = 1.44692,
   lweight = 3.62301,
   age = 65.00000,
@@ -41,47 +41,11 @@ new_patient = data.frame(
   gleason = 7.00000,
   pgg45 = 15.00000
 )
-predict(lm_q1a, newdata = new_patient, interval = "prediction")
+
+predict(lm_q1a, newdata = new_patient_a, interval = "prediction")
 ```
 
-```{r}
-# Sanity check: Manual calculations
-# Extract coefficients
-coefficient_vector_of_lm_q1a <- coef(lm_q1a)
-coefficient_vector_of_lm_q1a
-
-new_patient_manual_calculations <- data.frame(
-  lcavol = 1.44692,
-  lweight = 3.62301,
-  age = 65,
-  lbph = 0.3001,
-  svi = 0,
-  lcp = -0.79851,
-  gleason = 7,
-  pgg45 = 15
-)
-new_patient_manual_calculations
-
-# Add intercept column to new data
-new_patient_manual_calculations$`(Intercept)` <- 1
-new_patient_manual_calculations
-
-# Reorder columns to match coefficients' order
-new_patient_manual_calculations <- new_patient_manual_calculations[names(
-  coefficient_vector_of_lm_q1a
-)]
-new_patient_manual_calculations
-
-# Multiply and summation
-manual_prediction <- as.numeric(
-  as.matrix(new_patient_manual_calculations) %*% coefficient_vector_of_lm_q1a
-)
-manual_prediction
-near(
-  manual_prediction,
-  predict(lm_q1a, newdata = new_patient, interval = "prediction")[1, "fit"]
-)
-```
+Manual calculations for sanity check:
 
 To compute the CI manually, we will need:
 
@@ -100,17 +64,16 @@ y
 X <- model.matrix(lm_q1a)
 X
 
-
 new_patient_manual_calculations <- data.frame(
   intercept = 1,
   lcavol = 1.44692,
   lweight = 3.62301,
-  age = 65,
-  lbph = 0.3001,
-  svi = 0,
+  age = 65.00000,
+  lbph = 0.30010,
+  svi = 0.00000,
   lcp = -0.79851,
-  gleason = 7,
-  pgg45 = 15
+  gleason = 7.00000,
+  pgg45 = 15.00000
 )
 
 new_patient_manual_calculations
@@ -125,11 +88,19 @@ sigma_hat <- sqrt(rss / (n - p))
 ```
 
 ```{r}
+library(tidyverse)
 y0 <- t(x0) %*% beta_hat
-near(y0, manual_prediction)
+y0
+```
+
+```{r}
 near(
   y0,
-  predict(lm_q1a, newdata = new_patient, interval = "prediction")[1, "fit"]
+  predict(
+    lm_q1a,
+    newdata = new_patient_manual_calculations,
+    interval = "prediction"
+  )[1, "fit"]
 )
 ```
 
@@ -142,7 +113,11 @@ lwr <- y0 -
 lwr
 near(
   lwr,
-  predict(lm_q1a, newdata = new_patient, interval = "prediction")[1, "lwr"]
+  predict(
+    lm_q1a,
+    newdata = new_patient_manual_calculations,
+    interval = "prediction"
+  )[1, "lwr"]
 )
 
 upr <- y0 +
@@ -150,11 +125,91 @@ upr <- y0 +
 upr
 near(
   upr,
-  predict(lm_q1a, newdata = new_patient, interval = "prediction")[1, "upr"]
+  predict(
+    lm_q1a,
+    newdata = new_patient_manual_calculations,
+    interval = "prediction"
+  )[1, "upr"]
 )
 ```
 
 #### q1b
+
+```{r}
+new_patient_b <- data.frame(
+  lcavol = 1.44692,
+  lweight = 3.62301,
+  age = 20.00000,
+  lbph = 0.30010,
+  svi = 0.00000,
+  lcp = -0.79851,
+  gleason = 7.00000,
+  pgg45 = 15.00000
+)
+
+predict(lm_q1a, newdata = new_patient_b, interval = "prediction")
+```
+
+The youngest patient in the original dataset is aged forty-one, whereas the current patient is less than half of that age. Therefore, the prediction involves substantial extrapolation beyond the range of the observed data, making it less reliable and resulting in a wider prediction interval. Furthermore, the prediction interval is wider because it accounts for the variability of a future observation through the inclusion of the error term $\epsilon$, in addition to the uncertainty in the estimation of $\beta$.
+
+#### q1c
+
+```{r}
+summary(lm_q1a)
+```
+
+Only `lcavol`, `lweight`, and `svi` are significant at the $5\%$ level.
+
+```{r}
+lm_q1c <- lm(lpsa ~ lcavol + lweight + svi, data = prostate)
+summary(lm_q1c)
+```
+
+```{r}
+old_model_for_patient_a <- predict(
+  lm_q1a,
+  newdata = new_patient_a,
+  interval = "prediction"
+)
+new_model_for_patient_a <- predict(
+  lm_q1c,
+  newdata = new_patient_a,
+  interval = "prediction"
+)
+```
+
+```{r}
+cat("Result for patient A (Old Model): ", old_model_for_patient_a, "\n")
+cat("Result for patient A (New Model): ", new_model_for_patient_a)
+```
+
+The predicted values are very similar.
+
+```{r}
+old_model_for_patient_b <- predict(
+  lm_q1a,
+  newdata = new_patient_b,
+  interval = "prediction"
+)
+new_model_for_patient_b <- predict(
+  lm_q1c,
+  newdata = new_patient_b,
+  interval = "prediction"
+)
+```
+
+```{r}
+cat("Result for patient B (Old Model): ", old_model_for_patient_b, "\n")
+cat("Result for patient B (New Model): ", new_model_for_patient_b)
+```
+
+In this case, the results differ more noticeably, particularly with respect to the prediction interval.
+
+Based on these examples alone, we cannot determine which model provides better predictive performance. The reduced model, however, has the practical advantage that it requires only three predictors to produce a prediction. If obtaining the full set of predictors is difficult or costly, this simpler model may therefore be preferable.
+
+### Q2
+
+#### q2a
 
 ```{r}
 
