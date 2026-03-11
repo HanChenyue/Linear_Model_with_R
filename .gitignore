@@ -1,4 +1,8 @@
+# Quarto
 /.quarto/
+**/*.quarto_ipynb
+
+# PDF files
 *.pdf
 
 # History files
@@ -50,7 +54,6 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
-**/*.quarto_ipynb
 
 # Emacs
 *~
@@ -60,4 +63,6 @@ rsconnect/
 auto-save-list/
 tramp/
 .\#*
+
+# Scratch files
 scratch.R
