@@ -94,7 +94,7 @@ points(0, 0, pch = 21)
 
 -   Origin ($\beta_age = 0$, $\beta_lbph = 0$) falls within both the $95\%$ joint confidence ellipse and the rectangular region defined by the individual $95\%$ univariate confidence intervals.
 -   Neither predictor is statistically significant when considered in isolation within the full model.
--   Crucially, because the origin lies inside the joint confidence ellipse, we do not reject the null hypothesis that both coefficients are simultaneously zero. This is consistent with the result of the formal F-test for nested models:
+-   Crucially, because the origin lies inside the joint confidence ellipse, we do not reject the null hypothesis that both coefficients are simultaneously zero. This is consistent with the result of the formal *F*-test for nested models:
 
 ```{r}
 lm_q1b <- lm(
@@ -104,7 +104,7 @@ lm_q1b <- lm(
 anova(lm_q1b, lm_q1a)
 ```
 
--   The non-significant p-value from this F-test confirms the visual evidence from the ellipse: we fail to find sufficient statistical evidence to reject the null hypothesis.
+-   The non-significant p-value from this *F*-test confirms the visual evidence from the ellipse: we fail to find sufficient statistical evidence to reject the null hypothesis.
 
 #### q1c
 
@@ -148,7 +148,7 @@ summary(lm_q2b)
 anova(lm_q2b, lm_q2a)
 ```
 
--   No, because an F-test is only valid for comparing nested models, where one model is a restricted version of the other (i.e. the predictors of the smaller model are a smaller subset of the larger model).
+-   No, because an *F*-test is only valid for comparing nested models, where one model is a restricted version of the other (i.e. the predictors of the smaller model are a smaller subset of the larger model).
 -   In this case, the models rely on different functional forms of the predictor \[$log(x)$ vs $x$\], thus the column space of one model is not a linear subspace the other.
 -   Since $R^2_{lm\_q2a} = 0.6518 > R^2_{lm\_q2b} = 0.5754$ and $RSS_{lm\_q2a} = 2668.4 < RSS_{lm\_q2b} = 3253.6$, the first model provides a better fit to the data.
 
@@ -234,7 +234,7 @@ anova(lm_q4a_iii, lm_q4a_i)
 ```
 
 -   `salary` is not statistically significant ($\text{p-value}_\text{salary} = 0.0667 < 0.05$).
--   All the individual t-tests are not statistically significant yet the overall F-test is.
+-   All the individual t-tests are not statistically significant yet the overall *F*-test is.
 -   The p-value for the F-statistics is less than $\text{p-value}_\text{F-statistics} = 0.01209 < 0.05$, we reject the null hypothesis $H_0: \beta_\text{salary} = \beta_\text{ratio} = \beta_\text{expend} = 0$.
 -   This indicates that at least one of the predictor has a statistically significant effect on the response.
 -   This usually happens when the predictors are highly correlated with each other and we have a situation where the whole is greater than the sum of its parts.
@@ -266,7 +266,7 @@ Since the sum-of-squares decomposition and F-statistics reduces to the usual equ
 
 [Link to Proof](https://canovasjm.netlify.app/2018/10/29/when-does-the-f-test-reduce-to-t-test/)
 
-## Proof: Equivalence of F-test and t-test (for $a=2$)
+## Proof: Equivalence of *F*-test and t-test (for $a=2$)
 
 **Goal:** We aim to prove that for a one-way ANOVA with $a=2$ groups, the F-statistic is exactly equal to the square of the t-statistic: $$F_{1, N-2} = t_{N-2}^2$$
 
@@ -371,7 +371,7 @@ This is mathematically equivalent to the square of the t-statistic definition:
 
 $$F = \left( \frac{\bar{y}_1 - \bar{y}_2}{ S_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} } \right)^2 = t^2$$
 
-**Conclusion:** We have proven that for $a=2$, the ANOVA F-test yields the same result as the squared two-sample t-test.
+**Conclusion:** We have proven that for $a=2$, the ANOVA *F*-test yields the same result as the squared two-sample t-test.
 
 ```{r}
 near(summary(lm_q4b)$coefficients[5, 3]^2, anova(lm_q4a_i, lm_q4b)$F[2])

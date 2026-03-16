@@ -212,5 +212,103 @@ Based on these examples alone, we cannot determine which model provides better p
 #### q2a
 
 ```{r}
-
+data(teengamb, package = "faraway")
 ```
+
+```{r}
+lm_q2a <- lm(gamble ~ sex + status + income + verbal, data = teengamb)
+summary(lm_q2a)
+```
+
+```{r}
+apply(subset(teengamb, sex == 0), 2, mean)
+male_with_average_stats_data <- data.frame(
+  sex = 0,
+  status = 52,
+  income = 4.976071,
+  verbal = 6.821429,
+  gamble = 29.775000
+)
+predict(lm_q2a, newdata = male_with_average_stats_data, interval = "prediction")
+```
+
+The 95% prediction interval is [-16.83, 76.38], though in practical terms, the lower bound would be truncated at zero.
+
+Standard linear regression assumes that our response variable `gamble` can be any number on the continuous number line, extending to infinity in both the positive and negative directions. The model doesn't "know" that our data represents money.
+
+Furthermore, our Residual Standard Error is 22.69. That is a pretty large amount of error compared to the predicted value (29.775). Because the error is so large, subtracting it from our predicted value pushes the bottom of the interval way past zero.
+
+#### q2b
+
+```{r}
+aggregate(teengamb[, -1], list(sex = teengamb$sex), max)
+```
+
+```{r}
+male_with_maximal_stats_data <- data.frame(
+  sex = 0,
+  status = 75,
+  income = 15,
+  verbal = 10
+)
+```
+
+```{r}
+predict(lm_q2a, newdata = male_with_maximal_stats_data, interval = "prediction")
+```
+
+This CI is wider, in linear regression, our predictions are always the most accurate and have the tightest confidence/prediction intervals right at the "center of mass" of our data. As we moved away from the average and looked at the extreme edges of our data, the model became less certain (Bowtie effect).
+
+There are also less data at the extremes as there are usually a lot of people in a dataset with "average" incomes and scores but there are very few people who have the absolute maximum income, maximum status, and maximum verbal score all at the same time. Because the model has less data representing these extreme individuals, its prediction carried more uncertainty, forcing the interval to be wider.
+
+#### q2c
+
+```{r}
+lm_q2c <- lm(sqrt(gamble) ~ sex + status + income + verbal, data = teengamb)
+summary(lm_q2c)
+```
+
+```{r}
+# Squaring the prediction is needed to reverse the square root on the response. It also solves the problem of having negative lower bound, as the interval cannot mathematically drop below zero anymore.
+predict(
+  lm_q2c,
+  newdata = male_with_average_stats_data,
+  interval = "prediction"
+)^2
+```
+
+#### q2d
+
+```{r}
+female_with_custom_stats_data <- data.frame(
+  sex = 1,
+  status = 20,
+  income = 1,
+  verbal = 10
+)
+predict(
+  lm_q2c,
+  newdata = female_with_custom_stats_data,
+  interval = "prediction"
+)^2
+```
+
+`lwr` $>$ `upr`, which is nonsensical.
+
+Without squaring it, the results are:
+
+```{r}
+predict(
+  lm_q2c,
+  newdata = female_with_custom_stats_data,
+  interval = "prediction"
+)
+```
+
+- The fatal flaw is that the model predicted the square root of this girl's gambling spending to be `r round(predict(lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "fit"], 2)`, with a lower bound of `r round(predict(lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"], 2)`.
+- Mathematically, the principal square root of a real number cannot be negative. The model has made an impossible prediction.
+- Because a negative times a negative is a positive, squaring her large negative lower bound (`r round(predict(lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"], 2)`) turns it into a large positive number (`r round(predict(lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"]^2, 2)`). 
+- A monotone mathematical function is one that always goes in the same direction (*always up or always down*). Squaring is not a monotone function across all real numbers, because it reverses the order of negative values. 
+- Therefore, squaring these negative bounds distorted and flipped the interval, showing that this model performs poorly (*extrapolates badly*) for this specific demographic.
+
+### Q3
