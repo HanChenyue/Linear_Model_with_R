@@ -696,7 +696,6 @@ prediction_q6c <- predict(
 )
 ```
 
-**Comment on the choice of the first 50 rows for the validation set:**
 Allocating 50 out of 252 observations (`r round(50/252*100, 1)`%) to the validation set is a standard and appropriate sample size, leaving ample data (202 observations) to train a mathematically stable model. However, the *method* of selecting the first 50 consecutive rows is a dangerous practice especially if the dataset happens to be sorted by any variable, a sequential split guarantees that the validation set will have a fundamentally different underlying distribution than the training set. To ensure both sets are representative of the same population, the observations should always be partitioned using random sampling.
 
 #### q6d
@@ -705,7 +704,7 @@ Allocating 50 out of 252 observations (`r round(50/252*100, 1)`%) to the validat
 sqrt(mean((prediction_q6c[, "fit"] - training_set$brozek)^2))
 ```
 
-**In-Sample Optimisation:** The RMSE on the training set (`r round(sqrt(mean((prediction_q6c[, "fit"] - training_set$brozek)^2)), 3)`) is slightly lower than the RMSE on the full dataset (`r round(sqrt(mean((prediction_q6a[, "fit"] - fat$brozek)^2)), 3)`). This decrease is mathematically expected because we are measuring **in-sample error**. Ordinary Least Squares (OLS) regression explicitly calculates coefficients designed to minimize the squared residuals for the exact data it is trained on. Furthermore, because the model retains all 13 predictors but now has fewer observations to fit (202 instead of 252), it gains slightly more flexibility to "*hug*" the training data, inherently driving the training error down.
+The RMSE on the training set (`r round(sqrt(mean((prediction_q6c[, "fit"] - training_set$brozek)^2)), 3)`) is slightly lower than the RMSE on the full dataset (`r round(sqrt(mean((prediction_q6a[, "fit"] - fat$brozek)^2)), 3)`). This decrease is mathematically expected because we are measuring **in-sample error**. Ordinary Least Squares (OLS) regression explicitly calculates coefficients designed to minimize the squared residuals for the exact data it is trained on. Furthermore, because the model retains all 13 predictors but now has fewer observations to fit (202 instead of 252), it gains slightly more flexibility to "*hug*" the training data, inherently driving the training error down.
 
 ```{r}
 mean(
@@ -714,7 +713,7 @@ mean(
 )
 ```
 
-**Coverage Comparison:** The fraction of prediction intervals containing the true response on the training set is (`r round(mean((training_set$brozek > prediction_q6c[, "lwr"]) & (training_set$brozek < prediction_q6c[, "upr"])) * 100, 1)`%), which is remarkably close to the (`r round(mean((fat$brozek > prediction_q6a[, "lwr"]) & (fat$brozek < prediction_q6a[, "upr"])) * 100, 1)`%) coverage we saw on the full dataset. Both of these empirical coverage rates are slightly conservative (*running a bit higher than the nominal 95% target*), but they prove that the model's behavior remains stable and consistent when trained on this subset. 
+The fraction of prediction intervals containing the true response on the training set is (`r round(mean((training_set$brozek > prediction_q6c[, "lwr"]) & (training_set$brozek < prediction_q6c[, "upr"])) * 100, 1)`%), which is remarkably close to the (`r round(mean((fat$brozek > prediction_q6a[, "lwr"]) & (fat$brozek < prediction_q6a[, "upr"])) * 100, 1)`%) coverage we saw on the full dataset. Both of these empirical coverage rates are slightly conservative (*running a bit higher than the nominal 95% target*), but they prove that the model's behavior remains stable and consistent when trained on this subset. 
 
 #### q6e
 
@@ -727,7 +726,7 @@ prediction_q6e <- predict(
 sqrt(mean((prediction_q6e[, "fit"] - validation_set$brozek)^2))
 ```
 
-**Out-of-Sample Error**: The RMSE on the unseen validation set (`r round(sqrt(mean((prediction_q6e[, "fit"] - validation_set$brozek)^2)), 3)`) is noticeably higher than the RMSE on the training set (`r round(sqrt(mean((prediction_q6c[, "fit"] - training_set$brozek)^2)), 3)`). This is an expected statistical phenomenon. Regression models are mathematically optimised to minimise the error on their specific training data. When the model is forced to generalise to brand-new, unseen data, the error naturally increases. In other words, the training RMSE represents an overly optimistic view of the model's accuracy, whereas the validation RMSE provides a much more realistic estimate of real-world performance.
+The RMSE on the unseen validation set (`r round(sqrt(mean((prediction_q6e[, "fit"] - validation_set$brozek)^2)), 3)`) is noticeably higher than the RMSE on the training set (`r round(sqrt(mean((prediction_q6c[, "fit"] - training_set$brozek)^2)), 3)`). This is an expected statistical phenomenon. Regression models are mathematically optimised to minimise the error on their specific training data. When the model is forced to generalise to brand-new, unseen data, the error naturally increases. In other words, the training RMSE represents an overly optimistic view of the model's accuracy, whereas the validation RMSE provides a much more realistic estimate of real-world performance.
 
 ```{r}
 mean(
@@ -736,7 +735,7 @@ mean(
 )
 ```
 
-**Coverage Fraction on Unseen Data**: The coverage probability on the validation set actually rose slightly to `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly `r nrow(validation_set)` observations, a single observation represents a 2% swing. A `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.
+The coverage probability on the validation set actually rose slightly to `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly `r nrow(validation_set)` observations, a single observation represents a 2% swing. A `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.
 
 ### Q7
 

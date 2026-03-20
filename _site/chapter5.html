@@ -1460,7 +1460,7 @@ RMSE = \sqrt{\frac{1}{m} \sum_{j = 1}^m (\hat{y}_j - \tilde{y}_j)^2}
 <span id="cb118-21"><a href="#cb118-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p><strong>Comment on the choice of the first 50 rows for the validation set:</strong> Allocating 50 out of 252 observations (19.8%) to the validation set is a standard and appropriate sample size, leaving ample data (202 observations) to train a mathematically stable model. However, the <em>method</em> of selecting the first 50 consecutive rows is a dangerous practice especially if the dataset happens to be sorted by any variable, a sequential split guarantees that the validation set will have a fundamentally different underlying distribution than the training set. To ensure both sets are representative of the same population, the observations should always be partitioned using random sampling.</p>
+<p>Allocating 50 out of 252 observations (19.8%) to the validation set is a standard and appropriate sample size, leaving ample data (202 observations) to train a mathematically stable model. However, the <em>method</em> of selecting the first 50 consecutive rows is a dangerous practice especially if the dataset happens to be sorted by any variable, a sequential split guarantees that the validation set will have a fundamentally different underlying distribution than the training set. To ensure both sets are representative of the same population, the observations should always be partitioned using random sampling.</p>
 </section>
 <section id="q6d" class="level4">
 <h4 class="anchored" data-anchor-id="q6d">q6d</h4>
@@ -1473,7 +1473,7 @@ RMSE = \sqrt{\frac{1}{m} \sum_{j = 1}^m (\hat{y}_j - \tilde{y}_j)^2}
 <pre><code>[1] 3.857854</code></pre>
 </div>
 </div>
-<p><strong>In-Sample Optimisation:</strong> The RMSE on the training set (3.858) is slightly lower than the RMSE on the full dataset (3.876). This decrease is mathematically expected because we are measuring <strong>in-sample error</strong>. Ordinary Least Squares (OLS) regression explicitly calculates coefficients designed to minimize the squared residuals for the exact data it is trained on. Furthermore, because the model retains all 13 predictors but now has fewer observations to fit (202 instead of 252), it gains slightly more flexibility to “<em>hug</em>” the training data, inherently driving the training error down.</p>
+<p>The RMSE on the training set (3.858) is slightly lower than the RMSE on the full dataset (3.876). This decrease is mathematically expected because we are measuring <strong>in-sample error</strong>. Ordinary Least Squares (OLS) regression explicitly calculates coefficients designed to minimize the squared residuals for the exact data it is trained on. Furthermore, because the model retains all 13 predictors but now has fewer observations to fit (202 instead of 252), it gains slightly more flexibility to “<em>hug</em>” the training data, inherently driving the training error down.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -1486,7 +1486,7 @@ RMSE = \sqrt{\frac{1}{m} \sum_{j = 1}^m (\hat{y}_j - \tilde{y}_j)^2}
 <pre><code>[1] 0.9653465</code></pre>
 </div>
 </div>
-<p><strong>Coverage Comparison:</strong> The fraction of prediction intervals containing the true response on the training set is (96.5%), which is remarkably close to the (97.2%) coverage we saw on the full dataset. Both of these empirical coverage rates are slightly conservative (<em>running a bit higher than the nominal 95% target</em>), but they prove that the model’s behavior remains stable and consistent when trained on this subset.</p>
+<p>The fraction of prediction intervals containing the true response on the training set is (96.5%), which is remarkably close to the (97.2%) coverage we saw on the full dataset. Both of these empirical coverage rates are slightly conservative (<em>running a bit higher than the nominal 95% target</em>), but they prove that the model’s behavior remains stable and consistent when trained on this subset.</p>
 </section>
 <section id="q6e" class="level4">
 <h4 class="anchored" data-anchor-id="q6e">q6e</h4>
@@ -1504,7 +1504,7 @@ RMSE = \sqrt{\frac{1}{m} \sum_{j = 1}^m (\hat{y}_j - \tilde{y}_j)^2}
 <pre><code>[1] 4.394935</code></pre>
 </div>
 </div>
-<p><strong>Out-of-Sample Error</strong>: The RMSE on the unseen validation set (4.395) is noticeably higher than the RMSE on the training set (3.858). This is an expected statistical phenomenon. Regression models are mathematically optimised to minimise the error on their specific training data. When the model is forced to generalise to brand-new, unseen data, the error naturally increases. In other words, the training RMSE represents an overly optimistic view of the model’s accuracy, whereas the validation RMSE provides a much more realistic estimate of real-world performance.</p>
+<p>The RMSE on the unseen validation set (4.395) is noticeably higher than the RMSE on the training set (3.858). This is an expected statistical phenomenon. Regression models are mathematically optimised to minimise the error on their specific training data. When the model is forced to generalise to brand-new, unseen data, the error naturally increases. In other words, the training RMSE represents an overly optimistic view of the model’s accuracy, whereas the validation RMSE provides a much more realistic estimate of real-world performance.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -1517,7 +1517,7 @@ RMSE = \sqrt{\frac{1}{m} \sum_{j = 1}^m (\hat{y}_j - \tilde{y}_j)^2}
 <pre><code>[1] 0.98</code></pre>
 </div>
 </div>
-<p><strong>Coverage Fraction on Unseen Data</strong>: The coverage probability on the validation set actually rose slightly to 98%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly 50 observations, a single observation represents a 2% swing. A 98% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.</p>
+<p>The coverage probability on the validation set actually rose slightly to 98%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly 50 observations, a single observation represents a 2% swing. A 98% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.</p>
 </section>
 </section>
 <section id="q7" class="level3">
