@@ -736,6 +736,4 @@ mean(
 )
 ```
 
-# TODO: understanding and finalised this part
-
 **Coverage Fraction on Unseen Data**: The coverage probability on the validation set actually rose slightly to `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly `r nrow(validation_set)` observations, a single observation represents a 2% swing. A `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.
