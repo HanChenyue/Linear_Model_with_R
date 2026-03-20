@@ -157,7 +157,7 @@ window.Quarto = {
   <li><a href="#q3" id="toc-q3" class="nav-link" data-scroll-target="#q3">Q3</a></li>
   <li><a href="#q4" id="toc-q4" class="nav-link" data-scroll-target="#q4">Q4</a></li>
   </ul></li>
-  <li><a href="#proof-equivalence-of-f-test-and-t-test-for-a2" id="toc-proof-equivalence-of-f-test-and-t-test-for-a2" class="nav-link" data-scroll-target="#proof-equivalence-of-f-test-and-t-test-for-a2">Proof: Equivalence of F-test and t-test (for <span class="math inline">\(a=2\)</span>)</a>
+  <li><a href="#proof-equivalence-of-f-test-and-t-test-for-a2" id="toc-proof-equivalence-of-f-test-and-t-test-for-a2" class="nav-link" data-scroll-target="#proof-equivalence-of-f-test-and-t-test-for-a2">Proof: Equivalence of <em>F</em>-test and t-test (for <span class="math inline">\(a=2\)</span>)</a>
   <ul class="collapse">
   <li><a href="#notation-and-identities" id="toc-notation-and-identities" class="nav-link" data-scroll-target="#notation-and-identities">1. Notation and Identities</a></li>
   <li><a href="#the-denominator-mean-square-error-mse" id="toc-the-denominator-mean-square-error-mse" class="nav-link" data-scroll-target="#the-denominator-mean-square-error-mse">2. The Denominator: Mean Square Error (MSE)</a></li>
@@ -383,7 +383,7 @@ Attaching package: 'ellipse'</code></pre>
 <ul>
 <li>Origin (<span class="math inline">\(\beta_age = 0\)</span>, <span class="math inline">\(\beta_lbph = 0\)</span>) falls within both the <span class="math inline">\(95\%\)</span> joint confidence ellipse and the rectangular region defined by the individual <span class="math inline">\(95\%\)</span> univariate confidence intervals.</li>
 <li>Neither predictor is statistically significant when considered in isolation within the full model.</li>
-<li>Crucially, because the origin lies inside the joint confidence ellipse, we do not reject the null hypothesis that both coefficients are simultaneously zero. This is consistent with the result of the formal F-test for nested models:</li>
+<li>Crucially, because the origin lies inside the joint confidence ellipse, we do not reject the null hypothesis that both coefficients are simultaneously zero. This is consistent with the result of the formal <em>F</em>-test for nested models:</li>
 </ul>
 <div class="cell">
 <details class="code-fold">
@@ -408,7 +408,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <ul>
-<li>The non-significant p-value from this F-test confirms the visual evidence from the ellipse: we fail to find sufficient statistical evidence to reject the null hypothesis.</li>
+<li>The non-significant p-value from this <em>F</em>-test confirms the visual evidence from the ellipse: we fail to find sufficient statistical evidence to reject the null hypothesis.</li>
 </ul>
 </section>
 <section id="q1c" class="level4">
@@ -552,7 +552,7 @@ Model 2: taste ~ Acetic + H2S + Lactic
 </div>
 </div>
 <ul>
-<li>No, because an F-test is only valid for comparing nested models, where one model is a restricted version of the other (i.e.&nbsp;the predictors of the smaller model are a smaller subset of the larger model).</li>
+<li>No, because an <em>F</em>-test is only valid for comparing nested models, where one model is a restricted version of the other (i.e.&nbsp;the predictors of the smaller model are a smaller subset of the larger model).</li>
 <li>In this case, the models rely on different functional forms of the predictor [<span class="math inline">\(log(x)\)</span> vs <span class="math inline">\(x\)</span>], thus the column space of one model is not a linear subspace the other.</li>
 <li>Since <span class="math inline">\(R^2_{lm\_q2a} = 0.6518 &gt; R^2_{lm\_q2b} = 0.5754\)</span> and <span class="math inline">\(RSS_{lm\_q2a} = 2668.4 &lt; RSS_{lm\_q2b} = 3253.6\)</span>, the first model provides a better fit to the data.</li>
 </ul>
@@ -770,7 +770,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <ul>
 <li><code>salary</code> is not statistically significant (<span class="math inline">\(\text{p-value}_\text{salary} = 0.0667 &lt; 0.05\)</span>).</li>
-<li>All the individual t-tests are not statistically significant yet the overall F-test is.</li>
+<li>All the individual t-tests are not statistically significant yet the overall <em>F</em>-test is.</li>
 <li>The p-value for the F-statistics is less than <span class="math inline">\(\text{p-value}_\text{F-statistics} = 0.01209 &lt; 0.05\)</span>, we reject the null hypothesis <span class="math inline">\(H_0: \beta_\text{salary} = \beta_\text{ratio} = \beta_\text{expend} = 0\)</span>.</li>
 <li>This indicates that at least one of the predictor has a statistically significant effect on the response.</li>
 <li>This usually happens when the predictors are highly correlated with each other and we have a situation where the whole is greater than the sum of its parts.</li>
@@ -846,7 +846,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section>
 </section>
 <section id="proof-equivalence-of-f-test-and-t-test-for-a2" class="level2">
-<h2 class="anchored" data-anchor-id="proof-equivalence-of-f-test-and-t-test-for-a2">Proof: Equivalence of F-test and t-test (for <span class="math inline">\(a=2\)</span>)</h2>
+<h2 class="anchored" data-anchor-id="proof-equivalence-of-f-test-and-t-test-for-a2">Proof: Equivalence of <em>F</em>-test and t-test (for <span class="math inline">\(a=2\)</span>)</h2>
 <p><strong>Goal:</strong> We aim to prove that for a one-way ANOVA with <span class="math inline">\(a=2\)</span> groups, the F-statistic is exactly equal to the square of the t-statistic: <span class="math display">\[F_{1, N-2} = t_{N-2}^2\]</span></p>
 <section id="notation-and-identities" class="level3">
 <h3 class="anchored" data-anchor-id="notation-and-identities">1. Notation and Identities</h3>
@@ -925,7 +925,7 @@ F &amp;= \frac{ \left( \frac{(\bar{y}_1 - \bar{y}_2)^2}{\frac{1}{n_1} + \frac{1}
 <p><span class="math display">\[F = \frac{(\bar{y}_1 - \bar{y}_2)^2}{ S_p^2 \left( \frac{1}{n_1} + \frac{1}{n_2} \right) }\]</span></p>
 <p>This is mathematically equivalent to the square of the t-statistic definition:</p>
 <p><span class="math display">\[F = \left( \frac{\bar{y}_1 - \bar{y}_2}{ S_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}} } \right)^2 = t^2\]</span></p>
-<p><strong>Conclusion:</strong> We have proven that for <span class="math inline">\(a=2\)</span>, the ANOVA F-test yields the same result as the squared two-sample t-test.</p>
+<p><strong>Conclusion:</strong> We have proven that for <span class="math inline">\(a=2\)</span>, the ANOVA <em>F</em>-test yields the same result as the squared two-sample t-test.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>

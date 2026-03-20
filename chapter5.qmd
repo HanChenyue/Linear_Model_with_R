@@ -31,7 +31,7 @@ summary(lm_q1a)
 ```
 
 ```{r}
-new_patient_a = data.frame(
+new_patient_a <- data.frame(
   lcavol = 1.44692,
   lweight = 3.62301,
   age = 65.00000,
@@ -42,7 +42,7 @@ new_patient_a = data.frame(
   pgg45 = 15.00000
 )
 
-predict(lm_q1a, newdata = new_patient_a, interval = "prediction")
+predict(object = lm_q1a, newdata = new_patient_a, interval = "prediction")
 ```
 
 Manual calculations for sanity check:
@@ -62,7 +62,7 @@ y <- prostate$lpsa
 y
 
 X <- model.matrix(lm_q1a)
-X
+head(X)
 
 new_patient_manual_calculations <- data.frame(
   intercept = 1,
@@ -97,7 +97,7 @@ y0
 near(
   y0,
   predict(
-    lm_q1a,
+    object = lm_q1a,
     newdata = new_patient_manual_calculations,
     interval = "prediction"
   )[1, "fit"]
@@ -114,7 +114,7 @@ lwr
 near(
   lwr,
   predict(
-    lm_q1a,
+    object = lm_q1a,
     newdata = new_patient_manual_calculations,
     interval = "prediction"
   )[1, "lwr"]
@@ -126,7 +126,7 @@ upr
 near(
   upr,
   predict(
-    lm_q1a,
+    object = lm_q1a,
     newdata = new_patient_manual_calculations,
     interval = "prediction"
   )[1, "upr"]
@@ -147,7 +147,7 @@ new_patient_b <- data.frame(
   pgg45 = 15.00000
 )
 
-predict(lm_q1a, newdata = new_patient_b, interval = "prediction")
+predict(object = lm_q1a, newdata = new_patient_b, interval = "prediction")
 ```
 
 The youngest patient in the original dataset is aged forty-one, whereas the current patient is less than half of that age. Therefore, the prediction involves substantial extrapolation beyond the range of the observed data, making it less reliable and resulting in a wider prediction interval. Furthermore, the prediction interval is wider because it accounts for the variability of a future observation through the inclusion of the error term $\epsilon$, in addition to the uncertainty in the estimation of $\beta$.
@@ -167,12 +167,12 @@ summary(lm_q1c)
 
 ```{r}
 old_model_for_patient_a <- predict(
-  lm_q1a,
+  object = lm_q1a,
   newdata = new_patient_a,
   interval = "prediction"
 )
 new_model_for_patient_a <- predict(
-  lm_q1c,
+  object = lm_q1c,
   newdata = new_patient_a,
   interval = "prediction"
 )
@@ -187,12 +187,12 @@ The predicted values are very similar.
 
 ```{r}
 old_model_for_patient_b <- predict(
-  lm_q1a,
+  object = lm_q1a,
   newdata = new_patient_b,
   interval = "prediction"
 )
 new_model_for_patient_b <- predict(
-  lm_q1c,
+  object = lm_q1c,
   newdata = new_patient_b,
   interval = "prediction"
 )
@@ -229,10 +229,14 @@ male_with_average_stats_data <- data.frame(
   verbal = 6.821429,
   gamble = 29.775000
 )
-predict(lm_q2a, newdata = male_with_average_stats_data, interval = "prediction")
+predict(
+  object = lm_q2a,
+  newdata = male_with_average_stats_data,
+  interval = "prediction"
+)
 ```
 
-The 95% prediction interval is [-16.83, 76.38], though in practical terms, the lower bound would be truncated at zero.
+The 95% prediction interval is \[-16.83, 76.38\], though in practical terms, the lower bound would be truncated at zero.
 
 Standard linear regression assumes that our response variable `gamble` can be any number on the continuous number line, extending to infinity in both the positive and negative directions. The model doesn't "know" that our data represents money.
 
@@ -254,7 +258,11 @@ male_with_maximal_stats_data <- data.frame(
 ```
 
 ```{r}
-predict(lm_q2a, newdata = male_with_maximal_stats_data, interval = "prediction")
+predict(
+  object = lm_q2a,
+  newdata = male_with_maximal_stats_data,
+  interval = "prediction"
+)
 ```
 
 This CI is wider, in linear regression, our predictions are always the most accurate and have the tightest confidence/prediction intervals right at the "center of mass" of our data. As we moved away from the average and looked at the extreme edges of our data, the model became less certain (Bowtie effect).
@@ -271,7 +279,7 @@ summary(lm_q2c)
 ```{r}
 # Squaring the prediction is needed to reverse the square root on the response. It also solves the problem of having negative lower bound, as the interval cannot mathematically drop below zero anymore.
 predict(
-  lm_q2c,
+  object = lm_q2c,
   newdata = male_with_average_stats_data,
   interval = "prediction"
 )^2
@@ -287,7 +295,7 @@ female_with_custom_stats_data <- data.frame(
   verbal = 10
 )
 predict(
-  lm_q2c,
+  object = lm_q2c,
   newdata = female_with_custom_stats_data,
   interval = "prediction"
 )^2
@@ -299,16 +307,435 @@ Without squaring it, the results are:
 
 ```{r}
 predict(
-  lm_q2c,
+  object = lm_q2c,
   newdata = female_with_custom_stats_data,
   interval = "prediction"
 )
 ```
 
-- The fatal flaw is that the model predicted the square root of this girl's gambling spending to be `r round(predict(lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "fit"], 2)`, with a lower bound of `r round(predict(lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"], 2)`.
-- Mathematically, the principal square root of a real number cannot be negative. The model has made an impossible prediction.
-- Because a negative times a negative is a positive, squaring her large negative lower bound (`r round(predict(lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"], 2)`) turns it into a large positive number (`r round(predict(lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"]^2, 2)`). 
-- A monotone mathematical function is one that always goes in the same direction (*always up or always down*). Squaring is not a monotone function across all real numbers, because it reverses the order of negative values. 
-- Therefore, squaring these negative bounds distorted and flipped the interval, showing that this model performs poorly (*extrapolates badly*) for this specific demographic.
+-   The fatal flaw is that the model predicted the square root of this girl's gambling spending to be `r round(predict(object = lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "fit"], 2)`, with a lower bound of `r round(predict(object = lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"], 2)`.
+-   Mathematically, the principal square root of a real number cannot be negative. The model has made an impossible prediction.
+-   Because a negative times a negative is a positive, squaring her large negative lower bound (`r round(predict(object = lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"], 2)`) turns it into a large positive number (`r round(predict(object = lm_q2c, newdata=female_with_custom_stats_data, interval="prediction")[1, "lwr"]^2, 2)`).
+-   A monotone mathematical function is one that always goes in the same direction (*always up or always down*). Squaring is not a monotone function across all real numbers, because it reverses the order of negative values.
+-   Therefore, squaring these negative bounds distorted and flipped the interval, showing that this model performs poorly (*extrapolates badly*) for this specific demographic.
 
 ### Q3
+
+#### q3a
+
+```{r}
+data(snail, package = "faraway")
+head(snail)
+```
+
+```{r}
+round(xtabs(water ~ temp + humid, data = snail) / 4, 1)
+```
+
+No, the specific temperature and humidity isn't listed in the table and we cannot interpolate with just a raw table.
+
+#### q3b
+
+```{r}
+lm_q3b <- lm(water ~ temp + humid, data = snail)
+summary(lm_q3b)
+```
+
+```{r}
+predict(
+  object = lm_q3b,
+  newdata = data.frame(temp = 25, humid = 60),
+  interval = "prediction"
+)
+```
+
+Predicted water content: `r round(predict(object = lm_q3b, newdata = data.frame(temp = 25, humid = 60), interval = "prediction")[1, "fit"], 1)`%
+
+#### q3c
+
+```{r}
+predict(
+  object = lm_q3b,
+  newdata = data.frame(temp = 30, humid = 75),
+  interval = "prediction"
+)
+```
+
+Predicted water content: `r round(predict(object = lm_q3b, newdata = data.frame(temp = 30, humid = 75), interval = "prediction")[1, "fit"], 1)`%
+
+Predicted water content from part (a): `r round(xtabs(water ~ temp + humid, data = snail)[2, 2] / 4, 1)`%
+
+Comparing these two predictions highlights a classic statistical tradeoff. The model-based prediction is likely a better, more stable estimate because it leverages the entire dataset to find an overall trend. However, its main drawback is the risk of bias; the model assumes the relationship between temperature, humidity, and water is perfectly linear. If that biological assumption is incorrect, the prediction will be systematically off.
+
+Conversely, the raw average from part (a) makes no assumptions about linear relationships, meaning it is not dependent on a choice of model (*no model bias*). However, because it only uses the data from the 4 specific snails tested at those exact conditions, the small sample size makes the estimate highly susceptible to random chance and natural variation (*high variance*).
+
+#### q3d
+
+The intercept of `r round(coef(lm_q3b)[1], 1)`% represents the model's predicted water content when both `temp` and `humid` are equal to zero.
+
+This answer is **not unique**. Because the multiple regression model creates a 3D linear plane, thus there are infinite combinations of predictors that will result in the exact same number. Any combination of temperature and humidity where their mathematical effects cancel each other out (i.e., where $-0.183 \times \text{temp} + 0.473 \times \text{humid} = 0$) will also yield this predicted response.
+
+Furthermore, this is **not a reasonable prediction**. Setting the temperature to 0°C and humidity to 0% is an extreme example of **extrapolation** (*predicting far outside the range of our collected data*). Biologically, these conditions are completely abnormal and would likely be lethal to the snails.
+
+#### q3e
+
+Given the linear regression equation:
+
+$$
+\text{Water Content} = \beta_0 + \beta_1 \times \text{Temperature} + \beta_2 \times \text{Humidity}
+$$
+
+We can plug in our known values:
+
+$$
+80 = 52.611 - 0.183 \times 25 + 0.473 \times \text{Humidity}
+$$
+
+Next, we rearrange the equation to isolate the missing variable (`Humidity`):
+
+$$
+\text{Humidity} = \frac{80 - 52.611 - (-0.183 \times 25)}{0.473}
+$$
+
+Solving this gives a resulting humidity of `r round((80 - coef(lm_q3b)[1] - coef(lm_q3b)[2] * 25) / coef(lm_q3b)[3], 1)`%.
+
+### Q4
+
+#### q4a
+
+```{r}
+data(mdeaths, package = "faraway")
+head(mdeaths)
+```
+
+```{r}
+plot(mdeaths, ylab = "No. of Deaths")
+```
+
+During the winter season.
+
+#### q4b
+
+```{r}
+time_series_with_current_and_lagged_13_values <- embed(
+  x = mdeaths,
+  dimension = 14
+)
+head(time_series_with_current_and_lagged_13_values)
+colnames(time_series_with_current_and_lagged_13_values) <- c(
+  "y",
+  paste0("lag", 1:13)
+)
+time_series_with_current_and_lagged_13_values <- data.frame(
+  time_series_with_current_and_lagged_13_values
+)
+lm_q4b <- lm(
+  y ~ lag1 + lag12 + lag13,
+  data = time_series_with_current_and_lagged_13_values
+)
+summary(lm_q4b)
+```
+
+Only `lag12`, the one year lag is statistically significant.
+
+#### q4c
+
+```{r}
+# Getting data from the last row
+time_series_with_current_and_lagged_13_values[
+  nrow(time_series_with_current_and_lagged_13_values),
+]
+```
+
+Given `r time_series_with_current_and_lagged_13_values[nrow(time_series_with_current_and_lagged_13_values), ]`
+
+-   `lag1` equals `r time_series_with_current_and_lagged_13_values[nrow(time_series_with_current_and_lagged_13_values), ]["y"]`
+
+-   `lag12` equals `r time_series_with_current_and_lagged_13_values[nrow(time_series_with_current_and_lagged_13_values), ]["lag11"]`
+
+-   `lag13` equals `r time_series_with_current_and_lagged_13_values[nrow(time_series_with_current_and_lagged_13_values), ]["lag12"]`
+
+```{r}
+predict(
+  object = lm_q4b,
+  newdata = data.frame(lag1 = 1341, lag12 = 2263, lag13 = 1812),
+  interval = "prediction"
+)
+```
+
+#### q4d
+
+-   `lag1` equals `r predict(object = lm_q4b, newdata = data.frame(lag1 = 1341, lag12 = 2263, lag13 = 1812), interval = "prediction")[, "fit"]`
+
+-   `lag12` equals `r time_series_with_current_and_lagged_13_values[nrow(time_series_with_current_and_lagged_13_values), ]["lag10"]`
+
+-   `lag13` equals `r time_series_with_current_and_lagged_13_values[nrow(time_series_with_current_and_lagged_13_values), ]["lag11"]`
+
+```{r}
+predict(
+  object = lm_q4b,
+  newdata = data.frame(lag1 = 1879.5994643, lag12 = 1820, lag13 = 2263),
+  interval = "prediction"
+)
+```
+
+#### q4e
+
+```{r}
+length(x = fitted(object = lm_q4b))
+```
+
+```{r}
+length(x = mdeaths)
+```
+
+The original dataset contains `r length(x = mdeaths)` observations, but our model only produces `r length(x = fitted(object = lm_q4b))` fitted values. This discrepancy occurs because the autoregressive model relies on lagged variables (*data from previous months*). Consequently, the earliest observations in the dataset cannot be predicted because the required lag data falls before the start of our recording period.
+
+To accurately plot the data, we must align the arrays by subsetting the observed values to match the timeframe of our `r length(x = fitted(object = lm_q4b))` fitted values `mdeaths[14:72]`.
+
+```{r}
+# 72 total - 59 fitted = 13 skipped at the beginning.
+# Therefore, we plot using indices 14 through 72.
+plot(
+  fitted(lm_q4b),
+  tail(x = mdeaths, n = length(x = fitted(object = lm_q4b))),
+  xlab = "Fitted Values",
+  ylab = "Observed Values"
+)
+abline(0, 1)
+```
+
+-   Based on the plot, the prediction accuracy will not be the same for all months of the year.
+
+-   We can observe the presence of **heteroscedasticity** in the plot: the variability (*vertical spread*) of the points increases as the total number of deaths increases. Because the `mdeaths` dataset is highly seasonal, certain months of the year, typically winter months, experience drastically higher death tolls. Therefore, the model's predictions for those high-count months will have a wider variance and lower absolute accuracy compared to the predictions for low-count months.
+
+-   It is important to understand *why* this occurs. An increased number of deaths does not mean the model is inherently failing. Rather, winter months introduce greater real-world volatility (*such as unpredictable flu outbreaks*), making the baseline harder to predict. Furthermore, statistical errors are often proportional; a standard percentage error yields a much larger absolute numerical difference when applied to a high winter death toll compared to a low summer baseline. This proportional error manifests as the wider visual spread seen on the graph.
+
+### Q5
+
+#### q5a
+
+```{r}
+data(fat, package = "faraway")
+head(fat)
+```
+
+To determine if the smaller model is justifiable, we can fit both models and compare them using an $F$-test.
+
+```{r}
+lm_q5a_i <- lm(brozek ~ age + weight + height + abdom, data = fat)
+lm_q5a_ii <- lm(
+  brozek ~ age +
+    weight +
+    height +
+    neck +
+    chest +
+    abdom +
+    hip +
+    thigh +
+    knee +
+    ankle +
+    biceps +
+    forearm +
+    wrist,
+  data = fat
+)
+anova(lm_q5a_i, lm_q5a_ii)
+```
+
+When comparing a reduced model to a full model, we are testing whether the 9 extra coefficients ($\beta$) in the full model are exactly zero.
+
+-   $H_0: \beta_{neck} = \beta_{chest} = \dots = \beta_{wrist} = 0$ (*The extra variables do not significantly improve the model; the smaller model is sufficient*).
+-   $H_a:$ At least one of these 9 coefficients is $\neq 0$ (*The extra variables provide a significant improvement; the full model is better*).
+
+The ANOVA test yields an $F$-statistic of 2.934 and a highly significant p-value of 0.00256 ($p < 0.01$). Because $p < \alpha$, we reject $H_0$. Statistically, the extra variables provide a significant improvement, meaning the full model is mathematically superior.
+
+Another way to evaluate the models is by comparing their residual standard errors, which measure prediction uncertainty.
+
+```{r}
+# Comparing their residual standard errors, which measure prediction uncertainty
+c(
+  Smaller_Model = summary(lm_q5a_i)$sigma,
+  Full_Model = summary(lm_q5a_ii)$sigma
+)
+```
+
+The full model has a slightly lower prediction error (`r round(summary(lm_q5a_ii)$sigma, 2)`) compared to the smaller model (`r round(summary(lm_q5a_i)$sigma, 2)`).
+
+From a strict statistical perspective, the smaller model is not justifiable because the $F$-test explicitly rejects it in favor of the larger model.
+
+#### q5b
+
+```{r}
+x <- data.frame(t(apply(X = fat, MARGIN = 2, FUN = median)))
+x
+```
+
+```{r}
+predict(object = lm_q5a_i, newdata = x, interval = "prediction")
+predict(object = lm_q5a_ii, newdata = x, interval = "prediction")
+```
+
+No.
+
+#### q5c
+
+```{r}
+fat[25:50, ]
+```
+
+-   Subject 39 is unusually heavy.
+-   Subject 42 is unusually short.
+
+#### q5d
+
+```{r}
+lm_q5d_i <- lm(
+  brozek ~ age + weight + height + abdom,
+  data = fat,
+  subset = -c(39, 42)
+)
+lm_q5d_ii <- lm(
+  brozek ~ age +
+    weight +
+    height +
+    neck +
+    chest +
+    abdom +
+    hip +
+    thigh +
+    knee +
+    ankle +
+    biceps +
+    forearm +
+    wrist,
+  data = fat,
+  subset = -c(39, 42)
+)
+
+predict(object = lm_q5d_i, newdata = x, interval = "prediction")
+predict(object = lm_q5d_ii, newdata = x, interval = "prediction")
+```
+
+No, removing the extreme outliers made almost no difference. Because our prediction is based on the median (*the exact center*) of the dataset, it is highly stable. Outliers strongly pull on the extremes/tails of a regression model, but they have very little leverage over predictions made directly in the middle of the data spread.
+
+### Q6
+
+#### q6a
+
+```{r}
+data(fat, package = "faraway")
+lm_q6a <- lm(
+  brozek ~ age +
+    weight +
+    height +
+    neck +
+    chest +
+    abdom +
+    hip +
+    thigh +
+    knee +
+    ankle +
+    biceps +
+    forearm +
+    wrist,
+  data = fat
+)
+prediction_q6a <- predict(
+  object = lm_q6a,
+  newdata = fat,
+  interval = "prediction"
+)
+```
+
+$$
+RMSE = \sqrt{\frac{1}{m} \sum_{j = 1}^m (\hat{y}_j - \tilde{y}_j)^2}
+$$
+
+```{r}
+sqrt(mean((prediction_q6a[, "fit"] - fat$brozek)^2))
+```
+
+#### q6b
+
+```{r}
+mean(
+  (fat$brozek > prediction_q6a[, "lwr"]) &
+    (fat$brozek < prediction_q6a[, "upr"])
+)
+```
+
+#### q6c
+
+```{r}
+validation_set <- fat[1:50, ]
+training_set <- fat[51:nrow(fat), ]
+```
+
+```{r}
+lm_q6c <- lm(
+  brozek ~ age +
+    weight +
+    height +
+    neck +
+    chest +
+    abdom +
+    hip +
+    thigh +
+    knee +
+    ankle +
+    biceps +
+    forearm +
+    wrist,
+  data = training_set
+)
+prediction_q6c <- predict(
+  object = lm_q6c,
+  newdata = training_set,
+  interval = "prediction"
+)
+```
+
+**Comment on the choice of the first 50 rows for the validation set:**
+Allocating 50 out of 252 observations (`r round(50/252*100, 1)`%) to the validation set is a standard and appropriate sample size, leaving ample data (202 observations) to train a mathematically stable model. However, the *method* of selecting the first 50 consecutive rows is a dangerous practice especially if the dataset happens to be sorted by any variable, a sequential split guarantees that the validation set will have a fundamentally different underlying distribution than the training set. To ensure both sets are representative of the same population, the observations should always be partitioned using random sampling.
+
+#### q6d
+
+```{r}
+sqrt(mean((prediction_q6c[, "fit"] - training_set$brozek)^2))
+```
+
+**In-Sample Optimisation:** The RMSE on the training set (`r round(sqrt(mean((prediction_q6c[, "fit"] - training_set$brozek)^2)), 3)`) is slightly lower than the RMSE on the full dataset (`r round(sqrt(mean((prediction_q6a[, "fit"] - fat$brozek)^2)), 3)`). This decrease is mathematically expected because we are measuring **in-sample error**. Ordinary Least Squares (OLS) regression explicitly calculates coefficients designed to minimize the squared residuals for the exact data it is trained on. Furthermore, because the model retains all 13 predictors but now has fewer observations to fit (202 instead of 252), it gains slightly more flexibility to "*hug*" the training data, inherently driving the training error down.
+
+```{r}
+mean(
+  (training_set$brozek > prediction_q6c[, "lwr"]) &
+    (training_set$brozek < prediction_q6c[, "upr"])
+)
+```
+
+**Coverage Comparison:** The fraction of prediction intervals containing the true response on the training set is (`r round(mean((training_set$brozek > prediction_q6c[, "lwr"]) & (training_set$brozek < prediction_q6c[, "upr"])) * 100, 1)`%), which is remarkably close to the (`r round(mean((fat$brozek > prediction_q6a[, "lwr"]) & (fat$brozek < prediction_q6a[, "upr"])) * 100, 1)`%) coverage we saw on the full dataset. Both of these empirical coverage rates are slightly conservative (*running a bit higher than the nominal 95% target*), but they prove that the model's behavior remains stable and consistent when trained on this subset. 
+
+#### q6e
+
+```{r}
+prediction_q6e <- predict(
+  object = lm_q6c,
+  newdata = validation_set,
+  interval = "prediction"
+)
+sqrt(mean((prediction_q6e[, "fit"] - validation_set$brozek)^2))
+```
+
+**Out-of-Sample Error**: The RMSE on the unseen validation set (`r round(sqrt(mean((prediction_q6e[, "fit"] - validation_set$brozek)^2)), 3)`) is noticeably higher than the RMSE on the training set (`r round(sqrt(mean((prediction_q6c[, "fit"] - training_set$brozek)^2)), 3)`). This is an expected statistical phenomenon. Regression models are mathematically optimised to minimise the error on their specific training data. When the model is forced to generalise to brand-new, unseen data, the error naturally increases. In other words, the training RMSE represents an overly optimistic view of the model's accuracy, whereas the validation RMSE provides a much more realistic estimate of real-world performance.
+
+```{r}
+mean(
+  (validation_set$brozek > prediction_q6e[, "lwr"]) &
+    (validation_set$brozek < prediction_q6e[, "upr"])
+)
+```
+
+# TODO: understanding and finalised this part
+
+**Coverage Fraction on Unseen Data**: The coverage probability on the validation set actually rose slightly to `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly `r nrow(validation_set)` observations, a single observation represents a 2% swing. A `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.

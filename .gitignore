@@ -52,3 +52,4 @@ tramp/
 # Scratch / experiments
 # =========================
 scratch.R
+/.quarto/

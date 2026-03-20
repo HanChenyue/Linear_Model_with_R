@@ -155,8 +155,12 @@ window.Quarto = {
   <li><a href="#q1" id="toc-q1" class="nav-link" data-scroll-target="#q1">Q1</a></li>
   <li><a href="#q2" id="toc-q2" class="nav-link" data-scroll-target="#q2">Q2</a></li>
   <li><a href="#q3" id="toc-q3" class="nav-link" data-scroll-target="#q3">Q3</a></li>
+  <li><a href="#q4" id="toc-q4" class="nav-link" data-scroll-target="#q4">Q4</a></li>
+  <li><a href="#q5" id="toc-q5" class="nav-link" data-scroll-target="#q5">Q5</a></li>
+  <li><a href="#q6" id="toc-q6" class="nav-link" data-scroll-target="#q6">Q6</a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#todo-understanding-and-finalised-this-part" id="toc-todo-understanding-and-finalised-this-part" class="nav-link" data-scroll-target="#todo-understanding-and-finalised-this-part">TODO: understanding and finalised this part</a></li>
   </ul>
 </nav>
     </div>
@@ -234,7 +238,7 @@ F-statistic: 20.86 on 8 and 88 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>new_patient_a <span class="ot">=</span> <span class="fu">data.frame</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>new_patient_a <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">lcavol =</span> <span class="fl">1.44692</span>,</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lweight =</span> <span class="fl">3.62301</span>,</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fl">65.00000</span>,</span>
@@ -245,7 +249,7 @@ F-statistic: 20.86 on 8 and 88 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">pgg45 =</span> <span class="fl">15.00000</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(lm_q1a, <span class="at">newdata =</span> new_patient_a, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(<span class="at">object =</span> lm_q1a, <span class="at">newdata =</span> new_patient_a, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit       lwr      upr
@@ -284,109 +288,16 @@ F-statistic: 20.86 on 8 and 88 DF,  p-value: &lt; 2.2e-16</code></pre>
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(lm_q1a)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>X</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>   (Intercept)     lcavol lweight age      lbph svi      lcp gleason pgg45
-1            1 -0.5798185  2.7695  50 -1.386294   0 -1.38629       6     0
-2            1 -0.9942523  3.3196  58 -1.386294   0 -1.38629       6     0
-3            1 -0.5108256  2.6912  74 -1.386294   0 -1.38629       7    20
-4            1 -1.2039728  3.2828  58 -1.386294   0 -1.38629       6     0
-5            1  0.7514161  3.4324  62 -1.386294   0 -1.38629       6     0
-6            1 -1.0498221  3.2288  50 -1.386294   0 -1.38629       6     0
-7            1  0.7371641  3.4735  64  0.615186   0 -1.38629       6     0
-8            1  0.6931472  3.5395  58  1.536867   0 -1.38629       6     0
-9            1 -0.7765288  3.5395  47 -1.386294   0 -1.38629       6     0
-10           1  0.2231436  3.2445  63 -1.386294   0 -1.38629       6     0
-11           1  0.2546422  3.6041  65 -1.386294   0 -1.38629       6     0
-12           1 -1.3470736  3.5987  63  1.266948   0 -1.38629       6     0
-13           1  1.6134299  3.0229  63 -1.386294   0 -0.59784       7    30
-14           1  1.4770487  2.9982  67 -1.386294   0 -1.38629       7     5
-15           1  1.2059708  3.4420  57 -1.386294   0 -0.43078       7     5
-16           1  1.5411591  3.0611  66 -1.386294   0 -1.38629       6     0
-17           1 -0.4155154  3.5160  70  1.244155   0 -0.59784       7    30
-18           1  2.2884862  3.6494  66 -1.386294   0  0.37156       6     0
-19           1 -0.5621189  3.2677  41 -1.386294   0 -1.38629       6     0
-20           1  0.1823216  3.8254  70  1.658228   0 -1.38629       6     0
-21           1  1.1474025  3.4194  59 -1.386294   0 -1.38629       6     0
-22           1  2.0592388  3.5010  60  1.474763   0  1.34807       7    20
-23           1 -0.5447272  3.3759  59 -0.798508   0 -1.38629       6     0
-24           1  1.7817091  3.4516  63  0.438255   0  1.17865       7    60
-25           1  0.3852624  3.6674  69  1.599388   0 -1.38629       6     0
-26           1  1.4469190  3.1246  68  0.300105   0 -1.38629       6     0
-27           1  0.5128236  3.7197  65 -1.386294   0 -0.79851       7    70
-28           1 -0.4004776  3.8660  67  1.816452   0 -1.38629       7    20
-29           1  1.0402767  3.1290  67  0.223144   0  0.04879       7    80
-30           1  2.4096442  3.3759  65 -1.386294   0  1.61939       6     0
-31           1  0.2851789  4.0902  65  1.962908   0 -0.79851       6     0
-32           1  0.1823216  6.1076  65  1.704748   0 -1.38629       6     0
-33           1  1.2753628  3.0374  71  1.266948   0 -1.38629       6     0
-34           1  0.0099503  3.2677  54 -1.386294   0 -1.38629       6     0
-35           1 -0.0100503  3.2169  63 -1.386294   0 -0.79851       6     0
-36           1  1.3083328  4.1198  64  2.171337   0 -1.38629       7     5
-37           1  1.4231083  3.6571  73 -0.579818   0  1.65823       8    15
-38           1  0.4574248  2.3749  64 -1.386294   0 -1.38629       7    15
-39           1  2.6609586  4.0851  68  1.373716   1  1.83258       7    35
-40           1  0.7975072  3.0131  56  0.936093   0 -0.16252       7     5
-41           1  0.6205765  3.1420  60 -1.386294   0 -1.38629       9    80
-42           1  1.4422020  3.6826  68 -1.386294   0 -1.38629       7    10
-43           1  0.5822156  3.8660  62  1.713798   0 -0.43078       6     0
-44           1  1.7715568  3.8969  61 -1.386294   0  0.81093       7     6
-45           1  1.4861397  3.4095  66  1.749200   0 -0.43078       7    20
-46           1  1.6639261  3.3928  61  0.615186   0 -1.38629       7    15
-47           1  2.7278528  3.9954  79  1.879465   1  2.65676       9   100
-48           1  1.1631508  4.0351  68  1.713798   0 -0.43078       7    40
-49           1  1.7457155  3.4980  43 -1.386294   0 -1.38629       6     0
-50           1  1.2208299  3.5681  70  1.373716   0 -0.79851       6     0
-51           1  1.0919233  3.9936  68 -1.386294   0 -1.38629       7    50
-52           1  1.6601310  4.2348  64  2.073172   0 -1.38629       6     0
-53           1  0.5128236  3.6336  64  1.492904   0  0.04879       7    70
-54           1  2.1270405  4.1215  68  1.766442   0  1.44692       7    40
-55           1  3.1535904  3.5160  59 -1.386294   0 -1.38629       7     5
-56           1  1.2669476  4.2801  66  2.122262   0 -1.38629       7    15
-57           1  0.9745596  2.8651  47 -1.386294   0  0.50078       7     4
-58           1  0.4637340  3.7647  49  1.423108   0 -1.38629       6     0
-59           1  0.5423243  4.1782  70  0.438255   0 -1.38629       7    20
-60           1  1.0612565  3.8512  61  1.294727   0 -1.38629       7    40
-61           1  0.4574248  4.5245  73  2.326302   0 -1.38629       6     0
-62           1  1.9974177  3.7197  63  1.619388   1  1.90954       7    40
-63           1  2.7757088  3.5249  72 -1.386294   0  1.55814       9    95
-64           1  2.0347056  3.9170  66  2.008214   1  2.11021       7    60
-65           1  2.0731719  3.6230  64 -1.386294   0 -1.38629       6     0
-66           1  1.4586150  3.8362  61  1.321756   0 -0.43078       7    20
-67           1  2.0228712  3.8785  68  1.783391   0  1.32176       7    70
-68           1  2.1983351  4.0509  72  2.307573   0 -0.43078       7    10
-69           1 -0.4462871  4.4085  69 -1.386294   0 -1.38629       6     0
-70           1  1.1939225  4.7804  72  2.326302   0 -0.79851       7     5
-71           1  1.8640801  3.5932  60 -1.386294   1  1.32176       7    60
-72           1  1.1600209  3.3411  77  1.749200   0 -1.38629       7    25
-73           1  1.2149127  3.8254  69 -1.386294   1  0.22314       7    20
-74           1  1.8389611  3.2367  60  0.438255   1  1.17865       9    90
-75           1  2.9992262  3.8491  69 -1.386294   1  1.90954       7    20
-76           1  3.1411305  3.2638  68 -0.051293   1  2.42037       7    50
-77           1  2.0108950  4.4338  72  2.122262   0  0.50078       7    60
-78           1  2.5376572  4.3548  78  2.326302   0 -1.38629       7    10
-79           1  2.6483002  3.5821  69 -1.386294   1  2.58400       7    70
-80           1  2.7794402  3.8232  63 -1.386294   0  0.37156       7    50
-81           1  1.4678743  3.0704  66  0.559616   0  0.22314       7    40
-82           1  2.5136561  3.4735  57  0.438255   0  2.32728       7    60
-83           1  2.6130067  3.8888  77 -0.527633   1  0.55962       7    30
-84           1  2.6775910  3.8384  65  1.115142   0  1.74920       9    70
-85           1  1.5623463  3.7099  60  1.695616   0  0.81093       7    30
-86           1  3.3028493  3.5190  64 -1.386294   1  2.32728       7    60
-87           1  2.0241931  3.7317  58  1.638997   0 -1.38629       6     0
-88           1  1.7316555  3.3690  62 -1.386294   1  0.30010       7    30
-89           1  2.8075938  4.7181  65 -1.386294   1  2.46385       7    60
-90           1  1.5623463  3.6951  76  0.936093   1  0.81093       7    75
-91           1  3.2464910  4.1018  68 -1.386294   0 -1.38629       6     0
-92           1  2.5329028  3.6776  61  1.348073   1 -1.38629       7    15
-93           1  2.8302678  3.8764  68 -1.386294   1  1.32176       7    60
-94           1  3.8210036  3.8969  44 -1.386294   1  2.16905       7    40
-95           1  2.9074474  3.3962  52 -1.386294   1  2.46385       7    10
-96           1  2.8825636  3.7739  68  1.558145   1  1.55814       7    80
-97           1  3.4719665  3.9750  68  0.438255   1  2.90417       7    20
-attr(,"assign")
-[1] 0 1 2 3 4 5 6 7 8</code></pre>
+<pre><code>  (Intercept)     lcavol lweight age      lbph svi      lcp gleason pgg45
+1           1 -0.5798185  2.7695  50 -1.386294   0 -1.38629       6     0
+2           1 -0.9942523  3.3196  58 -1.386294   0 -1.38629       6     0
+3           1 -0.5108256  2.6912  74 -1.386294   0 -1.38629       7    20
+4           1 -1.2039728  3.2828  58 -1.386294   0 -1.38629       6     0
+5           1  0.7514161  3.4324  62 -1.386294   0 -1.38629       6     0
+6           1 -1.0498221  3.2288  50 -1.386294   0 -1.38629       6     0</code></pre>
 </div>
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -452,7 +363,7 @@ attr(,"assign")
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  y0,</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    lm_q1a,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> lm_q1a,</span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> new_patient_manual_calculations,</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  )[<span class="dv">1</span>, <span class="st">"fit"</span>]</span>
@@ -487,7 +398,7 @@ attr(,"assign")
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  lwr,</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    lm_q1a,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> lm_q1a,</span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> new_patient_manual_calculations,</span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  )[<span class="dv">1</span>, <span class="st">"lwr"</span>]</span>
@@ -512,7 +423,7 @@ attr(,"assign")
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">near</span>(</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  upr,</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    lm_q1a,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">object =</span> lm_q1a,</span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">newdata =</span> new_patient_manual_calculations,</span>
 <span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  )[<span class="dv">1</span>, <span class="st">"upr"</span>]</span>
@@ -540,7 +451,7 @@ attr(,"assign")
 <span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">pgg45 =</span> <span class="fl">15.00000</span></span>
 <span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(lm_q1a, <span class="at">newdata =</span> new_patient_b, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(<span class="at">object =</span> lm_q1a, <span class="at">newdata =</span> new_patient_b, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr      upr
@@ -618,12 +529,12 @@ F-statistic: 51.99 on 3 and 93 DF,  p-value: &lt; 2.2e-16</code></pre>
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>old_model_for_patient_a <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  lm_q1a,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q1a,</span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> new_patient_a,</span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>new_model_for_patient_a <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  lm_q1c,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q1c,</span>
 <span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> new_patient_a,</span>
 <span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -650,12 +561,12 @@ F-statistic: 51.99 on 3 and 93 DF,  p-value: &lt; 2.2e-16</code></pre>
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>old_model_for_patient_b <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  lm_q1a,</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q1a,</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> new_patient_b,</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>new_model_for_patient_b <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  lm_q1c,</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q1c,</span>
 <span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> new_patient_b,</span>
 <span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -739,7 +650,11 @@ F-statistic: 11.69 on 4 and 42 DF,  p-value: 1.815e-06</code></pre>
 <span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbal =</span> <span class="fl">6.821429</span>,</span>
 <span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">gamble =</span> <span class="fl">29.775000</span></span>
 <span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(lm_q2a, <span class="at">newdata =</span> male_with_average_stats_data, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q2a,</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> male_with_average_stats_data,</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>     fit       lwr      upr
@@ -777,7 +692,11 @@ F-statistic: 11.69 on 4 and 42 DF,  p-value: 1.815e-06</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(lm_q2a, <span class="at">newdata =</span> male_with_maximal_stats_data, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q2a,</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> male_with_maximal_stats_data,</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>       fit      lwr    upr
@@ -824,7 +743,7 @@ F-statistic: 13.61 on 4 and 42 DF,  p-value: 3.362e-07</code></pre>
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Squaring the prediction is needed to reverse the square root on the response. It also solves the problem of having negative lower bound, as the interval cannot mathematically drop below zero anymore.</span></span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  lm_q2c,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q2c,</span>
 <span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> male_with_average_stats_data,</span>
 <span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -847,7 +766,7 @@ F-statistic: 13.61 on 4 and 42 DF,  p-value: 3.362e-07</code></pre>
 <span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbal =</span> <span class="dv">10</span></span>
 <span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  lm_q2c,</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q2c,</span>
 <span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> female_with_custom_stats_data,</span>
 <span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>)<span class="sc">^</span><span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -863,7 +782,7 @@ F-statistic: 13.61 on 4 and 42 DF,  p-value: 3.362e-07</code></pre>
 <details class="code-fold">
 <summary>Show the code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  lm_q2c,</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q2c,</span>
 <span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> female_with_custom_stats_data,</span>
 <span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
 <span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -884,10 +803,729 @@ F-statistic: 13.61 on 4 and 42 DF,  p-value: 3.362e-07</code></pre>
 </section>
 <section id="q3" class="level3">
 <h3 class="anchored" data-anchor-id="q3">Q3</h3>
+<section id="q3a" class="level4">
+<h4 class="anchored" data-anchor-id="q3a">q3a</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(snail, <span class="at">package =</span> <span class="st">"faraway"</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(snail)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  water temp humid
+1    76   20    45
+2    64   20    45
+3    79   20    45
+4    71   20    45
+5    72   20    75
+6    82   20    75</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">xtabs</span>(water <span class="sc">~</span> temp <span class="sc">+</span> humid, <span class="at">data =</span> snail) <span class="sc">/</span> <span class="dv">4</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>    humid
+temp   45   75  100
+  20 72.5 81.5 97.0
+  30 69.5 78.2 97.8</code></pre>
+</div>
+</div>
+<p>No, the specific temperature and humidity isn’t listed in the table and we cannot interpolate with just a raw table.</p>
+</section>
+<section id="q3b" class="level4">
+<h4 class="anchored" data-anchor-id="q3b">q3b</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>lm_q3b <span class="ot">&lt;-</span> <span class="fu">lm</span>(water <span class="sc">~</span> temp <span class="sc">+</span> humid, <span class="at">data =</span> snail)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_q3b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = water ~ temp + humid, data = snail)
 
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-12.456  -2.915   1.461   3.613   8.749 
 
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept) 52.61081    6.85346   7.677 1.59e-07 ***
+temp        -0.18333    0.22645  -0.810    0.427    
+humid        0.47349    0.05036   9.403 5.63e-09 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.547 on 21 degrees of freedom
+Multiple R-squared:  0.8092,    Adjusted R-squared:  0.791 
+F-statistic: 44.53 on 2 and 21 DF,  p-value: 2.793e-08</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q3b,</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">temp =</span> <span class="dv">25</span>, <span class="at">humid =</span> <span class="dv">60</span>),</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit      lwr      upr
+1 76.43681 64.58094 88.29269</code></pre>
+</div>
+</div>
+<p>Predicted water content: 76.4%</p>
+</section>
+<section id="q3c" class="level4">
+<h4 class="anchored" data-anchor-id="q3c">q3c</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q3b,</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">temp =</span> <span class="dv">30</span>, <span class="at">humid =</span> <span class="dv">75</span>),</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit     lwr      upr
+1 82.62248 70.6147 94.63027</code></pre>
+</div>
+</div>
+<p>Predicted water content: 82.6%</p>
+<p>Predicted water content from part (a): 78.2%</p>
+<p>Comparing these two predictions highlights a classic statistical tradeoff. The model-based prediction is likely a better, more stable estimate because it leverages the entire dataset to find an overall trend. However, its main drawback is the risk of bias; the model assumes the relationship between temperature, humidity, and water is perfectly linear. If that biological assumption is incorrect, the prediction will be systematically off.</p>
+<p>Conversely, the raw average from part (a) makes no assumptions about linear relationships, meaning it is not dependent on a choice of model (<em>no model bias</em>). However, because it only uses the data from the 4 specific snails tested at those exact conditions, the small sample size makes the estimate highly susceptible to random chance and natural variation (<em>high variance</em>).</p>
+</section>
+<section id="q3d" class="level4">
+<h4 class="anchored" data-anchor-id="q3d">q3d</h4>
+<p>The intercept of 52.6% represents the model’s predicted water content when both <code>temp</code> and <code>humid</code> are equal to zero.</p>
+<p>This answer is <strong>not unique</strong>. Because the multiple regression model creates a 3D linear plane, thus there are infinite combinations of predictors that will result in the exact same number. Any combination of temperature and humidity where their mathematical effects cancel each other out (i.e., where <span class="math inline">\(-0.183 \times \text{temp} + 0.473 \times \text{humid} = 0\)</span>) will also yield this predicted response.</p>
+<p>Furthermore, this is <strong>not a reasonable prediction</strong>. Setting the temperature to 0°C and humidity to 0% is an extreme example of <strong>extrapolation</strong> (<em>predicting far outside the range of our collected data</em>). Biologically, these conditions are completely abnormal and would likely be lethal to the snails.</p>
+</section>
+<section id="q3e" class="level4">
+<h4 class="anchored" data-anchor-id="q3e">q3e</h4>
+<p>Given the linear regression equation:</p>
+<p><span class="math display">\[
+\text{Water Content} = \beta_0 + \beta_1 \times \text{Temperature} + \beta_2 \times \text{Humidity}
+\]</span></p>
+<p>We can plug in our known values:</p>
+<p><span class="math display">\[
+80 = 52.611 - 0.183 \times 25 + 0.473 \times \text{Humidity}
+\]</span></p>
+<p>Next, we rearrange the equation to isolate the missing variable (<code>Humidity</code>):</p>
+<p><span class="math display">\[
+\text{Humidity} = \frac{80 - 52.611 - (-0.183 \times 25)}{0.473}
+\]</span></p>
+<p>Solving this gives a resulting humidity of 67.5%.</p>
 </section>
 </section>
+<section id="q4" class="level3">
+<h3 class="anchored" data-anchor-id="q4">Q4</h3>
+<section id="q4a" class="level4">
+<h4 class="anchored" data-anchor-id="q4a">q4a</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(mdeaths, <span class="at">package =</span> <span class="st">"faraway"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in data(mdeaths, package = "faraway"): data set 'mdeaths' not found</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mdeaths)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Jan  Feb  Mar  Apr  May  Jun
+1974 2134 1863 1877 1877 1492 1249</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mdeaths, <span class="at">ylab =</span> <span class="st">"No. of Deaths"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter5_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>During the winter season.</p>
+</section>
+<section id="q4b" class="level4">
+<h4 class="anchored" data-anchor-id="q4b">q4b</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>time_series_with_current_and_lagged_13_values <span class="ot">&lt;-</span> <span class="fu">embed</span>(</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> mdeaths,</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dimension =</span> <span class="dv">14</span></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(time_series_with_current_and_lagged_13_values)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14]
+[1,] 2137 2103 1846 1621 1492 1209 1131 1280 1249  1492  1877  1877  1863  2134
+[2,] 2153 2137 2103 1846 1621 1492 1209 1131 1280  1249  1492  1877  1877  1863
+[3,] 1833 2153 2137 2103 1846 1621 1492 1209 1131  1280  1249  1492  1877  1877
+[4,] 1403 1833 2153 2137 2103 1846 1621 1492 1209  1131  1280  1249  1492  1877
+[5,] 1288 1403 1833 2153 2137 2103 1846 1621 1492  1209  1131  1280  1249  1492
+[6,] 1186 1288 1403 1833 2153 2137 2103 1846 1621  1492  1209  1131  1280  1249</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(time_series_with_current_and_lagged_13_values) <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"y"</span>,</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"lag"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>)</span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>time_series_with_current_and_lagged_13_values <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>  time_series_with_current_and_lagged_13_values</span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>lm_q4b <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb81-9"><a href="#cb81-9" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> lag1 <span class="sc">+</span> lag12 <span class="sc">+</span> lag13,</span>
+<span id="cb81-10"><a href="#cb81-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> time_series_with_current_and_lagged_13_values</span>
+<span id="cb81-11"><a href="#cb81-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb81-12"><a href="#cb81-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm_q4b)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = y ~ lag1 + lag12 + lag13, data = time_series_with_current_and_lagged_13_values)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-762.71  -81.13  -21.12   61.76  724.06 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  58.1985   120.7358   0.482   0.6317    
+lag1          0.2501     0.1327   1.885   0.0647 .  
+lag12         0.5356     0.1179   4.542 3.09e-05 ***
+lag13         0.1512     0.1386   1.091   0.2801    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 238.7 on 55 degrees of freedom
+Multiple R-squared:   0.73, Adjusted R-squared:  0.7153 
+F-statistic: 49.56 on 3 and 55 DF,  p-value: 1.19e-15</code></pre>
+</div>
+</div>
+<p>Only <code>lag12</code>, the one year lag is statistically significant.</p>
+</section>
+<section id="q4c" class="level4">
+<h4 class="anchored" data-anchor-id="q4c">q4c</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Getting data from the last row</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>time_series_with_current_and_lagged_13_values[</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(time_series_with_current_and_lagged_13_values),</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      y lag1 lag2 lag3 lag4 lag5 lag6 lag7 lag8 lag9 lag10 lag11 lag12 lag13
+59 1341 1294 1081  940  975 1056 1075 1215 1531 1846  1820  2263  1812  1110</code></pre>
+</div>
+</div>
+<p>Given 1341, 1294, 1081, 940, 975, 1056, 1075, 1215, 1531, 1846, 1820, 2263, 1812, 1110</p>
+<ul>
+<li><p><code>lag1</code> equals 1341</p></li>
+<li><p><code>lag12</code> equals 2263</p></li>
+<li><p><code>lag13</code> equals 1812</p></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q4b,</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">lag1 =</span> <span class="dv">1341</span>, <span class="at">lag12 =</span> <span class="dv">2263</span>, <span class="at">lag13 =</span> <span class="dv">1812</span>),</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit      lwr      upr
+1 1879.599 1359.725 2399.474</code></pre>
+</div>
+</div>
+</section>
+<section id="q4d" class="level4">
+<h4 class="anchored" data-anchor-id="q4d">q4d</h4>
+<ul>
+<li><p><code>lag1</code> equals 1879.5994643</p></li>
+<li><p><code>lag12</code> equals 1820</p></li>
+<li><p><code>lag13</code> equals 2263</p></li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q4b,</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">lag1 =</span> <span class="fl">1879.5994643</span>, <span class="at">lag12 =</span> <span class="dv">1820</span>, <span class="at">lag13 =</span> <span class="dv">2263</span>),</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit     lwr      upr
+1 1845.248 1345.87 2344.625</code></pre>
+</div>
+</div>
+</section>
+<section id="q4e" class="level4">
+<h4 class="anchored" data-anchor-id="q4e">q4e</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="at">x =</span> <span class="fu">fitted</span>(<span class="at">object =</span> lm_q4b))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 59</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="at">x =</span> mdeaths)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 72</code></pre>
+</div>
+</div>
+<p>The original dataset contains 72 observations, but our model only produces 59 fitted values. This discrepancy occurs because the autoregressive model relies on lagged variables (<em>data from previous months</em>). Consequently, the earliest observations in the dataset cannot be predicted because the required lag data falls before the start of our recording period.</p>
+<p>To accurately plot the data, we must align the arrays by subsetting the observed values to match the timeframe of our 59 fitted values <code>mdeaths[14:72]</code>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 72 total - 59 fitted = 13 skipped at the beginning.</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Therefore, we plot using indices 14 through 72.</span></span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fitted</span>(lm_q4b),</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tail</span>(<span class="at">x =</span> mdeaths, <span class="at">n =</span> <span class="fu">length</span>(<span class="at">x =</span> <span class="fu">fitted</span>(<span class="at">object =</span> lm_q4b))),</span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>,</span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Observed Values"</span></span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter5_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>Based on the plot, the prediction accuracy will not be the same for all months of the year.</p></li>
+<li><p>We can observe the presence of <strong>heteroscedasticity</strong> in the plot: the variability (<em>vertical spread</em>) of the points increases as the total number of deaths increases. Because the <code>mdeaths</code> dataset is highly seasonal, certain months of the year, typically winter months, experience drastically higher death tolls. Therefore, the model’s predictions for those high-count months will have a wider variance and lower absolute accuracy compared to the predictions for low-count months.</p></li>
+<li><p>It is important to understand <em>why</em> this occurs. An increased number of deaths does not mean the model is inherently failing. Rather, winter months introduce greater real-world volatility (<em>such as unpredictable flu outbreaks</em>), making the baseline harder to predict. Furthermore, statistical errors are often proportional; a standard percentage error yields a much larger absolute numerical difference when applied to a high winter death toll compared to a low summer baseline. This proportional error manifests as the wider visual spread seen on the graph.</p></li>
+</ul>
+</section>
+</section>
+<section id="q5" class="level3">
+<h3 class="anchored" data-anchor-id="q5">Q5</h3>
+<section id="q5a" class="level4">
+<h4 class="anchored" data-anchor-id="q5a">q5a</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(fat, <span class="at">package =</span> <span class="st">"faraway"</span>)</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  brozek siri density age weight height adipos  free neck chest abdom   hip
+1   12.6 12.3  1.0708  23 154.25  67.75   23.7 134.9 36.2  93.1  85.2  94.5
+2    6.9  6.1  1.0853  22 173.25  72.25   23.4 161.3 38.5  93.6  83.0  98.7
+3   24.6 25.3  1.0414  22 154.00  66.25   24.7 116.0 34.0  95.8  87.9  99.2
+4   10.9 10.4  1.0751  26 184.75  72.25   24.9 164.7 37.4 101.8  86.4 101.2
+5   27.8 28.7  1.0340  24 184.25  71.25   25.6 133.1 34.4  97.3 100.0 101.9
+6   20.6 20.9  1.0502  24 210.25  74.75   26.5 167.0 39.0 104.5  94.4 107.8
+  thigh knee ankle biceps forearm wrist
+1  59.0 37.3  21.9   32.0    27.4  17.1
+2  58.7 37.3  23.4   30.5    28.9  18.2
+3  59.6 38.9  24.0   28.8    25.2  16.6
+4  60.1 37.3  22.8   32.4    29.4  18.2
+5  63.2 42.2  24.0   32.2    27.7  17.7
+6  66.0 42.0  25.6   35.7    30.6  18.8</code></pre>
+</div>
+</div>
+<p>To determine if the smaller model is justifiable, we can fit both models and compare them using an <span class="math inline">\(F\)</span>-test.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>lm_q5a_i <span class="ot">&lt;-</span> <span class="fu">lm</span>(brozek <span class="sc">~</span> age <span class="sc">+</span> weight <span class="sc">+</span> height <span class="sc">+</span> abdom, <span class="at">data =</span> fat)</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>lm_q5a_ii <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>  brozek <span class="sc">~</span> age <span class="sc">+</span></span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>    weight <span class="sc">+</span></span>
+<span id="cb96-5"><a href="#cb96-5" aria-hidden="true" tabindex="-1"></a>    height <span class="sc">+</span></span>
+<span id="cb96-6"><a href="#cb96-6" aria-hidden="true" tabindex="-1"></a>    neck <span class="sc">+</span></span>
+<span id="cb96-7"><a href="#cb96-7" aria-hidden="true" tabindex="-1"></a>    chest <span class="sc">+</span></span>
+<span id="cb96-8"><a href="#cb96-8" aria-hidden="true" tabindex="-1"></a>    abdom <span class="sc">+</span></span>
+<span id="cb96-9"><a href="#cb96-9" aria-hidden="true" tabindex="-1"></a>    hip <span class="sc">+</span></span>
+<span id="cb96-10"><a href="#cb96-10" aria-hidden="true" tabindex="-1"></a>    thigh <span class="sc">+</span></span>
+<span id="cb96-11"><a href="#cb96-11" aria-hidden="true" tabindex="-1"></a>    knee <span class="sc">+</span></span>
+<span id="cb96-12"><a href="#cb96-12" aria-hidden="true" tabindex="-1"></a>    ankle <span class="sc">+</span></span>
+<span id="cb96-13"><a href="#cb96-13" aria-hidden="true" tabindex="-1"></a>    biceps <span class="sc">+</span></span>
+<span id="cb96-14"><a href="#cb96-14" aria-hidden="true" tabindex="-1"></a>    forearm <span class="sc">+</span></span>
+<span id="cb96-15"><a href="#cb96-15" aria-hidden="true" tabindex="-1"></a>    wrist,</span>
+<span id="cb96-16"><a href="#cb96-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fat</span>
+<span id="cb96-17"><a href="#cb96-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb96-18"><a href="#cb96-18" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(lm_q5a_i, lm_q5a_ii)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: brozek ~ age + weight + height + abdom
+Model 2: brozek ~ age + weight + height + neck + chest + abdom + hip + 
+    thigh + knee + ankle + biceps + forearm + wrist
+  Res.Df    RSS Df Sum of Sq      F   Pr(&gt;F)   
+1    247 4205.0                                
+2    238 3785.1  9     419.9 2.9336 0.002558 **
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>When comparing a reduced model to a full model, we are testing whether the 9 extra coefficients (<span class="math inline">\(\beta\)</span>) in the full model are exactly zero.</p>
+<ul>
+<li><span class="math inline">\(H_0: \beta_{neck} = \beta_{chest} = \dots = \beta_{wrist} = 0\)</span> (<em>The extra variables do not significantly improve the model; the smaller model is sufficient</em>).</li>
+<li><span class="math inline">\(H_a:\)</span> At least one of these 9 coefficients is <span class="math inline">\(\neq 0\)</span> (<em>The extra variables provide a significant improvement; the full model is better</em>).</li>
+</ul>
+<p>The ANOVA test yields an <span class="math inline">\(F\)</span>-statistic of 2.934 and a highly significant p-value of 0.00256 (<span class="math inline">\(p &lt; 0.01\)</span>). Because <span class="math inline">\(p &lt; \alpha\)</span>, we reject <span class="math inline">\(H_0\)</span>. Statistically, the extra variables provide a significant improvement, meaning the full model is mathematically superior.</p>
+<p>Another way to evaluate the models is by comparing their residual standard errors, which measure prediction uncertainty.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparing their residual standard errors, which measure prediction uncertainty</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(</span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Smaller_Model =</span> <span class="fu">summary</span>(lm_q5a_i)<span class="sc">$</span>sigma,</span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Full_Model =</span> <span class="fu">summary</span>(lm_q5a_ii)<span class="sc">$</span>sigma</span>
+<span id="cb98-5"><a href="#cb98-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Smaller_Model    Full_Model 
+     4.126069      3.987973 </code></pre>
+</div>
+</div>
+<p>The full model has a slightly lower prediction error (3.99) compared to the smaller model (4.13).</p>
+<p>From a strict statistical perspective, the smaller model is not justifiable because the <span class="math inline">\(F\)</span>-test explicitly rejects it in favor of the larger model.</p>
+</section>
+<section id="q5b" class="level4">
+<h4 class="anchored" data-anchor-id="q5b">q5b</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">t</span>(<span class="fu">apply</span>(<span class="at">X =</span> fat, <span class="at">MARGIN =</span> <span class="dv">2</span>, <span class="at">FUN =</span> median)))</span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>  brozek siri density age weight height adipos   free neck chest abdom  hip
+1     19 19.2  1.0549  43  176.5     70  25.05 141.55   38 99.65 90.95 99.3
+  thigh knee ankle biceps forearm wrist
+1    59 38.5  22.8  32.05    28.7  18.3</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(<span class="at">object =</span> lm_q5a_i, <span class="at">newdata =</span> x, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit      lwr      upr
+1 17.84028 9.696631 25.98392</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(<span class="at">object =</span> lm_q5a_ii, <span class="at">newdata =</span> x, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit     lwr      upr
+1 17.49322 9.61783 25.36861</code></pre>
+</div>
+</div>
+<p>No.</p>
+</section>
+<section id="q5c" class="level4">
+<h4 class="anchored" data-anchor-id="q5c">q5c</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>fat[<span class="dv">25</span><span class="sc">:</span><span class="dv">50</span>, ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   brozek siri density age weight height adipos  free neck chest abdom   hip
+25   14.2 14.0  1.0668  28 151.25  67.75   23.2 129.8 34.5  90.2  76.3  95.8
+26    4.6  3.7  1.0911  27 159.25  71.50   21.9 151.9 35.7  89.6  79.7  96.5
+27    8.5  7.9  1.0811  34 131.50  67.50   20.3 120.3 36.2  88.6  74.6  85.3
+28   22.4 22.9  1.0468  31 148.00  67.50   22.9 114.9 38.8  97.4  88.7  94.7
+29    4.7  3.7  1.0910  27 133.25  64.75   22.4 127.0 36.4  93.5  73.9  88.5
+30    9.4  8.8  1.0790  29 160.75  69.00   23.8 145.7 36.7  97.4  83.5  98.7
+31   12.3 11.9  1.0716  32 182.00  73.75   23.6 159.7 38.7 100.5  88.7  99.8
+32    6.5  5.7  1.0862  29 160.25  71.25   22.2 149.8 37.3  93.5  84.5 100.6
+33   13.4 11.8  1.0719  27 168.00  71.25   23.3 142.5 38.1  93.0  79.1  94.5
+34   20.9 21.3  1.0502  41 218.50  71.00   30.5 172.7 39.8 111.7 100.5 108.3
+35   31.1 32.3  1.0263  41 247.25  73.50   32.2 170.4 42.1 117.0 115.6 116.1
+36   38.2 40.1  1.0101  49 191.75  65.00   32.0 118.4 38.4 118.5 113.1 113.8
+37   23.6 24.2  1.0438  40 202.25  70.00   29.1 154.5 38.5 106.5 100.9 106.2
+38   27.5 28.4  1.0346  50 196.75  68.25   29.7 142.6 42.1 105.6  98.8 104.8
+39   33.8 35.2  1.0202  46 363.15  72.25   48.9 240.5 51.2 136.2 148.1 147.7
+40   31.3 32.6  1.0258  50 203.00  67.00   31.8 139.4 40.2 114.8 108.1 102.5
+41   33.1 34.5  1.0217  45 262.75  68.75   39.1 175.8 43.2 128.3 126.2 125.6
+42   31.7 32.9  1.0250  44 205.00  29.50   29.9 140.1 36.6 106.0 104.3 115.5
+43   30.4 31.6  1.0279  48 217.00  70.00   31.2 151.1 37.3 113.3 111.2 114.1
+44   30.8 32.0  1.0269  41 212.00  71.50   29.2 146.7 41.5 106.6 104.3 106.0
+45    8.4  7.7  1.0814  39 125.25  68.00   19.1 114.7 31.5  85.1  76.0  88.2
+46   14.1 13.9  1.0670  43 164.25  73.25   21.3 141.1 35.7  96.6  81.5  97.2
+47   11.2 10.8  1.0742  40 133.50  67.50   20.6 118.5 33.6  88.2  73.7  88.5
+48    6.4  5.6  1.0665  39 148.50  71.25   20.6 139.0 34.6  89.8  79.5  92.7
+49   13.4 13.6  1.0678  45 135.75  68.50   20.4 117.6 32.8  92.3  83.4  90.4
+50    5.0  4.0  1.0903  47 127.50  66.75   20.2 121.2 34.0  83.4  70.4  87.2
+   thigh knee ankle biceps forearm wrist
+25  58.4 35.5  22.9   31.1    28.0  17.6
+26  55.0 36.7  22.5   29.9    28.2  17.7
+27  51.7 34.7  21.4   28.7    27.0  16.5
+28  57.5 36.0  21.0   29.2    26.6  17.0
+29  50.1 34.5  21.3   30.5    27.9  17.2
+30  58.9 35.3  22.6   30.1    26.7  17.6
+31  57.5 38.7  33.9   32.5    27.7  18.4
+32  58.5 38.8  21.5   30.1    26.4  17.9
+33  57.3 36.2  24.5   29.0    30.0  18.8
+34  67.1 44.2  25.2   37.5    31.5  18.7
+35  71.2 43.3  26.3   37.3    31.7  19.7
+36  61.9 38.3  21.9   32.0    29.8  17.0
+37  63.5 39.9  22.6   35.1    30.6  19.0
+38  66.0 41.5  24.7   33.2    30.5  19.4
+39  87.3 49.1  29.6   45.0    29.0  21.4
+40  61.3 41.1  24.7   34.1    31.0  18.3
+41  72.5 39.6  26.6   36.4    32.7  21.4
+42  70.6 42.5  23.7   33.6    28.7  17.4
+43  67.7 40.9  25.0   36.7    29.8  18.4
+44  65.0 40.2  23.0   35.8    31.5  18.8
+45  50.0 34.7  21.0   26.1    23.1  16.1
+46  58.4 38.2  23.4   29.7    27.4  18.3
+47  53.3 34.5  22.5   27.9    26.2  17.3
+48  52.7 37.5  21.9   28.8    26.8  17.9
+49  52.0 35.8  20.6   28.8    25.5  16.3
+50  50.6 34.4  21.9   26.8    25.8  16.8</code></pre>
+</div>
+</div>
+<ul>
+<li>Subject 39 is unusually heavy.</li>
+<li>Subject 42 is unusually short.</li>
+</ul>
+</section>
+<section id="q5d" class="level4">
+<h4 class="anchored" data-anchor-id="q5d">q5d</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>lm_q5d_i <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>  brozek <span class="sc">~</span> age <span class="sc">+</span> weight <span class="sc">+</span> height <span class="sc">+</span> abdom,</span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fat,</span>
+<span id="cb108-4"><a href="#cb108-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">subset =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="dv">39</span>, <span class="dv">42</span>)</span>
+<span id="cb108-5"><a href="#cb108-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb108-6"><a href="#cb108-6" aria-hidden="true" tabindex="-1"></a>lm_q5d_ii <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb108-7"><a href="#cb108-7" aria-hidden="true" tabindex="-1"></a>  brozek <span class="sc">~</span> age <span class="sc">+</span></span>
+<span id="cb108-8"><a href="#cb108-8" aria-hidden="true" tabindex="-1"></a>    weight <span class="sc">+</span></span>
+<span id="cb108-9"><a href="#cb108-9" aria-hidden="true" tabindex="-1"></a>    height <span class="sc">+</span></span>
+<span id="cb108-10"><a href="#cb108-10" aria-hidden="true" tabindex="-1"></a>    neck <span class="sc">+</span></span>
+<span id="cb108-11"><a href="#cb108-11" aria-hidden="true" tabindex="-1"></a>    chest <span class="sc">+</span></span>
+<span id="cb108-12"><a href="#cb108-12" aria-hidden="true" tabindex="-1"></a>    abdom <span class="sc">+</span></span>
+<span id="cb108-13"><a href="#cb108-13" aria-hidden="true" tabindex="-1"></a>    hip <span class="sc">+</span></span>
+<span id="cb108-14"><a href="#cb108-14" aria-hidden="true" tabindex="-1"></a>    thigh <span class="sc">+</span></span>
+<span id="cb108-15"><a href="#cb108-15" aria-hidden="true" tabindex="-1"></a>    knee <span class="sc">+</span></span>
+<span id="cb108-16"><a href="#cb108-16" aria-hidden="true" tabindex="-1"></a>    ankle <span class="sc">+</span></span>
+<span id="cb108-17"><a href="#cb108-17" aria-hidden="true" tabindex="-1"></a>    biceps <span class="sc">+</span></span>
+<span id="cb108-18"><a href="#cb108-18" aria-hidden="true" tabindex="-1"></a>    forearm <span class="sc">+</span></span>
+<span id="cb108-19"><a href="#cb108-19" aria-hidden="true" tabindex="-1"></a>    wrist,</span>
+<span id="cb108-20"><a href="#cb108-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fat,</span>
+<span id="cb108-21"><a href="#cb108-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">subset =</span> <span class="sc">-</span><span class="fu">c</span>(<span class="dv">39</span>, <span class="dv">42</span>)</span>
+<span id="cb108-22"><a href="#cb108-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb108-23"><a href="#cb108-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb108-24"><a href="#cb108-24" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(<span class="at">object =</span> lm_q5d_i, <span class="at">newdata =</span> x, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit      lwr      upr
+1 17.91062 9.894975 25.92627</code></pre>
+</div>
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(<span class="at">object =</span> lm_q5d_ii, <span class="at">newdata =</span> x, <span class="at">interval =</span> <span class="st">"prediction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       fit      lwr      upr
+1 17.58505 9.797471 25.37263</code></pre>
+</div>
+</div>
+<p>No, removing the extreme outliers made almost no difference. Because our prediction is based on the median (<em>the exact center</em>) of the dataset, it is highly stable. Outliers strongly pull on the extremes/tails of a regression model, but they have very little leverage over predictions made directly in the middle of the data spread.</p>
+</section>
+</section>
+<section id="q6" class="level3">
+<h3 class="anchored" data-anchor-id="q6">Q6</h3>
+<section id="q6a" class="level4">
+<h4 class="anchored" data-anchor-id="q6a">q6a</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(fat, <span class="at">package =</span> <span class="st">"faraway"</span>)</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>lm_q6a <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>  brozek <span class="sc">~</span> age <span class="sc">+</span></span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>    weight <span class="sc">+</span></span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a>    height <span class="sc">+</span></span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a>    neck <span class="sc">+</span></span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a>    chest <span class="sc">+</span></span>
+<span id="cb112-8"><a href="#cb112-8" aria-hidden="true" tabindex="-1"></a>    abdom <span class="sc">+</span></span>
+<span id="cb112-9"><a href="#cb112-9" aria-hidden="true" tabindex="-1"></a>    hip <span class="sc">+</span></span>
+<span id="cb112-10"><a href="#cb112-10" aria-hidden="true" tabindex="-1"></a>    thigh <span class="sc">+</span></span>
+<span id="cb112-11"><a href="#cb112-11" aria-hidden="true" tabindex="-1"></a>    knee <span class="sc">+</span></span>
+<span id="cb112-12"><a href="#cb112-12" aria-hidden="true" tabindex="-1"></a>    ankle <span class="sc">+</span></span>
+<span id="cb112-13"><a href="#cb112-13" aria-hidden="true" tabindex="-1"></a>    biceps <span class="sc">+</span></span>
+<span id="cb112-14"><a href="#cb112-14" aria-hidden="true" tabindex="-1"></a>    forearm <span class="sc">+</span></span>
+<span id="cb112-15"><a href="#cb112-15" aria-hidden="true" tabindex="-1"></a>    wrist,</span>
+<span id="cb112-16"><a href="#cb112-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fat</span>
+<span id="cb112-17"><a href="#cb112-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb112-18"><a href="#cb112-18" aria-hidden="true" tabindex="-1"></a>prediction_q6a <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb112-19"><a href="#cb112-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q6a,</span>
+<span id="cb112-20"><a href="#cb112-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> fat,</span>
+<span id="cb112-21"><a href="#cb112-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb112-22"><a href="#cb112-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><span class="math display">\[
+RMSE = \sqrt{\frac{1}{m} \sum_{j = 1}^m (\hat{y}_j - \tilde{y}_j)^2}
+\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>((prediction_q6a[, <span class="st">"fit"</span>] <span class="sc">-</span> fat<span class="sc">$</span>brozek)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.875613</code></pre>
+</div>
+</div>
+</section>
+<section id="q6b" class="level4">
+<h4 class="anchored" data-anchor-id="q6b">q6b</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>  (fat<span class="sc">$</span>brozek <span class="sc">&gt;</span> prediction_q6a[, <span class="st">"lwr"</span>]) <span class="sc">&amp;</span></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>    (fat<span class="sc">$</span>brozek <span class="sc">&lt;</span> prediction_q6a[, <span class="st">"upr"</span>])</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9722222</code></pre>
+</div>
+</div>
+</section>
+<section id="q6c" class="level4">
+<h4 class="anchored" data-anchor-id="q6c">q6c</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a>validation_set <span class="ot">&lt;-</span> fat[<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, ]</span>
+<span id="cb117-2"><a href="#cb117-2" aria-hidden="true" tabindex="-1"></a>training_set <span class="ot">&lt;-</span> fat[<span class="dv">51</span><span class="sc">:</span><span class="fu">nrow</span>(fat), ]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>lm_q6c <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>  brozek <span class="sc">~</span> age <span class="sc">+</span></span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>    weight <span class="sc">+</span></span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>    height <span class="sc">+</span></span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>    neck <span class="sc">+</span></span>
+<span id="cb118-6"><a href="#cb118-6" aria-hidden="true" tabindex="-1"></a>    chest <span class="sc">+</span></span>
+<span id="cb118-7"><a href="#cb118-7" aria-hidden="true" tabindex="-1"></a>    abdom <span class="sc">+</span></span>
+<span id="cb118-8"><a href="#cb118-8" aria-hidden="true" tabindex="-1"></a>    hip <span class="sc">+</span></span>
+<span id="cb118-9"><a href="#cb118-9" aria-hidden="true" tabindex="-1"></a>    thigh <span class="sc">+</span></span>
+<span id="cb118-10"><a href="#cb118-10" aria-hidden="true" tabindex="-1"></a>    knee <span class="sc">+</span></span>
+<span id="cb118-11"><a href="#cb118-11" aria-hidden="true" tabindex="-1"></a>    ankle <span class="sc">+</span></span>
+<span id="cb118-12"><a href="#cb118-12" aria-hidden="true" tabindex="-1"></a>    biceps <span class="sc">+</span></span>
+<span id="cb118-13"><a href="#cb118-13" aria-hidden="true" tabindex="-1"></a>    forearm <span class="sc">+</span></span>
+<span id="cb118-14"><a href="#cb118-14" aria-hidden="true" tabindex="-1"></a>    wrist,</span>
+<span id="cb118-15"><a href="#cb118-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_set</span>
+<span id="cb118-16"><a href="#cb118-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb118-17"><a href="#cb118-17" aria-hidden="true" tabindex="-1"></a>prediction_q6c <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb118-18"><a href="#cb118-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q6c,</span>
+<span id="cb118-19"><a href="#cb118-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> training_set,</span>
+<span id="cb118-20"><a href="#cb118-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb118-21"><a href="#cb118-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p><strong>Comment on the choice of the first 50 rows for the validation set:</strong> Allocating 50 out of 252 observations (19.8%) to the validation set is a standard and appropriate sample size, leaving ample data (202 observations) to train a mathematically stable model. However, the <em>method</em> of selecting the first 50 consecutive rows is a dangerous practice especially if the dataset happens to be sorted by any variable, a sequential split guarantees that the validation set will have a fundamentally different underlying distribution than the training set. To ensure both sets are representative of the same population, the observations should always be partitioned using random sampling.</p>
+</section>
+<section id="q6d" class="level4">
+<h4 class="anchored" data-anchor-id="q6d">q6d</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>((prediction_q6c[, <span class="st">"fit"</span>] <span class="sc">-</span> training_set<span class="sc">$</span>brozek)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.857854</code></pre>
+</div>
+</div>
+<p><strong>In-Sample Optimisation:</strong> The RMSE on the training set (3.858) is slightly lower than the RMSE on the full dataset (3.876). This decrease is mathematically expected because we are measuring <strong>in-sample error</strong>. Ordinary Least Squares (OLS) regression explicitly calculates coefficients designed to minimize the squared residuals for the exact data it is trained on. Furthermore, because the model retains all 13 predictors but now has fewer observations to fit (202 instead of 252), it gains slightly more flexibility to “<em>hug</em>” the training data, inherently driving the training error down.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(</span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>  (training_set<span class="sc">$</span>brozek <span class="sc">&gt;</span> prediction_q6c[, <span class="st">"lwr"</span>]) <span class="sc">&amp;</span></span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>    (training_set<span class="sc">$</span>brozek <span class="sc">&lt;</span> prediction_q6c[, <span class="st">"upr"</span>])</span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9653465</code></pre>
+</div>
+</div>
+<p><strong>Coverage Comparison:</strong> The fraction of prediction intervals containing the true response on the training set is (96.5%), which is remarkably close to the (97.2%) coverage we saw on the full dataset. Both of these empirical coverage rates are slightly conservative (<em>running a bit higher than the nominal 95% target</em>), but they prove that the model’s behavior remains stable and consistent when trained on this subset.</p>
+</section>
+<section id="q6e" class="level4">
+<h4 class="anchored" data-anchor-id="q6e">q6e</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>prediction_q6e <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q6c,</span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> validation_set,</span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">mean</span>((prediction_q6e[, <span class="st">"fit"</span>] <span class="sc">-</span> validation_set<span class="sc">$</span>brozek)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.394935</code></pre>
+</div>
+</div>
+<p><strong>Out-of-Sample Error</strong>: The RMSE on the unseen validation set (4.395) is noticeably higher than the RMSE on the training set (3.858). This is an expected statistical phenomenon. Regression models are mathematically optimised to minimise the error on their specific training data. When the model is forced to generalise to brand-new, unseen data, the error naturally increases. In other words, the training RMSE represents an overly optimistic view of the model’s accuracy, whereas the validation RMSE provides a much more realistic estimate of real-world performance.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(</span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>  (validation_set<span class="sc">$</span>brozek <span class="sc">&gt;</span> prediction_q6e[, <span class="st">"lwr"</span>]) <span class="sc">&amp;</span></span>
+<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a>    (validation_set<span class="sc">$</span>brozek <span class="sc">&lt;</span> prediction_q6e[, <span class="st">"upr"</span>])</span>
+<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.98</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="todo-understanding-and-finalised-this-part" class="level1">
+<h1>TODO: understanding and finalised this part</h1>
+<p><strong>Coverage Fraction on Unseen Data</strong>: The coverage probability on the validation set actually rose slightly to 98%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly 50 observations, a single observation represents a 2% swing. A 98% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.</p>
+
+
 </section>
 
 </main> <!-- /main -->
