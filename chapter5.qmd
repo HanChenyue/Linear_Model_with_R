@@ -737,3 +737,125 @@ mean(
 ```
 
 **Coverage Fraction on Unseen Data**: The coverage probability on the validation set actually rose slightly to `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly `r nrow(validation_set)` observations, a single observation represents a 2% swing. A `r round(mean((validation_set$brozek > prediction_q6e[, "lwr"]) & (validation_set$brozek < prediction_q6e[, "upr"])) * 100, 1)`% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.
+
+### Q7
+
+#### q7a
+
+```{r}
+# Defining a general RSME function
+rmse_function <- function(a, b) {
+  sqrt(mean((a - b)^2))
+}
+```
+
+```{r}
+data(fat, package = "faraway")
+lm_q7a <- lm(
+  siri ~ age +
+    weight +
+    height +
+    neck +
+    chest +
+    abdom +
+    hip +
+    thigh +
+    knee +
+    ankle +
+    biceps +
+    forearm +
+    wrist,
+  data = fat
+)
+prediction_q7a <- predict(
+  object = lm_q7a,
+  newdata = fat,
+  interval = "prediction"
+)
+```
+
+```{r}
+rmse_function(fat$siri, prediction_q7a[, "fit"])
+```
+
+The RMSE of the model on the training data is `r round(rmse_function(fat$siri, prediction_q7a[, "fit"]), 3)`.
+
+```{r}
+mean(
+  (fat$siri > prediction_q7a[, "lwr"] & (fat$siri < prediction_q7a[, "upr"]))
+)
+```
+
+The fraction of prediction intervals containing the observed response is `r round(mean((fat$siri > prediction_q7a[, "lwr"]) & (prediction_q7a[, "upr"] > fat$siri)) * 100, 1)`%. This empirical coverage slightly exceeds the nominal 95% target, indicating a well-calibrated, slightly conservative model when evaluated in-sample.
+
+#### q7b
+
+```{r}
+data(wfat, package = "faraway")
+prediction_q7b <- predict(
+  object = lm_q7a,
+  newdata = wfat,
+  interval = "prediction"
+)
+rmse_function(wfat$siri, prediction_q7b[, "fit"])
+```
+
+When applying the men's model to the women's dataset, the RMSE jumps drastically to `r round(rmse_function(wfat$siri, prediction_q7b[, "fit"]), 3)` (*nearly double the in-sample error*). This massive increase indicates that a model trained on male physiology is fundamentally inaccurate at predicting female body fat percentages.
+
+```{r}
+mean(
+  (wfat$siri > prediction_q7b[, "lwr"]) & (wfat$siri < prediction_q7b[, "upr"])
+)
+```
+
+Interestingly, despite the poor accuracy (*high RMSE*), the coverage fraction remains excellent at `r round(mean((wfat$siri > prediction_q7b[, "lwr"]) & (prediction_q7b[, "upr"] > wfat$siri)) * 100, 1)`%. The model successfully captured the true values within its intervals, but as we will see in part (e), it only achieved this by making the intervals incredibly wide.
+
+#### q7c
+
+```{r}
+plot(
+  x = prediction_q7b[, "fit"],
+  y = wfat$siri,
+  xlab = "Predicted Body Fat From Model",
+  ylab = "Actual Body Fat From Data"
+)
+abline(a = 0, b = 1)
+```
+
+#### q7d
+
+```{r}
+# Mean difference for Women (Out-of-sample)
+mean(prediction_q7b[, "fit"] - wfat$siri)
+```
+
+The mean difference for the women's data is `r round(abs(mean(wfat$siri - prediction_q7b[, "fit"])), 1)`%. This quantifies our visual observation from part (c): on average, a woman has about `r round(abs(mean(wfat$siri - prediction_q7b[, "fit"])), 1)`% more body fat than a man with the exact same physical dimensions.
+
+```{r}
+# Mean difference for Men (In-sample)
+mean(prediction_q7a[, "fit"] - fat$siri)
+```
+
+Conversely, the mean difference for the men is functionally zero as the sum (*and therefore the mean*) of the residuals on the training data is always exactly zero.
+
+#### q7e
+
+```{r}
+# Mean width of prediction intervals for Men
+mean(prediction_q7a[, "upr"] - prediction_q7a[, "lwr"])
+```
+
+```{r}
+# Mean width of prediction intervals for Women
+mean(prediction_q7b[, "upr"] - prediction_q7b[, "lwr"])
+```
+
+The average prediction interval width for men is `r round(mean(prediction_q7a[, "upr"] - prediction_q7a[, "lwr"]), 1)`, while for women it expands massively to `r round(mean(prediction_q7b[, "upr"] - prediction_q7b[, "lwr"]), 1)`.
+
+This perfectly explains the paradox from part (b). The mathematical formula for a prediction interval incorporates the distance of the new observation from the centroid of the training data. Because women's physical measurements are structurally different from the male averages the model was trained on, the algorithm applies a mathematical "penalty" for predicting in unfamiliar territory, causing the intervals to balloon outward. This immense uncertainty is the only reason the coverage probability survived.
+
+#### q7f
+
+This exercise demonstrates both quantitative and qualitative extrapolation. Women have a distinct range of physical measurements (*quantitative*) and a fundamentally different biological physiology (*qualitative*). Consequently, the linear relationships learned from men fail when applied to a different demographic.
+
+Also, relying solely on training data creates a false sense of security. Testing the model on a completely distinct population (*external validation*) successfully revealed that our model's predictive power is strictly limited to men and cannot be generalised to the broader public.

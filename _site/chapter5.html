@@ -158,9 +158,9 @@ window.Quarto = {
   <li><a href="#q4" id="toc-q4" class="nav-link" data-scroll-target="#q4">Q4</a></li>
   <li><a href="#q5" id="toc-q5" class="nav-link" data-scroll-target="#q5">Q5</a></li>
   <li><a href="#q6" id="toc-q6" class="nav-link" data-scroll-target="#q6">Q6</a></li>
+  <li><a href="#q7" id="toc-q7" class="nav-link" data-scroll-target="#q7">Q7</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#todo-understanding-and-finalised-this-part" id="toc-todo-understanding-and-finalised-this-part" class="nav-link" data-scroll-target="#todo-understanding-and-finalised-this-part">TODO: understanding and finalised this part</a></li>
   </ul>
 </nav>
     </div>
@@ -1517,15 +1517,184 @@ RMSE = \sqrt{\frac{1}{m} \sum_{j = 1}^m (\hat{y}_j - \tilde{y}_j)^2}
 <pre><code>[1] 0.98</code></pre>
 </div>
 </div>
-</section>
-</section>
-</section>
-</section>
-<section id="todo-understanding-and-finalised-this-part" class="level1">
-<h1>TODO: understanding and finalised this part</h1>
 <p><strong>Coverage Fraction on Unseen Data</strong>: The coverage probability on the validation set actually rose slightly to 98%. While we typically expect coverage to drop slightly on unseen data, this anomaly is easily explained by the small sample size. Because the validation set contains exactly 50 observations, a single observation represents a 2% swing. A 98% coverage means exactly 49 out of 50 intervals contained the true response. If just one more observation had fallen outside the interval, the coverage would be 96%, perfectly mirroring the training set. Therefore, the coverage remains highly stable despite the small sample size variance.</p>
+</section>
+</section>
+<section id="q7" class="level3">
+<h3 class="anchored" data-anchor-id="q7">Q7</h3>
+<section id="q7a" class="level4">
+<h4 class="anchored" data-anchor-id="q7a">q7a</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Defining a general RSME function</span></span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a>rmse_function <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) {</span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(<span class="fu">mean</span>((a <span class="sc">-</span> b)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(fat, <span class="at">package =</span> <span class="st">"faraway"</span>)</span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>lm_q7a <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a>  siri <span class="sc">~</span> age <span class="sc">+</span></span>
+<span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a>    weight <span class="sc">+</span></span>
+<span id="cb128-5"><a href="#cb128-5" aria-hidden="true" tabindex="-1"></a>    height <span class="sc">+</span></span>
+<span id="cb128-6"><a href="#cb128-6" aria-hidden="true" tabindex="-1"></a>    neck <span class="sc">+</span></span>
+<span id="cb128-7"><a href="#cb128-7" aria-hidden="true" tabindex="-1"></a>    chest <span class="sc">+</span></span>
+<span id="cb128-8"><a href="#cb128-8" aria-hidden="true" tabindex="-1"></a>    abdom <span class="sc">+</span></span>
+<span id="cb128-9"><a href="#cb128-9" aria-hidden="true" tabindex="-1"></a>    hip <span class="sc">+</span></span>
+<span id="cb128-10"><a href="#cb128-10" aria-hidden="true" tabindex="-1"></a>    thigh <span class="sc">+</span></span>
+<span id="cb128-11"><a href="#cb128-11" aria-hidden="true" tabindex="-1"></a>    knee <span class="sc">+</span></span>
+<span id="cb128-12"><a href="#cb128-12" aria-hidden="true" tabindex="-1"></a>    ankle <span class="sc">+</span></span>
+<span id="cb128-13"><a href="#cb128-13" aria-hidden="true" tabindex="-1"></a>    biceps <span class="sc">+</span></span>
+<span id="cb128-14"><a href="#cb128-14" aria-hidden="true" tabindex="-1"></a>    forearm <span class="sc">+</span></span>
+<span id="cb128-15"><a href="#cb128-15" aria-hidden="true" tabindex="-1"></a>    wrist,</span>
+<span id="cb128-16"><a href="#cb128-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> fat</span>
+<span id="cb128-17"><a href="#cb128-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb128-18"><a href="#cb128-18" aria-hidden="true" tabindex="-1"></a>prediction_q7a <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb128-19"><a href="#cb128-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q7a,</span>
+<span id="cb128-20"><a href="#cb128-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> fat,</span>
+<span id="cb128-21"><a href="#cb128-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb128-22"><a href="#cb128-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse_function</span>(fat<span class="sc">$</span>siri, prediction_q7a[, <span class="st">"fit"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4.183987</code></pre>
+</div>
+</div>
+<p>The RMSE of the model on the training data is 4.184.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(</span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a>  (fat<span class="sc">$</span>siri <span class="sc">&gt;</span> prediction_q7a[, <span class="st">"lwr"</span>] <span class="sc">&amp;</span> (fat<span class="sc">$</span>siri <span class="sc">&lt;</span> prediction_q7a[, <span class="st">"upr"</span>]))</span>
+<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.968254</code></pre>
+</div>
+</div>
+<p>The fraction of prediction intervals containing the observed response is 96.8%. This empirical coverage slightly exceeds the nominal 95% target, indicating a well-calibrated, slightly conservative model when evaluated in-sample.</p>
+</section>
+<section id="q7b" class="level4">
+<h4 class="anchored" data-anchor-id="q7b">q7b</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(wfat, <span class="at">package =</span> <span class="st">"faraway"</span>)</span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>prediction_q7b <span class="ot">&lt;-</span> <span class="fu">predict</span>(</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> lm_q7a,</span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> wfat,</span>
+<span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">interval =</span> <span class="st">"prediction"</span></span>
+<span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb133-7"><a href="#cb133-7" aria-hidden="true" tabindex="-1"></a><span class="fu">rmse_function</span>(wfat<span class="sc">$</span>siri, prediction_q7b[, <span class="st">"fit"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7.98286</code></pre>
+</div>
+</div>
+<p>When applying the men’s model to the women’s dataset, the RMSE jumps drastically to 7.983 (<em>nearly double the in-sample error</em>). This massive increase indicates that a model trained on male physiology is fundamentally inaccurate at predicting female body fat percentages.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(</span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a>  (wfat<span class="sc">$</span>siri <span class="sc">&gt;</span> prediction_q7b[, <span class="st">"lwr"</span>]) <span class="sc">&amp;</span> (wfat<span class="sc">$</span>siri <span class="sc">&lt;</span> prediction_q7b[, <span class="st">"upr"</span>])</span>
+<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9728261</code></pre>
+</div>
+</div>
+<p>Interestingly, despite the poor accuracy (<em>high RMSE</em>), the coverage fraction remains excellent at 97.3%. The model successfully captured the true values within its intervals, but as we will see in part (e), it only achieved this by making the intervals incredibly wide.</p>
+</section>
+<section id="q7c" class="level4">
+<h4 class="anchored" data-anchor-id="q7c">q7c</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> prediction_q7b[, <span class="st">"fit"</span>],</span>
+<span id="cb137-3"><a href="#cb137-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> wfat<span class="sc">$</span>siri,</span>
+<span id="cb137-4"><a href="#cb137-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Predicted Body Fat From Model"</span>,</span>
+<span id="cb137-5"><a href="#cb137-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Actual Body Fat From Data"</span></span>
+<span id="cb137-6"><a href="#cb137-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb137-7"><a href="#cb137-7" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter5_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="q7d" class="level4">
+<h4 class="anchored" data-anchor-id="q7d">q7d</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean difference for Women (Out-of-sample)</span></span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(prediction_q7b[, <span class="st">"fit"</span>] <span class="sc">-</span> wfat<span class="sc">$</span>siri)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -6.8427</code></pre>
+</div>
+</div>
+<p>The mean difference for the women’s data is 6.8%. This quantifies our visual observation from part (c): on average, a woman has about 6.8% more body fat than a man with the exact same physical dimensions.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb140"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean difference for Men (In-sample)</span></span>
+<span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(prediction_q7a[, <span class="st">"fit"</span>] <span class="sc">-</span> fat<span class="sc">$</span>siri)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.166526e-13</code></pre>
+</div>
+</div>
+<p>Conversely, the mean difference for the men is functionally zero as the sum (<em>and therefore the mean</em>) of the residuals on the training data is always exactly zero.</p>
+</section>
+<section id="q7e" class="level4">
+<h4 class="anchored" data-anchor-id="q7e">q7e</h4>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean width of prediction intervals for Men</span></span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(prediction_q7a[, <span class="st">"upr"</span>] <span class="sc">-</span> prediction_q7a[, <span class="st">"lwr"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 17.421</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Show the code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mean width of prediction intervals for Women</span></span>
+<span id="cb144-2"><a href="#cb144-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(prediction_q7b[, <span class="st">"upr"</span>] <span class="sc">-</span> prediction_q7b[, <span class="st">"lwr"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 29.08962</code></pre>
+</div>
+</div>
+<p>The average prediction interval width for men is 17.4, while for women it expands massively to 29.1.</p>
+<p>This perfectly explains the paradox from part (b). The mathematical formula for a prediction interval incorporates the distance of the new observation from the centroid of the training data. Because women’s physical measurements are structurally different from the male averages the model was trained on, the algorithm applies a mathematical “penalty” for predicting in unfamiliar territory, causing the intervals to balloon outward. This immense uncertainty is the only reason the coverage probability survived.</p>
+</section>
+<section id="q7f" class="level4">
+<h4 class="anchored" data-anchor-id="q7f">q7f</h4>
+<p>This exercise demonstrates both quantitative and qualitative extrapolation. Women have a distinct range of physical measurements (<em>quantitative</em>) and a fundamentally different biological physiology (<em>qualitative</em>). Consequently, the linear relationships learned from men fail when applied to a different demographic.</p>
+<p>Also, relying solely on training data creates a false sense of security. Testing the model on a completely distinct population (<em>external validation</em>) successfully revealed that our model’s predictive power is strictly limited to men and cannot be generalised to the broader public.</p>
 
 
+</section>
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
