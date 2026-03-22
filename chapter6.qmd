@@ -1,0 +1,364 @@
+---
+title: "Linear Model with R: Chapter 6"
+author: Han Chenyue
+editor: source
+format:
+  html:
+    code-fold: true
+    code-summary: "Show the code"
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  # echo = FALSE,
+  digits = 4,
+  scipen = 2
+)
+```
+
+# Chapter 6
+
+## Exercises
+
+### Q1
+
+```{r}
+data(teengamb, package = "faraway")
+
+# ============================================================
+# STEP 1: Create an indicator matrix of all possible
+# combinations of including/excluding 3 predictors.
+#
+# expand.grid() generates every combination of the values
+# we give it. Here, each predictor can be either:
+#   0 = "do NOT include this predictor"
+#   1 = "DO include this predictor"
+#
+# Since we have 3 optional predictors (status, income, verbal),
+# there are 2 × 2 × 2 = 8 possible combinations.
+# ============================================================
+indicator_matrix <- expand.grid(0:1, 0:1, 0:1)
+
+# Let's name the columns so we know which predictor each refers to
+colnames(indicator_matrix) <- c("status", "income", "verbal")
+
+# Print it to see all 8 combinations
+# The output looks like this:
+#   status income verbal
+# 1      0      0      0   ← No extra predictors (just sex)
+# 2      1      0      0   ← Include status only
+# 3      0      1      0   ← Include income only
+# 4      1      1      0   ← Include status and income
+# 5      0      0      1   ← Include verbal only
+# 6      1      0      1   ← Include status and verbal
+# 7      0      1      1   ← Include income and verbal
+# 8      1      1      1   ← Include all three
+indicator_matrix
+```
+
+```{r}
+# ============================================================
+# STEP 2: Set up storage for our results
+# ============================================================
+
+# This is the base model formula that every model will include.
+# Sex is ALWAYS a predictor — we want to see how its effect
+# changes depending on what other predictors we add.
+base_model_formula <- "gamble ~ sex"
+
+# How many models are we going to fit?
+# One for each row of the indicator matrix = 8
+number_of_models <- nrow(indicator_matrix)
+
+# Create an empty character vector to store the formula string
+# for each model. We use rep() to repeat an empty string ""
+# eight times (once per model).
+#
+# rep(x, times) — repeats the value x a total of 'times' times
+# 'times' and 'length.out' do the same thing here;
+# you only need one of them, not both!
+formula_strings <- rep(x = "", times = number_of_models)
+
+# Create an empty numeric vector to store the coefficient
+# (slope) of sex for each model. We fill it with NA for now.
+sex_coefficients <- rep(x = NA, times = number_of_models)
+
+# Create an empty numeric vector to store the p-value
+# of sex for each model. We fill it with NA for now.
+sex_p_values <- rep(x = NA, times = number_of_models)
+
+# ============================================================
+# STEP 3: Loop through all 8 model combinations
+# ============================================================
+
+for (i in 1:number_of_models) {
+  # ----------------------------------------------------------
+  # STEP 3a: Build the formula string for model i
+  # ----------------------------------------------------------
+
+  # Grab the i-th row of the indicator matrix.
+  # This tells us which optional predictors to include.
+  current_row <- indicator_matrix[i, ]
+
+  # Example: if i = 4, current_row is (1, 1, 0),
+  # meaning: include status (1), include income (1),
+  # exclude verbal (0).
+
+  # Convert the 0s and 1s to TRUE/FALSE
+  # 0 becomes FALSE, 1 becomes TRUE
+  include_flags <- as.logical(current_row)
+
+  # Example: c(1, 1, 0) becomes c(TRUE, TRUE, FALSE)
+
+  # Check: does this row have ALL zeros?
+  # (i.e., no extra predictors at all?)
+  no_extra_predictors <- !any(include_flags)
+  # any() returns TRUE if at least one element is TRUE
+  # !any() returns TRUE only if ALL elements are FALSE
+
+  if (no_extra_predictors) {
+    # If no extra predictors, use the base model: gamble ~ sex
+    current_formula_string <- base_model_formula
+  } else {
+    # Define the full list of optional predictor names
+    optional_predictor_names <- c("status", "income", "verbal")
+
+    # Use the TRUE/FALSE flags to select which predictors
+    # to include. This is called "logical subsetting."
+    #
+    # Example: c("status","income","verbal")[c(TRUE,TRUE,FALSE)]
+    #   → returns c("status", "income")
+    selected_predictor_names <- optional_predictor_names[include_flags]
+
+    # Collapse the selected predictor names into a single
+    # string separated by "+"
+    #
+    # Example: c("status", "income") becomes "status+income"
+    extra_predictors_string <- paste(selected_predictor_names, collapse = "+")
+
+    # Now glue the base formula together with the extra
+    # predictors, separated by "+"
+    #
+    # Example: paste("gamble ~ sex", "status+income", sep = "+")
+    #   → "gamble ~ sex+status+income"
+    current_formula_string <- paste(
+      base_model_formula,
+      extra_predictors_string,
+      sep = "+"
+    )
+  }
+
+  # ----------------------------------------------------------
+  # STEP 3b: Convert string to formula and fit the model
+  # ----------------------------------------------------------
+
+  # R's lm() function needs a formula object, not a plain string.
+  # as.formula() converts a string like "gamble ~ sex+income"
+  # into a proper R formula object.
+  current_formula_object <- as.formula(current_formula_string)
+
+  # Fit the linear regression model using lm()
+  fitted_model <- lm(formula = current_formula_object, data = teengamb)
+
+  # Get the detailed summary of the model, which includes
+  # coefficient estimates, standard errors, t-values, and p-values
+  model_summary <- summary(fitted_model)
+
+  # ----------------------------------------------------------
+  # STEP 3c: Extract the sex coefficient and its p-value
+  # ----------------------------------------------------------
+
+  # model_summary$coefficients is a matrix that looks like:
+  #
+  #              Estimate  Std.Error  t.value   Pr(>|t|)
+  # (Intercept)   ...       ...        ...       ...
+  # sex           ...       ...        ...       ...
+  # income        ...       ...        ...       ...
+  # ...
+  #
+  # Row 1 = Intercept
+  # Row 2 = sex (because sex is the FIRST predictor listed
+  #              in every formula, right after the intercept)
+  # Column 1 = Estimate (the coefficient value)
+  # Column 4 = Pr(>|t|) (the p-value)
+
+  coefficient_table <- model_summary$coefficients
+
+  # The sex coefficient estimate is in row 2, column 1
+  sex_estimate <- coefficient_table[2, 1]
+
+  # The sex p-value is in row 2, column 4
+  sex_pvalue <- coefficient_table[2, 4]
+
+  # ----------------------------------------------------------
+  # STEP 3d: Store the results for model i
+  # ----------------------------------------------------------
+
+  formula_strings[i] <- current_formula_string
+  sex_coefficients[i] <- sex_estimate
+  sex_p_values[i] <- sex_pvalue
+
+  # Optional: print progress so we can watch it work
+  cat(
+    "Model",
+    i,
+    ":",
+    current_formula_string,
+    " | sex coef =",
+    round(sex_estimate, 2),
+    " | p-value =",
+    round(sex_pvalue, 4),
+    "\n"
+  )
+}
+
+# ============================================================
+# STEP 4: Assemble and display the results in a nice table
+# ============================================================
+
+results_table <- data.frame(
+  model = formula_strings, # The formula used
+  sex_coefficient = sex_coefficients, # The estimate for sex
+  sex_p_value = sex_p_values # The p-value for sex
+)
+
+# Print the final table
+results_table
+```
+
+Across all eight models, the sex coefficient is always negative (*females gamble less*) and always statistically significant (*small p-value*). This means the effect of sex is stable and robust, and it doesn't matter which combination of the other predictors (*status, income, verbal*) we include or exclude.
+
+### Q2
+
+```{r}
+data(odor, package = "faraway")
+
+lm_q2_list <- c(
+  "odor ~ temp",
+  "odor ~ temp + gas",
+  "odor ~ temp + pack",
+  "odor ~ temp + gas + pack"
+)
+
+linear_models_matrix <- NULL
+
+for (i in seq_along(lm_q2_list)) {
+  lm <- lm(as.formula(lm_q2_list[i]), data = odor)
+  linear_models_matrix <- rbind(
+    linear_models_matrix,
+    summary(lm)$coef["temp", ]
+  )
+}
+
+row.names(linear_models_matrix) = lm_q2_list
+linear_models_matrix
+```
+
+- The coefficient estimate for `temp` is exactly `r linear_models_matrix[1, "Estimate"]` in all four models. No matter which combination of `gas` and `pack` we include, the estimated effect of temperature on odor does not change at all.
+- The **standard error decreases** as we add more predictors (`r round(linear_models_matrix[1, "Std. Error"], 2)` → `r round(linear_models_matrix[2, "Std. Error"], 2)` → `r round(linear_models_matrix[3, "Std. Error"], 2)` → `r round(linear_models_matrix[4, "Std. Error"], 2)`)
+- The **t-statistic increases in magnitude** (`r round(linear_models_matrix[1, "t value"], 3)` → `r round(linear_models_matrix[2, "t value"], 3)` → `r round(linear_models_matrix[3, "t value"], 3)` → `r round(linear_models_matrix[4, "t value"], 3)`)
+- The **p-value decreases** (`r round(linear_models_matrix[1, "Pr(>|t|)"], 3)` → `r round(linear_models_matrix[2, "Pr(>|t|)"], 3)` → `r round(linear_models_matrix[3, "Pr(>|t|)"], 3)` → `r round(linear_models_matrix[4, "Pr(>|t|)"], 3)`)
+- However, `temp` remains **non-significant in all four models** (*all p-values > 0.05*).
+- The coefficient for `temp` is perfectly stable because the predictors in the `odor` dataset are **orthogonal** (uncorrelated) — this is a **designed experiment** where the factor levels were deliberately chosen to be balanced and independent. When predictors are orthogonal, adding or removing other predictors **cannot change** the coefficient of `temp`, because there is no shared variance between the predictors that would cause confounding.
+- The standard error decreases because adding useful predictors (`gas`, `pack`) **reduces the residual variance** (RSS). Since the standard error of a coefficient is proportional to the residual standard error ($\hat{\sigma}$), a smaller RSS → smaller $\hat{\sigma}$ → smaller standard error → larger $|t|$ → smaller p-value.
+-The **full model** (`odor ~ temp + gas + pack`) is best because:
+  - It has the **smallest standard error** for `temp`, giving us the most **precise** estimate of its effect.
+  - Adding `gas` and `pack` reduces residual variance, improving the model's overall explanatory power.
+  - In an orthogonal design, there is **no cost** from multicollinearity when adding predictors — only the benefit of reduced residual variance.
+- Orthogonal designs are highly desirable in experiments precisely because of this property — the estimated effect of each factor is **completely independent** of which other factors are in the model, making the analysis clean and interpretation straightforward.
+
+### Q3
+
+#### q3a
+
+```{r}
+plot(gamble ~ income, data = teengamb, pch = sex)
+legend("topleft", legend = c("Male", "Female"), pch = 0:1)
+```
+
+#### q3b
+
+```{r}
+lm_q3b <- lm(gamble ~ income + sex, data = teengamb)
+lm_q3b_coefficients <- coef(object = lm_q3b)
+plot(gamble ~ income, data = teengamb, pch = sex)
+abline(a = lm_q3b_coefficients[1], b = lm_q3b_coefficients[2], lty = 1)
+abline(
+  a = lm_q3b_coefficients[1] + lm_q3b_coefficients[3],
+  b = lm_q3b_coefficients[2],
+  lty = 2
+)
+legend("topleft", legend = c("Male", "Female"), pch = 0:1, lty = 1:2)
+```
+
+#### q3c
+
+```{r}
+mattg = merge(
+  x = teengamb[teengamb$sex == 1, c(3, 5)],
+  y = teengamb[teengamb$sex == 0, c(3, 5)],
+  by = "income",
+  suffixes = c("female", "male")
+)
+mattg
+```
+
+```{r}
+nrow(mattg)
+```
+
+There are `r nrow(mattg)` matched pairs. However, the `teengamb` dataset only has `r nrow(teengamb)` individuals in total. Since each pair consists of one male and one female matched on income, the `r nrow(mattg)` pairs imply `r nrow(mattg) * 2` individual slots — more than the `r nrow(teengamb)` people available. This means some individuals appear in more than one matched pair, because `merge()` performs a many-to-many join: if multiple people of one sex share the same income as someone of the other sex, all possible pairings are created.
+
+#### q3d
+
+```{r}
+t.test(mattg$gamblemale - mattg$gamblefemale)
+```
+
+The paired t-test yields a t-statistic of `r round(t.test(mattg$gamblemale - mattg$gamblefemale)$statistic, 4)` with a p-value of `r round(t.test(mattg$gamblemale - mattg$gamblefemale)$p.value, 4)`. At the 5% significance level, the difference between male and female gambling expenditure is **not statistically significant**, though the result is borderline with a p-value of approximately 0.064.
+
+However, a key assumption of the paired t-test is **independence between the pairs**. This assumption is clearly violated here because, as we noted above, some individuals appear in more than one matched pair due to the many-to-many nature of the `merge()`. This means the differences across pairs are **not independent** — if a particular male appears in multiple pairs, the differences involving that male will be correlated. As a result, the standard error and p-value from this test are **unreliable**, and the conclusion should be interpreted with caution.
+
+#### q3e
+
+```{r}
+summary(lm_q3b)
+```
+
+From the model in (b), the estimated coefficient for `sex` is `r round(summary(lm_q3b)$coef["sex", "Estimate"], 2)`, meaning that females gamble approximately `r abs(round(summary(lm_q3b)$coef["sex", "Estimate"], 2))` pounds less on average than males after adjusting for income. This difference is statistically significant with a p-value of `r round(summary(lm_q3b)$coef["sex", "Pr(>|t|)"], 4)`.
+
+Compared to the paired t-test in (d), where the estimated difference was approximately `r round(mean(mattg$gamblemale - mattg$gamblefemale), 2)` pounds and was not statistically significant (p ≈ `r round(t.test(mattg$gamblemale - mattg$gamblefemale)$p.value, 4)`), the regression approach finds a **larger** and **statistically significant** difference. This discrepancy arises because the paired t-test in (d) was compromised by the violation of the independence assumption — the reuse of individuals across multiple matched pairs introduced correlated observations, inflating the standard error and weakening the test's ability to detect a true difference.
+
+#### q3f
+
+```{r}
+plot(
+  gamblemale - gamblefemale ~ income,
+  data = mattg,
+  ylab = "Differences in amount gambled by sex (better way to phrase this?)"
+)
+lm_q3f <- lm(gamblemale - gamblefemale ~ income, data = mattg)
+abline(lm_q3f)
+summary(lm_q3f)
+```
+
+The plot shows a clear positive trend: the difference in gambling expenditure between matched males and females **increases with income**. The fitted regression line has a slope of `r round(summary(lm_q3f)$coef["income", "Estimate"], 2)`, suggesting that for each unit increase in income, the male-female gambling gap widens by approximately `r round(summary(lm_q3f)$coef["income", "Estimate"], 2)` pounds.
+
+This is consistent with what we observed in the initial plot from (a), where the **gap between the male and female regression lines widens** as income increases — the male line has a steeper slope than the female line, meaning higher-income males gamble disproportionately more than their female counterparts.
+
+#### q3g
+
+```{r}
+plot(gamble ~ income, data = teengamb, pch = sex)
+legend("topleft", legend = c("Male", "Female"), pch = 0:1, lty = 1:2)
+lm_q3g_i = lm(gamble ~ income, data = teengamb, subset = (sex == 1))
+abline(lm_q3g_i, lty = 2)
+lm_q3g_ii <- lm(gamble ~ income, data = teengamb, subset = (sex == 0))
+abline(lm_q3g_ii)
+```
+
+The plot reveals a striking difference in the relationship between gambling and income for males versus females. The male regression line has a steep positive slope of `r round(coef(lm_q3g_ii)[2], 2)`, indicating that male gambling expenditure increases substantially with income. In contrast, the female regression line is nearly flat with a slope of `r round(coef(lm_q3g_i)[2], 2)`, suggesting that female gambling expenditure barely changes regardless of income level.
+
+As a result, the gap between the two lines **widens as income increases** — at low income levels, males and females gamble roughly similar amounts, but at higher income levels, males gamble far more than females. This is entirely consistent with the finding in (f), where the male-female difference in matched pairs increased with income.
+
+Together, (f) and (g) suggest that the additive model in (b), which assumes parallel lines (i.e., a constant difference between sexes across all income levels), is **inadequate**. The non-parallel lines seen here indicate that the effect of sex on gambling **depends on income**, meaning an interaction term (`sex * income`) should be included in the model to properly capture this relationship.
