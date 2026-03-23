@@ -362,3 +362,193 @@ The plot reveals a striking difference in the relationship between gambling and 
 As a result, the gap between the two lines **widens as income increases** — at low income levels, males and females gamble roughly similar amounts, but at higher income levels, males gamble far more than females. This is entirely consistent with the finding in (f), where the male-female difference in matched pairs increased with income.
 
 Together, (f) and (g) suggest that the additive model in (b), which assumes parallel lines (i.e., a constant difference between sexes across all income levels), is **inadequate**. The non-parallel lines seen here indicate that the effect of sex on gambling **depends on income**, meaning an interaction term (`sex * income`) should be included in the model to properly capture this relationship.
+
+### Q4
+
+#### q4a
+
+```{r}
+data(mba, package = "faraway")
+lm_q4a <- lm(happy ~ money + sex + love + work, data = mba)
+summary(lm_q4a)
+```
+
+A unit increase in `love`, with the other predictors held constant, is associated with an estimated increase of `r round(summary(lm_q4a)$coefficients[4], 2)` in the response `happy`.
+
+#### q4b
+
+```{r}
+mba$clove <- ifelse(test = mba$love <= 2, yes = 0, no = 1)
+lm_q4b <- lm(happy ~ money + sex + clove + work, data = mba)
+summary(lm_q4b)
+```
+
+The new predictor `clove` is a binary variable that equals 0 if `love` ≤ 2 and 1 if `love` = 3. Since `clove` only has two levels, its coefficient has a clear interpretation: holding all other predictors constant, individuals with the higher level of love (`clove` = 1) are estimated to have a `happy` score that is `r round(summary(lm_q4b)$coef["clove", "Estimate"], 2)` units higher than those with the lower level of love (`clove` = 0). This effect is highly significant (p-value equals to `r format(summary(lm_q4b)$coef["clove", "Pr(>|t|)"], digits = 3)`).
+
+Comparing the two models, the results are broadly similar:
+
+- Both `clove` and `love` are highly significant predictors of `happy` (p < 0.001 in both cases).
+- The significance and direction of the other predictors (`money`, `sex`, `work`) remain largely unchanged.
+- The $R^2$ is slightly lower in the `clove` model (`r round(summary(lm_q4b)$r.squared, 4)` vs. `r round(summary(lm_q4a)$r.squared, 4)`), indicating a modest loss in explanatory power.
+
+The results do not differ much because most of the variation in `love` is between the values 2 and 3, which is exactly the distinction that `clove` captures. By collapsing `love` values of 1 and 2 into a single category, we lose only a small amount of information — specifically, the distinction between `love` = 1 and `love` = 2, which occurs rarely in the data. The slight decrease in $R^2$ and increase in residual standard error (`r round(summary(lm_q4b)$sigma, 3)` vs. `r round(summary(lm_q4a)$sigma, 3)`) reflect this minor information loss.
+
+#### q4c
+
+```{r}
+lm_q4c <- lm(happy ~ clove, data = mba)
+summary(lm_q4c)
+```
+
+With only `clove` as a predictor, subjects with the higher level of love (`clove` = 1) are estimated to have a `happy` score that is `r round(summary(lm_q4c)$coef["clove", "Estimate"], 2)` units higher than those with the lower level (`clove` = 0). The effect remains highly significant (p = `r format(summary(lm_q4c)$coef["clove", "Pr(>|t|)"], digits = 3)`).
+
+Compared to the model in (b), the coefficient for `clove` is **larger** here (`r round(summary(lm_q4c)$coef["clove", "Estimate"], 2)` vs. `r round(summary(lm_q4b)$coef["clove", "Estimate"], 2)`). This is because we are no longer adjusting for the other predictors (`money`, `sex`, `work`). In the multiple regression model of (b), the effect of `clove` was estimated while **holding the other variables constant**, effectively isolating its unique contribution. Here, with `clove` as the sole predictor, its coefficient absorbs some of the effects that the other predictors would have explained — particularly those that are correlated with both `clove` and `happy`. This results in a larger but **less precise** estimate, as reflected in the higher residual standard error (`r round(summary(lm_q4c)$sigma, 3)` vs. `r round(summary(lm_q4b)$sigma, 3)`) and lower $R^2$ (`r round(summary(lm_q4c)$r.squared, 4)` vs. `r round(summary(lm_q4b)$r.squared, 4)`).
+
+#### q4d
+
+```{r}
+plot(
+  happy ~ jitter(work),
+  data = mba,
+  pch = clove,
+  xlab = "Work",
+  ylab = "Happy"
+)
+legend("topleft", legend = c("Low Love", "High Love"), pch = 0:1)
+```
+
+#### q4e
+
+```{r}
+xtabs(~ clove + work, data = mba)
+```
+
+This gives a maximum of $1 + 1 + 5 + 7 + 0 = 14$ one-to-one matched pairs.
+
+#### q4f
+
+```{r}
+# Computing the mean `happy` for each combination of `work` and `clove`
+means_of_work_and_clove <- aggregate(
+  x = happy ~ work + clove,
+  data = mba,
+  FUN = mean
+)
+means_of_work_and_clove
+```
+
+```{r}
+# Then we compute the difference in mean happy between clove = 1 and clove = 0 at each level of work
+# work = 5 is excluded from this calculation because there are no clove = 0 individuals at that level
+mean_differences <- means_of_work_and_clove[5:8, "happy"] -
+  means_of_work_and_clove[1:4, "happy"]
+mean_differences
+```
+
+```{r}
+# Overall mean
+mean(mean_differences)
+```
+
+This gives `r round(mean(mean_differences), 2)`, which represents a simple unweighted average of the `clove` effect across work levels.
+
+Compare it with the following linear model on the effect of `clove` while adjusting for `work` predictor
+
+```{r}
+# Now we compare this to the linear model that estimates the effect of clove while adjusting for work
+lm_q4f <- lm(happy ~ clove + work, data = mba)
+summary(lm_q4f)
+```
+
+- The coefficient for `clove` in the regression model is `r round(summary(lm_q4f)$coef["clove", "Estimate"], 2)`, which is somewhat different from the manually computed average of `r round(mean(mean_differences), 2)`.
+- The two approaches do not produce the same result because they make different assumptions and weight the data differently.
+- The manual calculation gives equal weight to each `work` level regardless of how many observations it contains, whereas the regression model effectively gives more weight to `work` levels with more observations when estimating the `clove` effect.
+- Additionally, the regression treats `work` as a continuous numeric predictor (*assuming a linear relationship with `happy`*), while the manual approach treats each `work` level as a separate category with no assumed relationship between them.
+
+### Q5
+
+#### q5a
+
+```{r}
+data(sat, package = "faraway")
+plot(
+  total ~ salary,
+  data = sat,
+  xlab = "Teachers' Salaries",
+  ylab = "SAT Scores"
+)
+lm_q5a <- lm(total ~ salary, data = sat)
+summary(lm_q5a)
+abline(a = lm_q5a)
+```
+
+The plot and regression line show a negative relationship between teacher salaries and SAT scores — as teacher salaries increase, SAT scores tend to decrease. However, it would be surprising if this were a causal effect. It does not make intuitive sense that paying teachers more would cause students to perform worse. This suggests the presence of a lurking or confounding variable that explains the apparent relationship.
+
+#### q5b
+
+Yes, the relationship is statistically significant. The coefficient for salary is `r round(summary(lm_q5a)$coef["salary", "Estimate"], 2)` with a p-value of `r round(summary(lm_q5a)$coef["salary", "Pr(>|t|)"], 4)`, which is below the 0.05 significance level. However, statistical significance does not imply causation — a significant relationship can still be driven entirely by confounding.
+
+#### q5c
+
+```{r}
+with(
+  data = sat,
+  expr = symbols(
+    x = salary,
+    y = total,
+    circles = takers,
+    inches = 1 / 5,
+    bg = rgb(0.1, 0.1, 0.1, 1 / 4)
+  )
+)
+```
+
+
+The plot reveals an important pattern: states with lower teacher salaries tend to have smaller circles (*fewer test takers*) and higher SAT scores, while states with higher teacher salaries tend to have larger circles (*more test takers*) and lower SAT scores. This suggests that the proportion of test takers may be a confounding variable — in states where only a small, self-selected group of high-achieving students take the SAT, scores are naturally higher, regardless of teacher salaries.
+
+#### q5d
+
+```{r}
+lm_q5d <- lm(total ~ takers, data = sat)
+summary(lm_q5d)
+```
+
+The model shows a strong, statistically significant negative relationship between the proportion of test takers and SAT scores (coefficient = `r round(summary(lm_q5d)$coef["takers", "Estimate"], 2)`, p-value = `r format(summary(lm_q5d)$coef["takers", "Pr(>|t|)"], digits = 3)`). The $R^2$ of `r round(summary(lm_q5d)$r.squared, 4)` indicates that the proportion of takers explains a large portion of the variation in SAT scores.
+
+It is reasonable to assume this relationship is at least partly causal. In states where only a small proportion of students take the SAT, these tend to be the most academically able students who are self-selecting into the test to gain admission to competitive colleges. As the proportion of takers increases, less academically prepared students are drawn into taking the test, which naturally lowers the average score. This is a form of selection bias — the composition of the test-taking pool changes as participation increases.
+
+#### q5e
+
+```{r}
+with(data = sat, expr = cor(x = salary, y = takers))
+```
+
+The correlation between teacher salaries and the proportion of test takers is `r round(with(sat, cor(salary, takers)), 4)`, indicating a moderately strong positive relationship. This means that states with higher teacher salaries also tend to have a greater proportion of students taking the SAT. However, it is unlikely that one directly causes the other. Rather, both variables are likely driven by broader underlying factors such as state wealth, education policy, or geographic region.
+
+#### q5f
+
+```{r}
+lm_q5f <- lm(total ~ salary + takers, data = sat)
+summary(lm_q5f)
+```
+
+After adjusting for the proportion of test takers, the coefficient for teacher salary reverses sign — it is now positive (`r round(summary(lm_q5f)$coef["salary", "Estimate"], 2)`) and statistically significant (p = `r round(summary(lm_q5f)$coef["salary", "Pr(>|t|)"], 4)`). This means that once we account for differences in test participation rates, higher teacher salaries are associated with higher SAT scores, which is the intuitively expected direction.
+
+- Confounding: The proportion of takers is associated with both teacher salary (as shown in (e)) and SAT scores (as shown in (d)), and its omission in (a) distorted the estimated effect of salary on scores.
+- Simpson's paradox: The direction of the relationship between salary and SAT scores reverses — from negative in the unadjusted model in (b) to positive in the adjusted model here — once we control for the confounding variable takers.
+
+### Q6
+
+#### q6a
+
+```{r}
+data(newhamp, package = "faraway")
+lm_q6a <- lm(pObama ~ votesys + Dean, data = newhamp)
+summary(lm_q6a)
+```
+
+#### q6b
+
+```{r}
+
+```
