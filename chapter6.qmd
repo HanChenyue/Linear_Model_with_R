@@ -628,7 +628,25 @@ lm_q6e_iii <- lm(
 summary(lm_q6e_iii)
 ```
 
-Let's compile a summary table of the `votesys` coefficient across all models we've fitted:
+To understand the results, consider the hypothesised causal structure:
+
+```{mermaid}
+graph TD
+    PL["Political Leaning<br/>(measured by Dean)"] -->|"liberal towns<br/>chose hand-counting"| VS["Voting System"]
+    PL -->|"liberal towns<br/>voted Obama"| OV["Obama Vote"]
+    VS -.->|"causal?"| OV
+    DM["Demographics<br/>(pci, white, povrate)"] -->|"weak proxy"| PL
+    DM -->|"direct but<br/>incomplete"| OV
+
+    style PL fill:#f9f,stroke:#333
+    style VS fill:#bbf,stroke:#333
+    style OV fill:#bfb,stroke:#333
+    style DM fill:#fbb,stroke:#333
+```
+
+`Dean` sits on the **direct confounding path** between voting system and Obama vote, so conditioning on it blocks the spurious association. Demographics sit **one step removed** — they influence political leaning only partially, so they fail to fully block the confounding path.
+
+Let's compile a summary table of the `votesys` coefficient across all models fitted thus far to see whether this causal reasoning holds:
 
 ```{r}
 all_models <- list(
@@ -657,15 +675,45 @@ rownames(votesys_summary) <- NULL
 votesys_summary
 ```
 
-Let's also test whether adding `Dean` to the demographic model is statistically significant:
+The table confirms the causal diagram's prediction. The models split cleanly into two groups:
+
+**Group 1 — Models containing a direct measure of political leaning:**
+
+| Model | votesys coef | p-value | Significant? |
+|-------|-------------|---------|-------------|
+| Dean only | -0.0048 | 0.541 | No |
+| Kerry only | -0.0021 | 0.795 | No |
+| demographics + Dean | 0.0076 | 0.343 | No |
+
+**Group 2 — Models using only demographics:**
+
+| Model | votesys coef | p-value | Significant? |
+|-------|-------------|---------|-------------|
+| povrate only | 0.0417 | 1.64e-06 | Yes |
+| demographics | 0.0401 | 2.04e-05 | Yes |
+| demographics + pov | 0.0431 | 3.7e-06 | Yes |
+
+Three key observations:
+
+1. **Whenever a direct measure of political leaning is present, the voting system effect vanishes.** The coefficient drops to near zero and the p-value becomes large. This holds whether `Dean` appears alone (row 1) or alongside all demographic variables (row 6).
+
+2. **No combination of demographic variables can replicate this effect.** Even with four demographic predictors (row 5), the voting system coefficient remains large (~0.04) and highly significant (p < 0.001).
+
+3. **The contrast between rows 5 and 6 is the most telling.** Adding `Dean` to the full demographic model causes the `votesys` coefficient to drop from 0.0431 to 0.0076, and the p-value to jump from 3.7e-06 to 0.343. The $R^2$ also rises from 0.2613 to 0.5099. `Dean` captures confounding variation that all demographic variables combined cannot account for.
+
+We can formally confirm this with an ANOVA test:
 
 ```{r}
 anova(lm_q6e_ii, lm_q6e_iii)
 ```
 
-Finally, let's examine the correlation between `Dean` and the demographic variables to understand why demographics fail as confounders:
+Adding `Dean` to the demographic model is highly significant, confirming that it explains substantial variation beyond what demographics capture.
+
+But **why** do demographics fail? The correlation matrix provides the answer:
 
 ```{r}
+library(corrplot)
+
 demographic_vars <- newhamp[, c(
   "Dean",
   "povrate",
@@ -673,40 +721,33 @@ demographic_vars <- newhamp[, c(
   "white",
   "population"
 )]
-round(cor(demographic_vars), 3)
+cor_matrix <- cor(demographic_vars)
+
+corrplot(
+  cor_matrix,
+  method = "color",
+  type = "upper",
+  addCoef.col = "black",
+  tl.col = "black",
+  col = colorRampPalette(c("#BB4444", "#FFFFFF", "#4477AA"))(200)
+)
 ```
 
-**Discussion:**
+The `Dean` row is almost entirely pale — none of its correlations with the demographic variables exceed 0.4 in magnitude:
 
-The hypothesized causal structure is:
+- `Dean` vs. `povrate`: `r round(cor(newhamp$Dean, newhamp$povrate), 3)` (essentially zero)
+- `Dean` vs. `pci`: `r round(cor(newhamp$Dean, newhamp$pci), 3)` (essentially zero)
+- `Dean` vs. `white`: `r round(cor(newhamp$Dean, newhamp$white), 3)` (weak)
+- `Dean` vs. `population`: `r round(cor(newhamp$Dean, newhamp$population), 3)` (weak-moderate)
 
-```{mermaid}
-graph TD
-    PL["Political Leaning<br/>(measured by Dean)"] -->|"liberal towns<br/>chose hand-counting"| VS["Voting System"]
-    PL -->|"liberal towns<br/>voted Obama"| OV["Obama Vote"]
-    VS -.->|"causal?"| OV
-    DM["Demographics<br/>(pci, white, povrate)"] -->|"weak proxy"| PL
-    DM -->|"direct but<br/>incomplete"| OV
+A town's poverty rate, income level, racial composition, and population size tell us very little about how it voted in the 2004 Democratic primary. Demographics cannot serve as proxies for political preference because they are barely correlated with it.
 
-    style PL fill:#f9f,stroke:#333
-    style VS fill:#bbf,stroke:#333
-    style OV fill:#bfb,stroke:#333
-    style DM fill:#fbb,stroke:#333
-```
+**Conclusion:**
 
-The key insight is that `Dean` sits on the **direct confounding path** between voting system and Obama vote, so conditioning on it blocks the spurious association. Demographics sit **one step removed** — they influence political leaning only partially, so they fail to fully block the confounding path.
+This analysis is not selectively choosing confounders to reach a predetermined conclusion. Rather, it tests a specific causal hypothesis: that the apparent voting system effect is explained by differences in political leaning between towns. Three pieces of evidence support this:
 
-The summary table reveals a striking pattern. The `votesys` coefficient splits cleanly into two groups:
+1. **Only variables that directly measure political preference** (`Dean`, `Kerry`) eliminate the voting system effect, whilst demographic proxies consistently fail — exactly as the causal diagram predicts.
+2. **The ANOVA test** confirms that `Dean` captures substantial variation beyond what demographics explain.
+3. **The correlation matrix** reveals that demographics are only weakly correlated with `Dean`, explaining why they cannot serve as adequate proxies for the confounding mechanism.
 
-- **Models containing `Dean` or `Kerry`**: The coefficient is small, near zero, and **not significant**. The political leaning variable successfully explains away the apparent voting system effect.
-- **Models using only demographic variables**: The coefficient remains large (~0.04) and **highly significant**, regardless of how many demographic variables we include.
-
-This pattern is exactly what we would expect if the true confounding mechanism is **political preference**:
-
-1. `Dean` and `Kerry` are **direct measures** of political leaning — they capture the actual voting behavior of each town in a prior election. They are therefore strong proxies for the unobserved political character of each town that drives both the choice of voting system and the Obama vote.
-
-2. Demographic variables like `pci`, `white`, `population`, and `povrate` are at best **indirect proxies** for political leaning. While income or racial composition may correlate with political preference, they do not capture it fully. The correlation table confirms this — `Dean` is only moderately correlated with these demographics, meaning the demographics miss a substantial portion of the political variation that `Dean` captures.
-
-3. The ANOVA test comparing the demographic model with and without `Dean` shows that adding `Dean` **significantly improves** model fit, confirming that `Dean` captures variation not explained by demographics alone.
-
-This analysis is not selectively choosing confounders to reach a predetermined conclusion. Rather, it tests a specific causal hypothesis: that the apparent voting system effect is explained by differences in political leaning between towns. The fact that **only variables that directly measure political preference** eliminate the voting system effect, while demographic proxies consistently fail, is strong evidence **in favor of** the confounding hypothesis. In an observational study, finding one plausible and coherent alternative explanation is sufficient to cast doubt on a causal interpretation of the voting system effect.
+In an observational study, finding one plausible and coherent alternative explanation is sufficient to cast doubt on a causal interpretation. The evidence here goes further: the confounding explanation is not only plausible, but consistent across every angle of analysis.
