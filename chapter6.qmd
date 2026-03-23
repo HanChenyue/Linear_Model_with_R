@@ -547,8 +547,166 @@ lm_q6a <- lm(pObama ~ votesys + Dean, data = newhamp)
 summary(lm_q6a)
 ```
 
+The model predicts the proportion voting for Obama using the voting system (`votesys`: hand-counted vs. machine) and the proportion that voted for Howard Dean in the 2004 primary (`Dean`), which serves as a proxy for the liberal-leaning tendency of each town.
+
+The `Dean` variable is highly significant (p < 2e-16) with a coefficient of `r round(summary(lm_q6a)$coef["Dean", "Estimate"], 4)`, indicating that towns with stronger support for Dean in 2004 showed substantially higher support for Obama. The `votesys` variable, which is the key variable of interest (testing whether the voting method affected outcomes), is **not significant** (p = `r round(summary(lm_q6a)$coef["votesysH", "Pr(>|t|)"], 3)`) with a small coefficient of `r round(summary(lm_q6a)$coef["votesysH", "Estimate"], 4)`. This suggests that after adjusting for the political leaning of each town, there is no evidence that the voting system influenced the proportion voting for Obama.
+
 #### q6b
 
 ```{r}
-
+newhamp$voting_proportion <- with(
+  data = newhamp,
+  expr = Obama / (Obama + Clinton)
+)
+lm_q6b <- lm(voting_proportion ~ votesys + Dean, data = newhamp)
+summary(lm_q6b)
 ```
+
+By redefining the response as the proportion of Obama votes out of the combined Obama and Clinton votes, we focus specifically on the Obama-Clinton rivalry and remove the influence of votes for other candidates.
+
+The conclusions are essentially unchanged:
+
+- The `votesys` coefficient changes slightly from `r round(summary(lm_q6a)$coef["votesysH", "Estimate"], 4)` to `r round(summary(lm_q6b)$coef["votesysH", "Estimate"], 4)` and notably **flips sign**, but remains far from significant (p = `r round(summary(lm_q6b)$coef["votesysH", "Pr(>|t|)"], 3)`). There is still no evidence that the voting system affected the outcome.
+- The `Dean` coefficient increases from `r round(summary(lm_q6a)$coef["Dean", "Estimate"], 4)` to `r round(summary(lm_q6b)$coef["Dean", "Estimate"], 4)`, and the $R^2$ improves slightly from `r round(summary(lm_q6a)$r.squared, 4)` to `r round(summary(lm_q6b)$r.squared, 4)`. This suggests that the `Dean` variable is a slightly better predictor of the Obama-Clinton split than it is of the overall Obama proportion, which makes sense since removing third-party noise gives a cleaner measure of the liberal-conservative divide between the two main candidates.
+
+Overall, redefining the response to focus on the head-to-head Obama-Clinton comparison does not materially change the conclusion: there is no evidence that the voting system influenced the result.
+
+#### q6c
+
+```{r}
+lm_q6c <- lm(pObama ~ votesys + Kerry, data = newhamp)
+summary(lm_q6c)
+```
+
+Replacing Dean with Kerry as the proxy for political leaning produces broadly similar conclusions but with some notable differences:
+
+The voting system remains not significant (p = `r round(summary(lm_q6c)$coef["votesysH", "Pr(>|t|)"], 3)`), with an even smaller coefficient of `r round(summary(lm_q6c)$coef["votesysH", "Estimate"], 4)` compared to the Dean model. The core finding — that there is no evidence the voting system influenced the outcome — is unchanged.
+
+The Kerry coefficient is negative (`r round(summary(lm_q6c)$coef["Kerry", "Estimate"], 4)`), which is the opposite direction from the positive Dean coefficient in (a). This means that towns which supported Kerry more strongly in 2004 tended to vote less for Obama in 2008. This makes intuitive sense: Kerry and Obama appealed to somewhat different constituencies within the Democratic party. Dean, as a more progressive candidate, attracted voters more ideologically aligned with Obama, whereas Kerry drew more support from moderate and establishment Democrats who may have preferred Clinton in 2008.
+
+The $R^2$ drops from `r round(summary(lm_q6a)$r.squared, 4)` in the Dean model to `r round(summary(lm_q6c)$r.squared, 4)` here, indicating that Kerry is a less effective proxy for the political preferences that drove the Obama vote. This is consistent with the ideological dissimilarity between Kerry and Obama noted above.
+
+Despite these differences, Kerry still functions as a confounder — it is related to both the voting system (towns using hand-counting vs. machines may have different political leanings) and the Obama vote. The overall message of the analysis remains the same: once we adjust for the underlying political preferences of each town, there is no evidence that the voting system affected the proportion voting for Obama.
+
+#### q6d
+
+```{r}
+lm_q6d <- lm(pObama ~ votesys + povrate, data = newhamp)
+summary(lm_q6d)
+```
+
+Replacing Dean with the poverty rate produces a dramatically different picture. The poverty rate is **not significant** (p = `r round(summary(lm_q6d)$coef["povrate", "Pr(>|t|)"], 3)`) and the $R^2$ drops sharply from `r round(summary(lm_q6a)$r.squared, 4)` in the Dean model to just `r round(summary(lm_q6d)$r.squared, 4)`, indicating that poverty rate explains very little of the variation in the Obama vote.
+
+Crucially, the voting system effect is now **highly significant** (p = `r format(summary(lm_q6d)$coef["votesysH", "Pr(>|t|)"], digits = 3)`) with a coefficient of `r round(summary(lm_q6d)$coef["votesysH", "Estimate"], 4)`. This stands in stark contrast to the Dean model in (a) where the voting system was far from significant. The poverty rate is therefore **not an effective confounder** — it fails to account for the underlying political preferences that explain both the choice of voting system and the Obama vote. Without an adequate confounder to adjust for, the spurious association between voting system and the Obama vote reappears.
+
+This highlights an important point: the choice of confounder matters greatly. A good confounder must be meaningfully associated with **both** the treatment variable (voting system) and the response (Obama vote). The `Dean` variable captures the political leaning of each town effectively, whereas the poverty rate does not.
+
+#### q6e
+
+First, let's see if demographic variables alone can explain away the voting system effect:
+
+```{r}
+lm_q6e_i <- lm(pObama ~ votesys + pci + white + population, data = newhamp)
+summary(lm_q6e_i)
+```
+
+```{r}
+lm_q6e_ii <- lm(
+  pObama ~ votesys + povrate + pci + white + population,
+  data = newhamp
+)
+summary(lm_q6e_ii)
+```
+
+Now let's add `Dean` to the full demographic model and see what happens:
+
+```{r}
+lm_q6e_iii <- lm(
+  pObama ~ votesys + Dean + povrate + pci + white + population,
+  data = newhamp
+)
+summary(lm_q6e_iii)
+```
+
+Let's compile a summary table of the `votesys` coefficient across all models we've fitted:
+
+```{r}
+all_models <- list(
+  "Dean only" = lm_q6a,
+  "Kerry only" = lm_q6c,
+  "povrate only" = lm_q6d,
+  "demographics" = lm_q6e_i,
+  "demographics+pov" = lm_q6e_ii,
+  "demographics+Dean" = lm_q6e_iii
+)
+
+votesys_summary <- do.call(
+  rbind,
+  lapply(names(all_models), function(name) {
+    coefs <- summary(all_models[[name]])$coef["votesysH", ]
+    data.frame(
+      model = name,
+      votesys_coef = round(coefs["Estimate"], 4),
+      std_error = round(coefs["Std. Error"], 4),
+      p_value = format(coefs["Pr(>|t|)"], digits = 3),
+      r_squared = round(summary(all_models[[name]])$r.squared, 4)
+    )
+  })
+)
+rownames(votesys_summary) <- NULL
+votesys_summary
+```
+
+Let's also test whether adding `Dean` to the demographic model is statistically significant:
+
+```{r}
+anova(lm_q6e_ii, lm_q6e_iii)
+```
+
+Finally, let's examine the correlation between `Dean` and the demographic variables to understand why demographics fail as confounders:
+
+```{r}
+demographic_vars <- newhamp[, c(
+  "Dean",
+  "povrate",
+  "pci",
+  "white",
+  "population"
+)]
+round(cor(demographic_vars), 3)
+```
+
+**Discussion:**
+
+The hypothesized causal structure is:
+
+```{mermaid}
+graph TD
+    PL["Political Leaning<br/>(measured by Dean)"] -->|"liberal towns<br/>chose hand-counting"| VS["Voting System"]
+    PL -->|"liberal towns<br/>voted Obama"| OV["Obama Vote"]
+    VS -.->|"causal?"| OV
+    DM["Demographics<br/>(pci, white, povrate)"] -->|"weak proxy"| PL
+    DM -->|"direct but<br/>incomplete"| OV
+
+    style PL fill:#f9f,stroke:#333
+    style VS fill:#bbf,stroke:#333
+    style OV fill:#bfb,stroke:#333
+    style DM fill:#fbb,stroke:#333
+```
+
+The key insight is that `Dean` sits on the **direct confounding path** between voting system and Obama vote, so conditioning on it blocks the spurious association. Demographics sit **one step removed** — they influence political leaning only partially, so they fail to fully block the confounding path.
+
+The summary table reveals a striking pattern. The `votesys` coefficient splits cleanly into two groups:
+
+- **Models containing `Dean` or `Kerry`**: The coefficient is small, near zero, and **not significant**. The political leaning variable successfully explains away the apparent voting system effect.
+- **Models using only demographic variables**: The coefficient remains large (~0.04) and **highly significant**, regardless of how many demographic variables we include.
+
+This pattern is exactly what we would expect if the true confounding mechanism is **political preference**:
+
+1. `Dean` and `Kerry` are **direct measures** of political leaning — they capture the actual voting behavior of each town in a prior election. They are therefore strong proxies for the unobserved political character of each town that drives both the choice of voting system and the Obama vote.
+
+2. Demographic variables like `pci`, `white`, `population`, and `povrate` are at best **indirect proxies** for political leaning. While income or racial composition may correlate with political preference, they do not capture it fully. The correlation table confirms this — `Dean` is only moderately correlated with these demographics, meaning the demographics miss a substantial portion of the political variation that `Dean` captures.
+
+3. The ANOVA test comparing the demographic model with and without `Dean` shows that adding `Dean` **significantly improves** model fit, confirming that `Dean` captures variation not explained by demographics alone.
+
+This analysis is not selectively choosing confounders to reach a predetermined conclusion. Rather, it tests a specific causal hypothesis: that the apparent voting system effect is explained by differences in political leaning between towns. The fact that **only variables that directly measure political preference** eliminate the voting system effect, while demographic proxies consistently fail, is strong evidence **in favor of** the confounding hypothesis. In an observational study, finding one plausible and coherent alternative explanation is sufficient to cast doubt on a causal interpretation of the voting system effect.
