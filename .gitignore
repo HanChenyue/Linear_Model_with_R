@@ -53,3 +53,4 @@ tramp/
 # =========================
 scratch.R
 /.quarto/
+.github/copilot-instructions.md

@@ -240,7 +240,7 @@ The 95% prediction interval is \[-16.83, 76.38\], though in practical terms, the
 
 Standard linear regression assumes that our response variable `gamble` can be any number on the continuous number line, extending to infinity in both the positive and negative directions. The model doesn't "know" that our data represents money.
 
-Furthermore, our Residual Standard Error is 22.69. That is a pretty large amount of error compared to the predicted value (29.775). Because the error is so large, subtracting it from our predicted value pushes the bottom of the interval way past zero.
+Furthermore, our Residual Standard Error is 22.69. This is a relatively large amount of error compared to the predicted value (29.775). Because the error is so large, subtracting it from our predicted value pushes the bottom of the interval well below zero.
 
 #### q2b
 
@@ -265,9 +265,9 @@ predict(
 )
 ```
 
-This CI is wider, in linear regression, our predictions are always the most accurate and have the tightest confidence/prediction intervals right at the "center of mass" of our data. As we moved away from the average and looked at the extreme edges of our data, the model became less certain (Bowtie effect).
+This CI is wider. In linear regression, our predictions are most accurate and have the tightest confidence/prediction intervals at the centre of mass of our data. As we move away from the average towards the extreme edges of our data, the model becomes less certain (the bowtie effect).
 
-There are also less data at the extremes as there are usually a lot of people in a dataset with "average" incomes and scores but there are very few people who have the absolute maximum income, maximum status, and maximum verbal score all at the same time. Because the model has less data representing these extreme individuals, its prediction carried more uncertainty, forcing the interval to be wider.
+There are also fewer data points at the extremes, as there are usually many people in a dataset with "average" incomes and scores but very few who have the absolute maximum income, maximum status, and maximum verbal score all at the same time. Because the model has less data representing these extreme individuals, its predictions carry more uncertainty, forcing the interval to be wider.
 
 #### q2c
 
@@ -436,7 +436,7 @@ lm_q4b <- lm(
 summary(lm_q4b)
 ```
 
-Only `lag12`, the one year lag is statistically significant.
+Only `lag12`, the one-year lag, is statistically significant.
 
 #### q4c
 

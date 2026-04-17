@@ -335,7 +335,7 @@ Compared to the paired t-test in (d), where the estimated difference was approxi
 plot(
   gamblemale - gamblefemale ~ income,
   data = mattg,
-  ylab = "Differences in amount gambled by sex (better way to phrase this?)"
+  ylab = "Male\u2013female difference in gambling expenditure (pounds)"
 )
 lm_q3f <- lm(gamblemale - gamblefemale ~ income, data = mattg)
 abline(lm_q3f)

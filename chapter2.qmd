@@ -161,7 +161,7 @@ cat(
 )
 ```
 
-RSS of Initial Model (More parameter, more flexibility) \< RSS of Intercept Removed Model (One less parameter)
+RSS of Initial Model (More parameters, more flexibility) \< RSS of Intercept Removed Model (One less parameter)
 
 #### q2g
 
@@ -216,7 +216,7 @@ head(rowsum)
 sd(rowsum)
 ```
 
--   All four regional indicators sum to one because all mean are in one and only one region, thus by including all four indicators in the same model will run into the identifiability problem.
+-   All four regional indicators sum to one because every individual belongs to exactly one region; including all four indicators in the same model therefore leads to the identifiability problem.
 -   To resolve this, either drop one of the variable or drop the intercept term from the model.
 
 ### Q3
@@ -472,7 +472,7 @@ we can see that when the denominator is $0$, it will leads to a division by zero
 round(summary(lm_q6a)$coefficients[2], 2)
 ```
 
-An increase in 25.76.
+An increase of 25.76.
 
 #### q6d
 

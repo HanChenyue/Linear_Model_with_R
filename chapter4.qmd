@@ -53,7 +53,7 @@ summary(slope[, 2])
 ```
 
 -   Although the median of $0.8765$ and the mean of $1.4804$ align reasonably well with the expected value of one, the minimum value of $-4203.4762$ and the maximum value of $7815.6476$ indicate the presence of extreme outlier estimates.
--   The estimated standard errors display a large mean of $21.2135$ and presence of extremely large values with a maximum ceiling of $4509.8138$.
+-   The estimated standard errors show a large mean of $21.2135$ alongside extremely large values, with a maximum of $4509.8138$.
 -   The theoretical properties of the least squares estimator require the error distribution to have finite mean and variance, but the Cauchy distribution violates these conditions, leading to unstable and sometimes extreme estimation results.
     -   In statistics, the Gauss–Markov theorem states that the ordinary least squares (OLS) estimator has the lowest sampling variance within the class of linear unbiased estimators, if the errors in the linear regression model are uncorrelated, have equal variances and expectation value of zero. The errors do not need to be normal, nor do they need to be independent and identically distributed (only uncorrelated with mean zero and homoscedastic with finite variance).
 -   Long-tailed error distributions are problematic because most simulated observations appear ordinary, creating an impression of stability. However, rare but severe outliers inevitably occur, and the estimator is not robust enough to handle these extreme values.
@@ -139,7 +139,7 @@ $$
 sd(slope[, 1])
 ```
 
-The standard deviation of $\hat{\beta_1} = 0.6064$, which is close to the square root of the theoretical variance that was computed with Equation 2.21, $\operatorname{Var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2$, on page 57.
+The standard deviation of $\hat{\beta_1}$ is $0.6064$, which is close to the square root of the theoretical variance that was computed with Equation 2.21, $\operatorname{Var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2$, on page 57.
 
 ```{r}
 mean(slope[, 2])
@@ -149,9 +149,9 @@ The mean of simulated $SE(\hat{\beta_1}) = 0.5622$ does not agree with computed 
 
 In fact, it reported a value less than our previously computed result.
 
-Remember, $0.6064$ is the actual standard deviation generated from our estimates and $0.5622$ is the standard errors reported by the `lm()` function in each run. Take note that `lm()` assumes that the errors are normally distributed and does not have outliers (*However, it is more precise to say that Normal distribution has "thin tails" which suggests outliers are possible but rare*).
+Remember, $0.6064$ is the actual standard deviation generated from our estimates and $0.5622$ is the standard error reported by the `lm()` function in each run. Take note that `lm()` assumes that the errors are normally distributed and does not have outliers (*However, it is more precise to say that Normal distribution has "thin tails" which suggests outliers are possible but rare*).
 
-Now, a skeptic might ask: "*Maybe* $0.5622$ is just different from $0.6064$ because of random chance (simulation noise)."
+Now, a sceptic might ask: "*Maybe* $0.5622$ is just different from $0.6064$ because of random chance (simulation noise)."
 
 To address this, we compute a $95\%$ confidence interval:
 
@@ -161,13 +161,13 @@ t.test(slope[, 2])$conf
 
 In this specific case, the null hypothesis for the above test was: "The `lm()` model's reported error is accurate (*equal to 0.6064*)"
 
-The confidence interval rests between $0.5559$ and $0.5686$ of which $0.6064$ is effectively far below the actual standard deviation. The difference between the "**Reported Error** and the "**Actual Error**" is **statistically significant,** proving that when errors have heavy tails ($t_3$), the standard linear model underestimates the uncertainty.
+The confidence interval lies between $0.5559$ and $0.5686$; $0.6064$ falls well outside this range. The difference between the "**Reported Error** and the "**Actual Error**" is **statistically significant,** proving that when errors have heavy tails ($t_3$), the standard linear model underestimates the uncertainty.
 
 If we use standard least squares regression on data that has heavy-tailed errors ($t_3$):
 
 -   Our slope estimates are still approximately unbiased (*close to zero*).
 -   But our standard errors are too small (*biased downwards*).
--   This meant that our confidence intervals will be too narrow and we will claim statistical significance too often, as our p-values will be artificially low due to presence of outlier(s).
+-   This means that our confidence intervals will be too narrow and we will claim statistical significance too often, as our p-values will be artificially low due to presence of outlier(s).
 
 #### q2d
 
@@ -274,7 +274,7 @@ round(mean(slope[, 4] < 0.05) * 100, 1)
 
 #### q4a
 
--   To enforce the requirement "*SD proportional to* $x$", we multiply the standard deviation with $x$ such that as $x$ gets larger, the spread also get larger
+-   To enforce the requirement "*SD proportional to* $x$", we multiply the standard deviation by $x$ such that as $x$ gets larger, the spread also gets larger
 
 ```{r}
 set.seed(37)
@@ -377,7 +377,7 @@ ncol(allcomb)
 
 #### q5c
 
-We use combinations instead of permutations because **order within the group does not matter**, the results are identical regardless of whether group 1 is defined as $\{1, 3, 5, 9\}$ or $\{9, 5, 1, 3\}$. Using combinations reduces the computational load significantly without losing information.
+We use combinations instead of permutations because **order within the group does not matter**; the results are identical regardless of whether group 1 is defined as $\{1, 3, 5, 9\}$ or $\{9, 5, 1, 3\}$. Using combinations reduces the computational load significantly without losing information.
 
 #### q5d
 

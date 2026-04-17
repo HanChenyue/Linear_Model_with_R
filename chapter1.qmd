@@ -66,13 +66,13 @@ No. We see fewer points due to overplotting.
 hist(x = teengamb$verbal, xlab = "Verbal Score")
 ```
 
-The x-axis is difficult to interpret because the ticks marks align with the boundaries of the blocks, rather than being centred on them.
+The x-axis is difficult to interpret because the tick marks align with the boundaries of the blocks, rather than being centred on them.
 
 ```{r}
 plot(table(teengamb$verbal), xlab = "Verbal Score", ylab = "Frequency")
 ```
 
-Cleaner but the thin lines are non-standard way of visualising histogram.
+Cleaner, but the thin lines are a non-standard way of visualising a histogram.
 
 ```{r}
 barplot(table(teengamb$verbal), xlab = "Verbal Score", ylab = "Frequency")
@@ -441,7 +441,7 @@ plot(x = divusa$year, y = divusa$divorce)
 plot(x = divusa$year, y = divusa$divorce, type = "l")
 ```
 
-Line plot is preferable for time ordered data.
+A line plot is preferable for time-ordered data.
 
 #### q5b
 
@@ -480,5 +480,5 @@ ggplot(data = divusa, aes(x = femlab, y = divorce, colour = year)) +
 ```
 
 -   Historically, divorce rates were lower during periods when female participation in the labor force was also lower.
--   Also, both variables start low in the distant past as indicated by the darker coloured points and progress to higher values over time as indicated by the lighther coloured points.
+-   Also, both variables start low in the distant past as indicated by the darker coloured points and progress to higher values over time as indicated by the lighter coloured points.
 -   But the change is not linear, especially during the Great Depression which caused a shift in the divorce rate.
