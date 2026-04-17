@@ -2,13 +2,12 @@
 title: "Linear Model with R: Chapter 5"
 author: Han Chenyue
 editor: source
-format:
-  html:
-    code-fold: true
-    code-summary: "Show the code"
+format: html
 ---
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message = FALSE}
+library(tidyverse)
+
 knitr::opts_chunk$set(
   # echo = FALSE,
   digits = 4,
@@ -88,7 +87,6 @@ sigma_hat <- sqrt(rss / (n - p))
 ```
 
 ```{r}
-library(tidyverse)
 y0 <- t(x0) %*% beta_hat
 y0
 ```

@@ -1,9 +1,22 @@
 project:
-  title: "Linear_Model_with_R"
+  title: "Linear Models with R"
   type: website
+
+website:
+  title: "Linear Models with R"
+  sidebar:
+    style: "docked"
+    contents:
+      - chapter1.qmd
+      - chapter2.qmd
+      - chapter3.qmd
+      - chapter4.qmd
+      - chapter5.qmd
+      - chapter6.qmd
 
 toc: true
 
-format: 
+format:
   html:
     code-fold: true
+    code-summary: "Show the code"

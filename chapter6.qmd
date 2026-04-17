@@ -2,13 +2,12 @@
 title: "Linear Model with R: Chapter 6"
 author: Han Chenyue
 editor: source
-format:
-  html:
-    code-fold: true
-    code-summary: "Show the code"
+format: html
 ---
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message = FALSE}
+library(corrplot)
+
 knitr::opts_chunk$set(
   # echo = FALSE,
   digits = 4,
@@ -712,8 +711,6 @@ Adding `Dean` to the demographic model is highly significant, confirming that it
 But **why** do demographics fail? The correlation matrix provides the answer:
 
 ```{r}
-library(corrplot)
-
 demographic_vars <- newhamp[, c(
   "Dean",
   "povrate",

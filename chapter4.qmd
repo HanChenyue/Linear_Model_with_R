@@ -2,10 +2,7 @@
 title: "Linear Model with R: Chapter 4"
 author: Han Chenyue
 editor: source
-format:
-  html:
-    code-fold: true
-    code-summary: "Show the code"
+format: html
 ---
 
 ```{r, echo = FALSE}

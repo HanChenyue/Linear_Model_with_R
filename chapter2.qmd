@@ -1,9 +1,13 @@
 ---
-title: "Linear_Model_with_R"
+title: "Linear Model with R: Chapter 2"
 author: Han Chenyue
 editor: source
 format: html
 ---
+
+```{r, echo = FALSE, message = FALSE}
+library(dplyr)
+```
 
 # Chapter 2
 
@@ -395,7 +399,6 @@ cor(fitted(lm_q5a), cheddar$taste)^2
 This value appears in as the $R^2$ of `lm_q5a`'s output.
 
 ```{r}
-library(dplyr)
 near(summary(lm_q5a)$r.squared, cor(fitted(lm_q5a), cheddar$taste)^2)
 ```
 

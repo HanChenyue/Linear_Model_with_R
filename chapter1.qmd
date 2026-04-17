@@ -1,9 +1,13 @@
 ---
-title: "Linear_Model_with_R"
+title: "Linear Model with R: Chapter 1"
 author: Han Chenyue
 editor: source
 format: html
 ---
+
+```{r, echo = FALSE, message = FALSE}
+library(ggplot2)
+```
 
 # Chapter 1
 
@@ -12,10 +16,6 @@ format: html
 ### Q1
 
 #### q1a
-
-```{r}
-library(ggplot2)
-```
 
 ```{r}
 data(teengamb, package = "faraway")

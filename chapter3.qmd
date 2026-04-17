@@ -1,9 +1,16 @@
 ---
-title: "Linear_Model_with_R"
+title: "Linear Model with R: Chapter 3"
 author: Han Chenyue
 editor: source
 format: html
 ---
+
+```{r, echo = FALSE, message = FALSE}
+library(ggplot2)
+library(broom)
+library(dplyr)
+library(ellipse)
+```
 
 # Chapter 3
 
@@ -42,10 +49,6 @@ cat(
 Visualising it:
 
 ```{r}
-library(ggplot2)
-library(broom)
-library(dplyr)
-
 ci_90 <- tidy(lm_q1a, conf.int = TRUE, conf.level = 0.90) |>
   filter(term == "age") |>
   mutate(level = "90% CI (p-value <= 0.10, alpha = 0.10)")
@@ -82,7 +85,6 @@ ggplot(ci_combined, aes(x = estimate, y = level, colour = level)) +
 #### q1b
 
 ```{r}
-library(ellipse)
 plot(ellipse(lm_q1a, c(4, 5)), type = "l")
 points(coef(lm_q1a)[4], coef(lm_q1a)[5])
 abline(v = confint(lm_q1a)[4, c(1, 2)], lty = 4)
@@ -255,7 +257,6 @@ They yield the same p-value.
 Since $t_i = \frac{\hat{\beta}_i}{se(\hat{\beta}_i)}$
 
 ```{r}
-library(dplyr)
 near(
   summary(lm_q4b)$coefficients[5, 1] / summary(lm_q4b)$coefficients[5, 2],
   summary(lm_q4b)$coefficients[5, 3]
