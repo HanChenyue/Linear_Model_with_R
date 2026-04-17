@@ -8,7 +8,7 @@
 
 <meta name="author" content="Han Chenyue">
 
-<title>Linear Model with R: Chapter 4 – Linear_Model_with_R</title>
+<title>Linear Model with R: Chapter 4 – Linear Models with R</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -60,6 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -75,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-9a206003d6b1fd1fd5b1ff2744df5c23.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-2f78cf4293585e94d9627dbbe406ee54.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -136,12 +137,80 @@ window.Quarto = {
 
 </head>
 
-<body class="quarto-light">
+<body class="nav-sidebar docked quarto-light">
 
 <div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapter4.html">Linear Model with R: Chapter 4</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Linear Models with R</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Model with R: Chapter 1</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Model with R: Chapter 2</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Model with R: Chapter 3</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter4.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Linear Model with R: Chapter 4</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter5.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Model with R: Chapter 5</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./chapter6.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Linear Model with R: Chapter 6</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
@@ -280,7 +349,7 @@ F-statistic: 2.012 on 1 and 28 DF,  p-value: 0.1671</code></pre>
 </div>
 <ul>
 <li>Although the median of <span class="math inline">\(0.8765\)</span> and the mean of <span class="math inline">\(1.4804\)</span> align reasonably well with the expected value of one, the minimum value of <span class="math inline">\(-4203.4762\)</span> and the maximum value of <span class="math inline">\(7815.6476\)</span> indicate the presence of extreme outlier estimates.</li>
-<li>The estimated standard errors display a large mean of <span class="math inline">\(21.2135\)</span> and presence of extremely large values with a maximum ceiling of <span class="math inline">\(4509.8138\)</span>.</li>
+<li>The estimated standard errors show a large mean of <span class="math inline">\(21.2135\)</span> alongside extremely large values, with a maximum of <span class="math inline">\(4509.8138\)</span>.</li>
 <li>The theoretical properties of the least squares estimator require the error distribution to have finite mean and variance, but the Cauchy distribution violates these conditions, leading to unstable and sometimes extreme estimation results.
 <ul>
 <li>In statistics, the Gauss–Markov theorem states that the ordinary least squares (OLS) estimator has the lowest sampling variance within the class of linear unbiased estimators, if the errors in the linear regression model are uncorrelated, have equal variances and expectation value of zero. The errors do not need to be normal, nor do they need to be independent and identically distributed (only uncorrelated with mean zero and homoscedastic with finite variance).</li>
@@ -383,7 +452,7 @@ F-statistic: 2.012 on 1 and 28 DF,  p-value: 0.1671</code></pre>
 <pre><code>[1] 0.6064486</code></pre>
 </div>
 </div>
-<p>The standard deviation of <span class="math inline">\(\hat{\beta_1} = 0.6064\)</span>, which is close to the square root of the theoretical variance that was computed with Equation 2.21, <span class="math inline">\(\operatorname{Var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2\)</span>, on page 57.</p>
+<p>The standard deviation of <span class="math inline">\(\hat{\beta_1}\)</span> is <span class="math inline">\(0.6064\)</span>, which is close to the square root of the theoretical variance that was computed with Equation 2.21, <span class="math inline">\(\operatorname{Var}(\hat{\beta}) = (X^T X)^{-1} \sigma^2\)</span>, on page 57.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code</summary>
@@ -395,8 +464,8 @@ F-statistic: 2.012 on 1 and 28 DF,  p-value: 0.1671</code></pre>
 </div>
 <p>The mean of simulated <span class="math inline">\(SE(\hat{\beta_1}) = 0.5622\)</span> does not agree with computed standard deviation of <span class="math inline">\(\hat{\beta_1} = 0.6064\)</span>.</p>
 <p>In fact, it reported a value less than our previously computed result.</p>
-<p>Remember, <span class="math inline">\(0.6064\)</span> is the actual standard deviation generated from our estimates and <span class="math inline">\(0.5622\)</span> is the standard errors reported by the <code>lm()</code> function in each run. Take note that <code>lm()</code> assumes that the errors are normally distributed and does not have outliers (<em>However, it is more precise to say that Normal distribution has “thin tails” which suggests outliers are possible but rare</em>).</p>
-<p>Now, a skeptic might ask: “<em>Maybe</em> <span class="math inline">\(0.5622\)</span> is just different from <span class="math inline">\(0.6064\)</span> because of random chance (simulation noise).”</p>
+<p>Remember, <span class="math inline">\(0.6064\)</span> is the actual standard deviation generated from our estimates and <span class="math inline">\(0.5622\)</span> is the standard error reported by the <code>lm()</code> function in each run. Take note that <code>lm()</code> assumes that the errors are normally distributed and does not have outliers (<em>However, it is more precise to say that Normal distribution has “thin tails” which suggests outliers are possible but rare</em>).</p>
+<p>Now, a sceptic might ask: “<em>Maybe</em> <span class="math inline">\(0.5622\)</span> is just different from <span class="math inline">\(0.6064\)</span> because of random chance (simulation noise).”</p>
 <p>To address this, we compute a <span class="math inline">\(95\%\)</span> confidence interval:</p>
 <div class="cell">
 <details class="code-fold">
@@ -410,12 +479,12 @@ attr(,"conf.level")
 </div>
 </div>
 <p>In this specific case, the null hypothesis for the above test was: “The <code>lm()</code> model’s reported error is accurate (<em>equal to 0.6064</em>)”</p>
-<p>The confidence interval rests between <span class="math inline">\(0.5559\)</span> and <span class="math inline">\(0.5686\)</span> of which <span class="math inline">\(0.6064\)</span> is effectively far below the actual standard deviation. The difference between the “<strong>Reported Error</strong> and the”<strong>Actual Error</strong>” is <strong>statistically significant,</strong> proving that when errors have heavy tails (<span class="math inline">\(t_3\)</span>), the standard linear model underestimates the uncertainty.</p>
+<p>The confidence interval lies between <span class="math inline">\(0.5559\)</span> and <span class="math inline">\(0.5686\)</span>; <span class="math inline">\(0.6064\)</span> falls well outside this range. The difference between the “<strong>Reported Error</strong> and the”<strong>Actual Error</strong>” is <strong>statistically significant,</strong> proving that when errors have heavy tails (<span class="math inline">\(t_3\)</span>), the standard linear model underestimates the uncertainty.</p>
 <p>If we use standard least squares regression on data that has heavy-tailed errors (<span class="math inline">\(t_3\)</span>):</p>
 <ul>
 <li>Our slope estimates are still approximately unbiased (<em>close to zero</em>).</li>
 <li>But our standard errors are too small (<em>biased downwards</em>).</li>
-<li>This meant that our confidence intervals will be too narrow and we will claim statistical significance too often, as our p-values will be artificially low due to presence of outlier(s).</li>
+<li>This means that our confidence intervals will be too narrow and we will claim statistical significance too often, as our p-values will be artificially low due to presence of outlier(s).</li>
 </ul>
 </section>
 <section id="q2d" class="level4">
@@ -581,7 +650,7 @@ attr(,"conf.level")
 <section id="q4a" class="level4">
 <h4 class="anchored" data-anchor-id="q4a">q4a</h4>
 <ul>
-<li>To enforce the requirement “<em>SD proportional to</em> <span class="math inline">\(x\)</span>”, we multiply the standard deviation with <span class="math inline">\(x\)</span> such that as <span class="math inline">\(x\)</span> gets larger, the spread also get larger</li>
+<li>To enforce the requirement “<em>SD proportional to</em> <span class="math inline">\(x\)</span>”, we multiply the standard deviation by <span class="math inline">\(x\)</span> such that as <span class="math inline">\(x\)</span> gets larger, the spread also gets larger</li>
 </ul>
 <div class="cell">
 <details class="code-fold">
@@ -763,7 +832,7 @@ F-statistic: 1.134 on 1 and 6 DF,  p-value: 0.3278</code></pre>
 </section>
 <section id="q5c" class="level4">
 <h4 class="anchored" data-anchor-id="q5c">q5c</h4>
-<p>We use combinations instead of permutations because <strong>order within the group does not matter</strong>, the results are identical regardless of whether group 1 is defined as <span class="math inline">\(\{1, 3, 5, 9\}\)</span> or <span class="math inline">\(\{9, 5, 1, 3\}\)</span>. Using combinations reduces the computational load significantly without losing information.</p>
+<p>We use combinations instead of permutations because <strong>order within the group does not matter</strong>; the results are identical regardless of whether group 1 is defined as <span class="math inline">\(\{1, 3, 5, 9\}\)</span> or <span class="math inline">\(\{9, 5, 1, 3\}\)</span>. Using combinations reduces the computational load significantly without losing information.</p>
 </section>
 <section id="q5d" class="level4">
 <h4 class="anchored" data-anchor-id="q5d">q5d</h4>
