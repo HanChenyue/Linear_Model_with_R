@@ -63,3 +63,4 @@ scratch.*
 # =========================
 .github/copilot-instructions.md
 .positron-temp-*.png
+/.quarto/
