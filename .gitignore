@@ -52,5 +52,14 @@ tramp/
 # Scratch / experiments
 # =========================
 scratch.*
-/.quarto/
+
+# =========================
+# Editor / IDE
+# =========================
+.vscode/
+
+# =========================
+# Misc
+# =========================
 .github/copilot-instructions.md
+.positron-temp-*.png
