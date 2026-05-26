@@ -51,6 +51,6 @@ tramp/
 # =========================
 # Scratch / experiments
 # =========================
-scratch.R
+scratch.*
 /.quarto/
 .github/copilot-instructions.md

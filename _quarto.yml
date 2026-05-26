@@ -13,6 +13,14 @@ website:
       - chapter4.qmd
       - chapter5.qmd
       - chapter6.qmd
+      - chapter7.qmd
+      - chapter8.qmd
+      - chapter9.qmd
+      - chapter10.qmd
+      - chapter11.qmd
+      - chapter12.qmd
+      - chapter13.qmd
+      - chapter14.qmd
 
 toc: true
 
