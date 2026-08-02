@@ -26,8 +26,8 @@ head(teengamb)
 ```
 
 ```{r}
-teengamb$sex = factor(teengamb$sex)
-levels(teengamb$sex) = c("male", "female")
+teengamb$sex <- factor(teengamb$sex)
+levels(teengamb$sex) <- c("male", "female")
 summary(teengamb$sex)
 ```
 
@@ -113,7 +113,7 @@ The `gamble` variable is the most skewed, because its minimum and lower quartile
 ```{r}
 data(uswages, package = "faraway")
 head(uswages)
-usw = uswages[, c("wage", "ne", "mw", "we", "so")]
+usw <- uswages[, c("wage", "ne", "mw", "we", "so")]
 head(usw)
 ```
 
@@ -149,7 +149,7 @@ Each row should have exactly one `1` because these columns are indicators for mu
 #### q2e
 
 ```{r}
-usw$area = c("ne", "mw", "we", "so")[apply(usw[, -1], 1, which.max)]
+usw$area <- c("ne", "mw", "we", "so")[apply(usw[, -1], 1, which.max)]
 head(usw)
 ```
 

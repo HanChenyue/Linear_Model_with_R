@@ -1,0 +1,61 @@
+---
+title: "Linear Model with R: Chapter 7"
+author: Han Chenyue
+editor: source
+format: html
+---
+
+```{r, echo = FALSE, message = FALSE}
+library(corrplot)
+
+knitr::opts_chunk$set(
+  # echo = FALSE,
+  digits = 4,
+  scipen = 2
+)
+```
+
+# Chapter 6
+
+## Exercises
+
+### Q1
+
+#### q1a
+
+```{r}
+data(sat, package = "faraway")
+colnames(sat)
+```
+
+```{r}
+lm_q1 <- lm(total ~ expend + salary + ratio + takers, data = sat)
+summary(lm_q1)
+```
+
+```{r}
+plot(
+  x = fitted(lm_q1),
+  y = residuals(lm_q1),
+  xlab = "Fitted",
+  ylab = "Residuals"
+)
+abline(h = 0)
+```
+
+```{r}
+plot(
+  x = fitted(lm_q1),
+  y = sqrt(abs(residuals(lm_q1))),
+  xlab = "Fitted",
+  ylab = "Root Absolute Residuals"
+)
+```
+
+```{r}
+plot(x = lm_q1, which = 1)
+```
+
+The points appear evenly spread, with no clear pattern suggesting unequal variance or non-linearity.
+
+#### q1b
