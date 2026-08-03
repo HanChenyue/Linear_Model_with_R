@@ -56,6 +56,78 @@ plot(
 plot(x = lm_q1, which = 1)
 ```
 
+```{r}
+plot(x = lm_q1, which = 3)
+```
+
 The points appear evenly spread, with no clear pattern suggesting unequal variance or non-linearity.
 
 #### q1b
+
+```{r}
+qqnorm(y = residuals((lm_q1)), ylab = "Residuals", main = "")
+qqline(residuals(lm_q1))
+```
+
+```{r}
+plot(x = lm_q1, which = 2)
+```
+
+The Q-Q plot indicates that the data are approximately normally distributed.
+
+#### q1c
+
+```{r}
+hatv <- hatvalues(lm_q1)
+sum(hatv)
+```
+
+```{r}
+us_states <- row.names(x = sat)
+faraway::halfnorm(x = hatv, labs = us_states, ylab = "Leverages")
+```
+
+```{r}
+names(hatv[hatv > 2 * length(coef(lm_q1)) / nrow(x = sat)])
+```
+
+Visually, `California` and `Utah` exhibit high leverage that could substantially affect the model fit. Evaluating this against the standard $2p/n$ threshold (cutoff = `r 2 * length(coef(lm_q1)) / nrow(sat)`), we find that `New Jersey` and `Connecticut` also exceed the limit. A closer look at these four states is warranted to determine whether their leverage translates into a substantive effect on the regression estimates.
+
+#### q1d
+
+```{r}
+plot(x = lm_q1, which = 2)
+```
+
+There are no outliers seen in the Q-Q plot.
+
+```{r}
+range(rstudent(lm_q1))
+```
+
+Since the largest residual in magnitude is `r round(abs(range(rstudent(lm_q1))[1]), 2)`, which is less than $3.49$, none of the points in the dataset will be flagged as formal statistical outliers using the Bonferroni correction at the $5\%$ level.
+
+#### q1e
+
+```{r}
+faraway::halfnorm(
+  x = cooks.distance(lm_q1),
+  nlab = 3,
+  labs = rownames(x = sat),
+  ylab = "Cook's Distances"
+)
+```
+
+`Utah` might seem like an influential point at first glance, but its Cook's distance of `r max(round(cooks.distance(lm_q1), 2))` is less than one, indicating it does not disproportionately impact the model.
+
+#### q1f
+
+```{r}
+par(mfrow = c(2, 2))
+termplot(model = lm_q1, partial.resid = TRUE)
+par(mfrow = c(1, 1))
+```
+
+The relationship exhibits no significant deviations from linearity
+
+### Q2
