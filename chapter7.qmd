@@ -21,8 +21,6 @@ knitr::opts_chunk$set(
 
 ### Q1
 
-#### q1a
-
 ```{r}
 data(sat, package = "faraway")
 colnames(sat)
@@ -33,6 +31,8 @@ lm_q1 <- lm(total ~ expend + salary + ratio + takers, data = sat)
 summary(lm_q1)
 ```
 
+#### q1a
+
 ```{r}
 plot(
   x = fitted(lm_q1),
@@ -40,7 +40,7 @@ plot(
   xlab = "Fitted",
   ylab = "Residuals"
 )
-abline(h = 0)
+abline(h = 0, col = "Red")
 ```
 
 ```{r}
@@ -128,6 +128,74 @@ termplot(model = lm_q1, partial.resid = TRUE)
 par(mfrow = c(1, 1))
 ```
 
-The relationship exhibits no significant deviations from linearity
+The relationship exhibits no significant deviations from linearity.
 
 ### Q2
+
+```{r}
+data(teengamb, package = "faraway")
+colnames(teengamb)
+```
+
+```{r}
+lm_q2 <- lm(gamble ~ ., data = teengamb)
+summary(lm_q2)
+```
+
+#### q2a
+
+```{r}
+plot(x = lm_q2, which = 1)
+```
+
+- The red line dips significantly below the dashed zero line in the middle of the plot and rises at the ends, forming a curve. Therefore, the relationship between  predictors and the response variable is likely non-linear. 
+- The vertical spread of the residuals is not consistent across the horizontal axis. The points are tightly clustered together for lower fitted values but spread out much more widely as the fitted values increase. Thus, this dataset exhibits heteroscedasticity.
+- Additionally, observations 24, 36, and 39 stand out as distinct potential outliers with large residuals, which heavily influence both the curved red line and the heteroscedasticity.
+
+#### q2b
+
+```{r}
+plot(x = lm_q2, which = 2)
+```
+
+- Long-tailed behaviour observed.
+- Observations 24, 36, and 39 stand out as distinct potential outliers.
+
+#### q2c
+
+```{r}
+ratio <- rstandard(lm_q2) / rstudent(lm_q2)
+
+plot(
+  x = seq_along(ratio),
+  y = ratio,
+  xlab = "Index",
+  ylab = "Ratio of Residuals"
+)
+abline(h = 1, col = "Red")
+```
+
+For the vast majority of observations, the residual ratio remains close to one. However, three observations deviate significantly below one. This indicates a strong leave-one-out effect, where removing these influential cases exerts substantial influence on the overall error variance.
+
+#### q2d
+
+```{r}
+sd(rstandard(lm_q2))
+```
+
+```{r}
+sd(rstudent(lm_q2))
+```
+
+- The standard deviations of the standardised residuals and studentised residuals are `r round(sd(rstandard(lm_q2)), 2)` and `r round(sd(rstudent(lm_q2)), 2)`, respectively.
+  - Both are slightly greater than one, which aligns with their theoretical properties and how sample satndard deviations are calculated.
+- Since standardised residuals are calculated by dividing its raw residuals, $\hat{\epsilon}_i$, by their estimated standard deviations, $\hat{\sigma}\sqrt{1 - h_i}$, theoretically they are normalised to have an expected standard deviations of exactly one.
+  - However, when we calculate their sample standard deviation, the result is slightly greater than one due to Basel's correction by which the sample formula divides by $n - 1$.
+- Since studentised residuals are similar to standardised residuals but it is a much more aggressive test of fit as it uses the leave-out-one estimate of the variance $\hat{\sigma_{(i)}}$, which calculates the model's error after omitting the $i$-th observation.
+  - Theoretically, these residuals follow a $t_{n - p - 1}$-distribution or Student's $t$-distribution.
+  - Given the variance of a $t$-distribution is mathematically defined as $\frac{\nu}{\nu - 2}$ and is strictly greater than one for all valid degree of freedom, the expected standard deviation for studentised residuals is mathematically guaranteed to be greater than one.
+- The standard deviation of the studentised residuals is higher than that of the standardised residuals because of how they handle influential points.
+  - Leverage measures how extreme an observation is in the predictor space.
+  - High-leverage points have a disproportionate impact on the model fit, often pulling the regression line toward themselves and making their raw residuals deceptively small.
+- When these high-leverage points are omitted in the studentised (leave-out-one) calculation, the resulting residuals for those points "explode" in size because the model is no longer being biased by their presence.
+- Therefore, studentised residuals actively demonstrate how much the model changes when individual influential points are removed, they inherently show more overall variation than standardised residuals.
